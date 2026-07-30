@@ -190,12 +190,19 @@ describe("loadLearner 版本迁移", () => {
 });
 
 describe("buildDynamicPersona", () => {
-  it("冷启动：极简 persona，无 patterns", () => {
+  it("冷启动：返回空字符串，不污染 prompt", () => {
     const s = freshLearner("u1");
     const text = buildDynamicPersona(s);
-    expect(text).toContain("真实的人");
-    expect(text).not.toContain("用户喜欢");
-    expect(text).not.toContain("用户不喜欢");
+    // v0.19：不再注入角色身份声明 / 核心原则，无反馈时返回空字符串
+    expect(text).toBe("");
+  });
+
+  it("不注入硬编码风格（角色身份声明 / 核心原则）", () => {
+    const s = applyFeedback(freshLearner("u1"), "positive", ["喜欢具体例子"]);
+    const text = buildDynamicPersona(s);
+    expect(text).not.toContain("真实的人");
+    expect(text).not.toContain("保持真实感");
+    expect(text).not.toContain("核心原则");
   });
 
   it("有 patterns 时输出对应章节", () => {

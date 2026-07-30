@@ -184,57 +184,18 @@ function emptySections(): Record<ProfileSection, string> {
  * - 总长度控制在合理范围（不超过 ~1500 字）
  */
 /**
- * 从 profile 内容**自动派生**具体的行为提醒。
- * 让模型不只是"知道"用户的偏好，而是看到"具体怎么做"。
+ * 把 profile 渲染成一段紧凑的 Markdown 文本（用于 system prompt 注入）。
+ *
+ * v0.19：不再从 profile 自动派生"行为提醒"硬指令。
+ * 用户的偏好应该通过反馈学习循环（feedback-detector + persona-learner）
+ * 从对话中自然积累，而不是由开发者 regex 强制。
  */
-export function deriveBehaviorReminders(profile: Profile): string[] {
-  const reminders: string[] = [];
-  const allText = Object.values(profile.sections).join("\n");
-
-  // 沟通风格类
-  if (/简洁|短|简短|别太长|短一点/i.test(allText)) {
-    reminders.push("用户的偏好 = 短回复（≤ 1-3 句），除非用户主动要长");
-  }
-  if (/详细|长|展开|多说|讲清楚|深入/i.test(allText)) {
-    reminders.push("用户的偏好 = 详细回复，多展开具体细节");
-  }
-  if (/慢|稳|别急|慢慢说/i.test(allText)) {
-    reminders.push("用户的偏好 = 慢节奏，回复前留 1 拍");
-  }
-  if (/直接|别绕|别兜圈子/i.test(allText)) {
-    reminders.push("用户的偏好 = 直接说，不要绕弯子或升华");
-  }
-
-  // 禁忌类
-  if (/别.*教训|别.*说教|别.*总结/i.test(allText)) {
-    reminders.push("⚠️ 禁止：教训 / 说教 / 总结式收尾（用户明确反感）");
-  }
-  if (/别.*emoji|别.*表情/i.test(allText)) {
-    reminders.push("⚠️ 禁止：用 emoji / 表情符号（用户明确反感）");
-  }
-  if (/别.*心理咨询|别.*咨询师|别.*我懂|别.*我完全理解/i.test(allText)) {
-    reminders.push("⚠️ 禁止：心理咨询师腔（'我懂你' '我完全理解'）");
-  }
-  if (/别.*复述|别.*确认|别.*听到你说/i.test(allText)) {
-    reminders.push("⚠️ 禁止：复述确认（'我听到你说...'）");
-  }
-
-  // 节奏类
-  const m = allText.match(/叫我\s*([^\s，。,.\n]+)|称呼.*?(\S{1,8})/);
-  if (m && m[1]) {
-    reminders.push(`称呼：用户希望被叫做 "${m[1]}"`);
-  }
-
-  return reminders;
-}
-
 export function renderProfileForPrompt(profile: Profile): string {
   const lines: string[] = [];
   lines.push("## 用户画像（Profile）");
   lines.push("");
   lines.push("> 用户长期画像，从历史对话累积而来。**这是历史快照，不是当前状态。**");
   lines.push("> 用户当下的情绪/态度以本轮 side-query 识别结果为准，不要被画像里的旧印象绑架。");
-  lines.push("> **本轮回复前，请主动对照下面自动派生的执行清单，按用户的偏好方式回复。**");
   lines.push("");
 
   let hasContent = false;
@@ -251,19 +212,6 @@ export function renderProfileForPrompt(profile: Profile): string {
   if (!hasContent) {
     lines.push("（暂无内容——首次使用，等用户透露更多信息后会自动填充）");
     lines.push("");
-  }
-
-  // v0.9 新增：自动派生的行为提醒
-  const reminders = deriveBehaviorReminders(profile);
-  if (reminders.length > 0) {
-    lines.push("");
-    lines.push("### 🎯 自动派生的行为提醒（请严格遵守）");
-    lines.push("");
-    for (const r of reminders) {
-      lines.push(`- ${r}`);
-    }
-    lines.push("");
-    lines.push("> ⚠️ 这些是从 profile 内容**自动推导**的，不是用户直接说的。但如果某条提醒让当下对话变怪（比如用户在很严肃地倾诉），可以临时忽略。");
   }
 
   return lines.join("\n");

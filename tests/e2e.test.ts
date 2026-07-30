@@ -133,8 +133,8 @@ describe("E2E: full conversation loop", () => {
       () => {},
     );
 
-    // system prompt 包含主人格（v0.15.0: 动态 persona，冷启动返回"真实的人"指令）
-    expect(capturedSystem).toContain("真实的人");
+    // v0.19：buildDynamicPersona 在无反馈时返回空字符串，不再注入"真实的人"
+    expect(capturedSystem).not.toContain("真实的人");
     // system prompt 包含情绪时间线
     expect(capturedSystem).toContain("情绪轨迹");
     // system prompt 包含当前情绪识别结果

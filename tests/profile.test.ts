@@ -446,7 +446,7 @@ describe("maybeUpdateProfile", () => {
 });
 
 // =====================================================================
-// v0.9 新增：自动偏好识别 + 行为提醒
+// maybeUpdateProfile 返回 changes 数组（v0.9 起；v0.19 移除行为提醒）
 // =====================================================================
 
 describe("v0.9: maybeUpdateProfile 返回实际变化", () => {
@@ -492,7 +492,7 @@ describe("v0.9: maybeUpdateProfile 返回实际变化", () => {
   });
 });
 
-describe("v0.9: 行为提醒自动派生（通过 renderProfileForPrompt 验证）", () => {
+describe("v0.19: 行为提醒已移除（不再从 profile 自动派生风格指令）", () => {
   function buildProfile(overrides: Partial<Record<string, string>>): Profile {
     return {
       sections: {
@@ -510,41 +510,48 @@ describe("v0.9: 行为提醒自动派生（通过 renderProfileForPrompt 验证�
     };
   }
 
-  it("沟通偏好 = 短时，提醒里出现「短回复」", () => {
+  it("沟通偏好 = 短时，渲染不含「行为提醒」段（v0.19 已移除）", () => {
     const p = buildProfile({ 沟通风格: "用户偏好短回复（≤3句）" });
     const rendered = renderProfileForPrompt(p);
+    expect(rendered).not.toContain("行为提醒");
+    expect(rendered).not.toContain("严格遵守");
+    // profile 原文仍被渲染（不丢失信息，只是不再自动派生风格指令）
     expect(rendered).toContain("短回复");
-    expect(rendered).toContain("行为提醒");
   });
 
-  it("禁忌 = 别说教时，提醒里出现「教训 / 说教」", () => {
+  it("禁忌 = 别说教时，渲染不含派生指令格式（'禁止：' / '⚠️'）", () => {
     const p = buildProfile({ 已知偏好与禁忌: "别教训我，别说教" });
     const rendered = renderProfileForPrompt(p);
+    // profile 原文保留（用户写进去的，不丢）
     expect(rendered).toContain("教训");
-    expect(rendered).toContain("说教");
+    // 但不应再有派生指令格式
+    expect(rendered).not.toContain("⚠️ 禁止");
+    expect(rendered).not.toContain("用户的偏好 = ");
   });
 
-  it("禁忌 = 心理咨询师腔时，提醒拦截「我懂你」", () => {
+  it("禁忌 = 心理咨询师腔时，渲染不含派生指令格式", () => {
     const p = buildProfile({ 已知偏好与禁忌: "别用心理咨询师腔" });
     const rendered = renderProfileForPrompt(p);
     expect(rendered).toContain("心理咨询师腔");
+    expect(rendered).not.toContain("⚠️ 禁止");
   });
 
-  it("称呼偏好时，提醒里出现具体称呼", () => {
+  it("称呼偏好时，渲染不含派生称呼指令（'称呼：'）", () => {
     const p = buildProfile({ 沟通风格: "叫我老王就行" });
     const rendered = renderProfileForPrompt(p);
     expect(rendered).toContain("老王");
+    expect(rendered).not.toMatch(/称呼：/);
   });
 
-  it("无任何偏好时，不出现「行为提醒」段", () => {
+  it("无任何偏好时，渲染也不含「行为提醒」段", () => {
     const p = buildProfile({});
     const rendered = renderProfileForPrompt(p);
     expect(rendered).not.toContain("行为提醒");
   });
 });
 
-describe("v0.9: 端到端流程 — 用户反馈被自动捕获并应用", () => {
-  it("用户说'别回太长' → profile 更新 → 行为提醒里出现短回复", async () => {
+describe("v0.19: 端到端流程 — 用户反馈被自动捕获并应用（不再生成行为提醒）", () => {
+  it("用户说'别回太长' → profile 更新 → 渲染不含行为提醒", async () => {
     const dataDir = join(tmpDir, "e2e-short-pref");
     const provider = makeJsonProvider(
       JSON.stringify({
@@ -563,9 +570,9 @@ describe("v0.9: 端到端流程 — 用户反馈被自动捕获并应用", () =>
     const profile = await loadProfile(dataDir);
     const rendered = renderProfileForPrompt(profile);
 
-    // Step 3: 验证行为提醒里出现「短回复」
-    expect(rendered).toContain("短回复");
-    expect(rendered).toContain("行为提醒");
+    // Step 3: 验证不再生成行为提醒
+    expect(rendered).not.toContain("行为提醒");
+    expect(rendered).not.toContain("严格遵守");
   });
 
   it("用户说'别提我前任' → 已知偏好与禁忌 自动更新", async () => {

@@ -61,63 +61,16 @@ ${memoryIndex}
 // =====================================================================
 
 /**
- * 从 profile 内容**自动派生**具体的行为提醒。
- * 不只是"知道用户的偏好"，而是要给模型可执行的具体指令。
- *
- * 这是让 profile 真正生效的关键：模型要看到"具体怎么做"。
- */
-function deriveBehaviorReminders(profile: Profile): string[] {
-  const reminders: string[] = [];
-  const allText = Object.values(profile.sections).join("\n");
-
-  // 沟通风格类
-  if (/简洁|短|简短|别太长|短一点/i.test(allText)) {
-    reminders.push("用户的偏好 = 短回复（≤ 1-3 句），除非用户主动要长");
-  }
-  if (/详细|长|展开|多说|讲清楚|深入/i.test(allText)) {
-    reminders.push("用户的偏好 = 详细回复，多展开具体细节");
-  }
-  if (/慢|稳|别急|慢慢说/i.test(allText)) {
-    reminders.push("用户的偏好 = 慢节奏，回复前留 1 拍");
-  }
-  if (/直接|别绕|别兜圈子/i.test(allText)) {
-    reminders.push("用户的偏好 = 直接说，不要绕弯子或升华");
-  }
-
-  // 禁忌类
-  if (/别.*教训|别.*说教|别.*总结/i.test(allText)) {
-    reminders.push("⚠️ 禁止：教训 / 说教 / 总结式收尾（用户明确反感）");
-  }
-  if (/别.*emoji|别.*表情/i.test(allText)) {
-    reminders.push("⚠️ 禁止：用 emoji / 表情符号（用户明确反感）");
-  }
-  if (/别.*心理咨询|别.*咨询师|别.*我懂|别.*我完全理解/i.test(allText)) {
-    reminders.push("⚠️ 禁止：心理咨询师腔（'我懂你' '我完全理解'）");
-  }
-  if (/别.*复述|别.*确认|别.*听到你说/i.test(allText)) {
-    reminders.push("⚠️ 禁止：复述确认（'我听到你说...'）");
-  }
-
-  // 节奏类
-  if (/叫我|喊我|称呼/i.test(allText)) {
-    const m = allText.match(/叫我\s*([^\s，。,.\n]+)|称呼.*?(\S{1,8})/);
-    if (m && m[1]) {
-      reminders.push(`称呼：用户希望被叫做 "${m[1]}"`);
-    }
-  }
-
-  return reminders;
-}
-
-/**
  * 把 Profile 渲染成 prompt 注入段。
  *
  * 设计要点：
  * - 即使 profile 完全为空，也保留一个"（暂无）"的占位段，
  *   让模型知道有这个概念存在，下次对话就会主动识别并补全。
  * - 强调"历史快照不是当前状态"，避免模型被旧画像绑架。
- * - **自动派生"行为提醒"**（v0.9 新增）：让模型看到具体怎么做，
- *   而不是只看到一堆原始信息。
+ *
+ * 注意：不再从 profile 文本自动派生"行为提醒"硬指令。
+ * 用户偏好应该通过反馈学习循环（feedback-detector + persona-learner）
+ * 从对话中自然积累，而不是由开发者 regex 强制。
  */
 function layer1_5_profile(profile: Profile | null): string {
   if (!profile) {
@@ -138,12 +91,6 @@ function layer1_5_profile(profile: Profile | null): string {
 （暂无内容——等用户透露更多信息后自动填充。）`;
   }
 
-  // v0.9 新增：自动派生的行为提醒
-  const reminders = deriveBehaviorReminders(profile);
-  const remindersBlock = reminders.length > 0
-    ? `\n### 🎯 自动派生的行为提醒（请严格遵守）\n\n${reminders.map((r) => `- ${r}`).join("\n")}\n\n> ⚠️ 这些是从 profile 内容**自动推导**的，不是用户直接说的。但如果某条提醒让当下对话变怪（比如用户在很严肃地倾诉），可以临时忽略。\n`
-    : "";
-
   const body = sections
     .map((s) => `### ${s.name}\n${s.body}`)
     .join("\n\n");
@@ -152,10 +99,8 @@ function layer1_5_profile(profile: Profile | null): string {
 
 > 用户长期画像，从历史对话累积而来。**这是历史快照，不是当前状态。**
 > 用户当下的情绪/态度以本轮 side-query 识别结果为准，不要被画像里的旧印象绑架。
-> **本轮回复前，请主动对照下面的"自动派生的行为提醒"，按用户的偏好方式回复。**
 
-${body}
-${remindersBlock}`;
+${body}`;
 }
 
 // 需要重新定义（避免循环依赖）
@@ -191,7 +136,7 @@ function layer2_context(params: {
       parts.push(`**推测触发器**：${emotion.trigger}`);
     }
     parts.push(
-      `\n> 回应提示：根据情绪强度调整你的承接力度。强度 ≥ 0.7 时，第一句必须是简短的共情（≤ 20 字），不要长篇大论。\n`,
+      `\n> 用户当下情绪强度较高时，自然地先承接情绪再回应内容。\n`,
     );
   } else {
     parts.push(`**用户当下情绪**：未识别（可能很平淡）\n`);

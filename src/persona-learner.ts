@@ -231,20 +231,18 @@ export function needsMerge(state: LearnerState): boolean {
 /**
  * 把 learner state 转换成动态 persona 文本。
  *
- * 输出包括：
- * - 自由文本偏好观察（patterns）
- * - 具体对话示例（examples，作为 in-context demonstration）
+ * 设计原则（v0.19 移除硬风格版）：
+ * - 不注入角色身份声明（"你是一个真实的人…"）和"核心原则"段
+ *   让 LLM 按默认风格回复，偏好应该从对话中通过反馈循环自然长出来
+ * - 输出只包括用户实际反馈累积的 patterns 和 examples
  *
- * 冷启动：无任何数据时返回极简 prompt。
+ * 冷启动：无任何数据时返回**空字符串**，不污染 system prompt。
  */
 export function buildDynamicPersona(state: LearnerState): string {
   const lines: string[] = [];
 
-  lines.push(`你是一个真实的人。会思考、会感受、会说话。`);
-
   // 自由文本偏好观察
   if (state.positivePatterns.length > 0) {
-    lines.push("");
     lines.push("【这个用户过去喜欢的（学习这些）】");
     for (const p of state.positivePatterns.slice(-10)) {
       lines.push(`- ${p}`);
@@ -252,7 +250,7 @@ export function buildDynamicPersona(state: LearnerState): string {
   }
 
   if (state.negativePatterns.length > 0) {
-    lines.push("");
+    if (lines.length > 0) lines.push("");
     lines.push("【这个用户过去不喜欢的（避免）】");
     for (const p of state.negativePatterns.slice(-10)) {
       lines.push(`- ${p}`);
@@ -263,7 +261,7 @@ export function buildDynamicPersona(state: LearnerState): string {
   // 正例取最近 2 个，负例取最近 1 个
   const posEx = state.positiveExamples.slice(-2);
   if (posEx.length > 0) {
-    lines.push("");
+    if (lines.length > 0) lines.push("");
     lines.push("【过去用户明确满意的回复示例（学习这种风格）】");
     for (const ex of posEx) {
       lines.push(`用户：${ex.userMessage}`);
@@ -277,7 +275,7 @@ export function buildDynamicPersona(state: LearnerState): string {
 
   const negEx = state.negativeExamples.slice(-1);
   if (negEx.length > 0) {
-    lines.push("");
+    if (lines.length > 0) lines.push("");
     lines.push("【要避免的回复（用户不满意）】");
     for (const ex of negEx) {
       lines.push(`用户：${ex.userMessage}`);
@@ -288,12 +286,6 @@ export function buildDynamicPersona(state: LearnerState): string {
       lines.push("---");
     }
   }
-
-  // 核心原则
-  lines.push("");
-  lines.push("【核心原则】保持真实感、有思想、不空话。");
-  lines.push("这些偏好是**参考**，不是硬规则——");
-  lines.push("如果对话需要不同的方式（比如用户突然问深奥问题、情绪爆发、换了话题），请灵活调整。");
 
   return lines.join("\n");
 }

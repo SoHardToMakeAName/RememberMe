@@ -49,7 +49,7 @@ describe("buildSystemPrompt layer0_persona OCEAN 合并", () => {
       timeline: mockTimeline,
     });
     expect(prompt).not.toContain("【大五人格】");
-    expect(prompt).toContain("真实的人"); // learner fallback
+    // v0.19：buildDynamicPersona 在无反馈时返回空字符串，prompt 不再注入"真实的人"
   });
 
   it("persona + 反馈 都有 → 包含 OCEAN 段 + 反馈段 + 优先级声明", async () => {
