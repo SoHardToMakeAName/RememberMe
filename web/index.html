@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EmoTalk</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <h1>EmoTalk</h1>
+    <div class="status" id="status">就绪</div>
+
+    <div class="control-group">
+      <label class="control-label">对话历史</label>
+      <div class="session-toolbar">
+        <button id="session-new" class="control-btn">+ 新对话</button>
+      </div>
+      <ul id="session-list" class="session-list">
+        <li class="session-empty">加载中…</li>
+      </ul>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">模型</label>
+      <div class="control-row">
+        <input
+          id="model-input"
+          type="text"
+          class="control-input"
+          placeholder="claude-sonnet-4-5-20250929"
+        />
+        <button id="model-apply" class="control-btn">应用</button>
+      </div>
+    </div>
+
+    <details class="meta-panel">
+      <summary>调试信息</summary>
+      <div id="meta-content">等待对话…</div>
+    </details>
+
+    <div class="actions">
+      <button id="clear">清空当前对话</button>
+      <button id="export">导出</button>
+    </div>
+  </aside>
+
+  <main class="chat">
+    <div class="messages" id="messages">
+      <div class="message empty">
+        说点什么吧。ta 在听。
+      </div>
+    </div>
+    <form class="composer" id="composer">
+      <textarea
+        id="input"
+        rows="1"
+        placeholder="说点什么…（Shift+Enter 换行，Enter 发送）"
+        autocomplete="off"
+      ></textarea>
+      <button type="submit" id="send">发送</button>
+    </form>
+  </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

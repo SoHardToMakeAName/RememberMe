@@ -1,0 +1,95 @@
+# =====================================================================
+# Dependencies
+# =====================================================================
+node_modules/
+
+# =====================================================================
+# 运行时用户数据（每次自动生成，不入版本控制）
+# =====================================================================
+data/memory/
+data/timeline/
+data/reflections/
+
+# profile 目录里 PROFILE.md 是首次启动时自动写入的运行时文件
+# 提交一个 .example 即可
+data/profile/PROFILE.md
+
+# =====================================================================
+# 敏感配置：含真实 API key，绝不入版本控制
+# 用 settings.json.example 作为提交占位
+# =====================================================================
+settings.json
+
+# =====================================================================
+# 临时 / ad-hoc 测试残留
+# =====================================================================
+tests/drive.py
+tests/round-10-output.log
+tests/test-script.sh
+scripts/debug-tokens.ts
+scripts/test-spread.ts
+
+# 根目录调试脚本：send_*.py, send_*.ps1, screenshot*.py, find_*.py,
+# test_*.py, attach_*.py, clipboard_*.py, console_*.py
+# 不影响 tests/ 下有意义的 .ts 测试文件（被 tests/*.test.ts 显式追踪）
+/send*.py
+/send*.ps1
+/screenshot*.py
+/screenshot*.ps1
+/find_*.py
+/find_*.ps1
+/test_*.py
+/test_*.ps1
+/attach_*.py
+/clipboard_*.py
+/console_*.py
+
+# Anthropic SDK 等第三方工具的内部配置目录（不提交）
+.claude/
+
+# 备份文件（settings.json.bak 等）
+*.bak
+*.backup
+*.tmp
+
+# =====================================================================
+# 环境变量 / 临时文件
+# =====================================================================
+.env
+.env.local
+*.log
+.DS_Store
+*.swp
+*.swo
+
+# =====================================================================
+# IDE / 编辑器
+# =====================================================================
+.vscode/
+.idea/
+*.tsbuildinfo
+
+# v0.15+: 反馈学习数据
+data/learned-prefs/
+
+# v0.15+: 会话持久化数据
+data/sessions/
+data/proactive-state.json
+screenshot_claude_status.png
+
+# 临时 session 噪音（开发时产生的脚本/截图/对话等）
+*.py
+*.ps1
+*.png
+*.gif
+!demo.gif
+# 根目录临时 prompt/草稿文件（用户保存的草稿/对话）
+/当前人格系统由三层叠加*.md
+/本目录保留*.md
+/重要*.md
+/*提示词*.md
+/*草稿*.md
+/*对话*.md
+/*测试*.md
+/*随便*.md
+/*试一下*.md

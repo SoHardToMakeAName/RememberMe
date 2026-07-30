@@ -1,0 +1,26 @@
+{
+  "name": "emotalk",
+  "version": "0.18.1",
+  "description": "有人味的情感陪伴对话应用",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "bun run src/web.ts",
+    "dev": "bun --watch run src/web.ts",
+    "repl": "bun run src/index.ts",
+    "web": "bun run src/web.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "openai": "^4.80.0",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}
