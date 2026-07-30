@@ -50,13 +50,18 @@ describe("Web sessions E2E", () => {
     await stopServer();
   });
 
-  it("启动后 GET /api/sessions 返回数组", async () => {
+  it("启动后 GET /api/sessions 返回数组（含/不含已有 session 都兼容）", async () => {
     await startServer();
     const r = await fetch(BASE + "/api/sessions");
     expect(r.ok).toBe(true);
     const body = (await r.json()) as { sessions: unknown[]; currentSessionId: string | null };
     expect(Array.isArray(body.sessions)).toBe(true);
-    expect(body.currentSessionId).not.toBeNull();
+    // v0.19：sessions/ 为空时不再自动创建，currentSessionId 可能为 null
+    if (body.sessions.length > 0) {
+      expect(body.currentSessionId).not.toBeNull();
+    } else {
+      expect(body.currentSessionId).toBeNull();
+    }
   });
 
   it("POST /api/session/new 创建新 session 并切换 currentSessionId", async () => {

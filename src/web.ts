@@ -72,23 +72,20 @@ async function bootstrap(): Promise<AppState> {
   await timeline.ensure();
 
   // 加载最近一次 session（v0.15.0 不再按 persona 过滤）
+  // 不再自动创建空 session：sessions/ 为空时 currentSessionId=null,
+  // 首次发消息时 /api/send 才会创建 session
   const allSessions = listSessions(DATA_DIR);
-  let firstSession = allSessions.length > 0 ? allSessions[0] : null;
-  if (!firstSession) {
-    // 用一个虚拟 persona 名（兼容旧 schema）
-    firstSession = createSession(DATA_DIR, "default", userId, provider.model);
-    saveSession(DATA_DIR, firstSession);
-  }
+  const firstSession = allSessions.length > 0 ? allSessions[0] : null;
 
   return {
     provider,
     userId,
-    persona: loadPersonaForSession(DATA_DIR, firstSession.id),
+    persona: firstSession ? loadPersonaForSession(DATA_DIR, firstSession.id) : null,
     personaLearner,
     profile,
-    currentSessionId: firstSession.id,
+    currentSessionId: firstSession?.id ?? null,
     previousAssistantReply: "",
-    history: firstSession.history,
+    history: firstSession?.history ?? [],
     timeline,
     compactConfig: DEFAULT_COMPACT_CONFIG,
   };
@@ -347,6 +344,17 @@ async function main() {
 
             send("status", { message: "思考中…" });
 
+            // 懒创建 session：用户从没开过 session 时，发第一条消息才创建
+            if (!state.currentSessionId) {
+              const newSess = createSession(DATA_DIR, "default", state.userId, state.provider.model);
+              saveSession(DATA_DIR, newSess);
+              state.currentSessionId = newSess.id;
+              state.history = newSess.history;
+              state.persona = loadPersonaForSession(DATA_DIR, newSess.id);
+              // 通知前端 session 已创建（前端可刷新 sidebar）
+              send("session", { sessionId: newSess.id });
+            }
+
             try {
               const result = await runTurn(
                 state,
@@ -571,26 +579,6 @@ async function main() {
           });
         } catch (err) {
           return new Response(JSON.stringify({ error: (err as Error).message }), {
-            status: 500, headers: { "Content-Type": "application/json" },
-          });
-        }
-      }
-
-      // API: 切换模型
-      if (req.method === "POST" && path === "/api/switch-model") {
-        try {
-          const body = (await req.json()) as { model?: string };
-          if (!body.model) {
-            return new Response(JSON.stringify({ error: "model required" }), {
-              status: 400, headers: { "Content-Type": "application/json" },
-            });
-          }
-          state.provider = createProvider({ kind: "anthropic", model: body.model });
-          return new Response(JSON.stringify({ ok: true, model: body.model }), {
-            headers: { "Content-Type": "application/json" },
-          });
-        } catch (e) {
-          return new Response(JSON.stringify({ error: (e as Error).message }), {
             status: 500, headers: { "Content-Type": "application/json" },
           });
         }

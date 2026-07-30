@@ -8,8 +8,7 @@ const sendBtn = $("#send");
 const statusEl = $("#status");
 const metaEl = $("#meta-content");
 const composerEl = $("#composer");
-const modelInput = $("#model-input");
-const modelApply = $("#model-apply");
+const modelDisplayEl = $("#model-display");
 const sessionListEl = $("#session-list");
 const sessionNewBtn = $("#session-new");
 
@@ -50,25 +49,6 @@ function appendTo(el, text) {
 }
 
 function setMeta(text) { metaEl.textContent = text; }
-
-// === 模型切换 ===
-modelApply.addEventListener("click", async () => {
-  const model = modelInput.value.trim();
-  if (!model) { setStatus("请输入模型名"); return; }
-  try {
-    setStatus("切换模型…");
-    const resp = await fetch("/api/switch-model", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model }),
-    });
-    if (!resp.ok) throw new Error("HTTP " + resp.status);
-    const data = await resp.json();
-    setStatus("已切到 " + data.model);
-  } catch (e) {
-    setStatus("切换失败: " + e.message);
-  }
-});
 
 // === Session 列表 ===
 function renderSessions(sessions, currentId) {
@@ -250,7 +230,7 @@ async function initControls() {
     const resp = await fetch("/api/state");
     if (resp.ok) {
       const state = await resp.json();
-      if (state.model && !modelInput.value) modelInput.value = state.model;
+      if (state.model && modelDisplayEl) modelDisplayEl.textContent = state.model;
       if (state.learnerTotalFeedback === 0) {
         setStatus("冷启动 — 人设由你的反馈学习");
       }
@@ -332,6 +312,10 @@ composerEl.addEventListener("submit", async (e) => {
               messagesEl.scrollTop = messagesEl.scrollHeight;
               if (evt.reason) setStatus("已润色: " + evt.reason.split("，")[0]);
             }
+          } else if (evt.type === "session") {
+            // /api/send 懒创建了新 session（首次发消息时），刷新 sidebar + 消息区
+            currentSessionId = evt.sessionId;
+            await Promise.all([loadSessions(), reloadMessages()]);
           } else if (evt.type === "error") {
             throw new Error(evt.message);
           }

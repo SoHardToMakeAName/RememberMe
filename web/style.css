@@ -263,6 +263,21 @@ body {
   border-color: var(--accent);
 }
 
+/* 只读显示（模型等不可改的字段） */
+.control-display {
+  flex: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
 .control-btn {
   background: var(--accent);
   color: white;
