@@ -115,6 +115,16 @@ bun run repl
 | 命令 | 作用 |
 |---|---|
 | 直接输入 | 开始对话 |
+| `/persona show` | 显示当前 OCEAN 人设 + preferences |
+| `/persona init <一句话描述>` | 用 LLM 生成 OCEAN，写入当前 session（首次启动会提示） |
+| `/persona describe <文本>` | 不调 LLM，直接修改 preferences |
+| `/persona reset` | 重置人设为默认中性（OCEAN 全 0.5） |
+| `/session list` | 列出所有 session（按最近活跃倒序） |
+| `/session current` | 显示当前 session 详情（id + 标题 + 历史条数 + 人设） |
+| `/session new [描述]` | 新建 session（可选立刻 init 人设；CLI 与 web 共享同一份会话数据） |
+| `/session switch <id>` | 切换到指定 session（保存当前 → 加载目标 → 重载人设） |
+| `/session save` | 手动保存当前 session（退出时也会自动保存） |
+| `/session delete <id>` | 删除指定 session + 关联人设（不能删当前） |
 | `/memory list` / `read <name>` / `types` / `save <type> <name> <desc>` | 记忆管理（2 主类 + 1 辅类） |
 | `/memory auto <on\|off\|status>` | 自动抽取开关（默认开） |
 | `/memory suggest` | 手动触发抽取 |
@@ -129,7 +139,14 @@ bun run repl
 | `/quiet` | 切换 `[emotion: ...]` 调试标签 |
 | `/clear` | 清空当前会话历史 |
 | `/help` | 完整帮助 |
-| `/quit` | 退出 |
+| `/quit` | 退出（自动保存当前 session） |
+
+### CLI 与网页端共享会话
+
+`data/sessions/` 是 CLI 和网页版共用的存储目录：
+- 在 web 聊了一段 → 启动 CLI → CLI 自动加载最近一个有对话的 session
+- 在 CLI 聊了一段 → 关掉 web → 重启 web → web 也加载同一段
+- 切换会话用 `/session switch <id>`（CLI）或左侧 sidebar（web）
 
 ### 主动关心
 

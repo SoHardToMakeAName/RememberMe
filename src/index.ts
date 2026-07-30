@@ -111,15 +111,17 @@ async function main() {
   // 1. REPL 多 session 模式（和 web.ts 一致）
   // 反馈学习器
   const USER_ID = "default";
-  // 加载最近一次 session（不存在则创建空 session）
+  // 加载最近一次 session：优先选有真实对话的（跳过空 session 残留）
   const allSessions = listSessions(DATA_DIR);
+  const nonEmpty = allSessions.find((s) => s.history.length > 0);
+  const loadTarget = nonEmpty ?? allSessions[0] ?? null;
   let currentSessionId: string;
   let history: ChatMessage[];
-  if (allSessions.length > 0) {
-    const last = allSessions[0];
-    currentSessionId = last.id;
-    history = last.history;
+  if (loadTarget) {
+    currentSessionId = loadTarget.id;
+    history = loadTarget.history;
   } else {
+    // 完全无 session（首次启动）：REPL 单会话模式创建空 session 作默认起点
     const blank = createSession(DATA_DIR, "default", USER_ID, pickDefaultModel());
     saveSession(DATA_DIR, blank);
     currentSessionId = blank.id;
@@ -129,12 +131,20 @@ async function main() {
   let persona: BigFivePersona =
     loadPersonaForSession(DATA_DIR, currentSessionId) ?? defaultPersona(currentSessionId);
   const hasPersonaFile = loadPersonaForSession(DATA_DIR, currentSessionId) !== null;
-  console.log(
-    `${color.green("✓")} 当前 session: ${color.bold(currentSessionId)}` +
-      (hasPersonaFile
-        ? ""
-        : ` ${color.dim("（未设置人设，建议 /persona init <描述>）")}`),
-  );
+  // banner：清晰显示当前 session + 加载状态
+  const title = loadTarget?.title;
+  const sessionDisplay = title
+    ? `${color.bold(currentSessionId.slice(0, 18))} ${color.dim("「" + title + "」")}`
+    : color.bold(currentSessionId);
+  const historyNote = history.length > 0
+    ? color.dim(`（已加载 ${history.length} 条历史对话）`)
+    : "";
+  const personaNote = !hasPersonaFile
+    ? color.dim("（未设置人设，建议 /persona init <描述>）")
+    : "";
+  console.log(`${color.green("✓")} 当前 session: ${sessionDisplay}`);
+  if (historyNote) console.log(`  ${historyNote}`);
+  if (personaNote) console.log(`  ${personaNote}`);
   let personaLearner = loadLearner(DATA_DIR, USER_ID);
   const totalFeedback = personaLearner.signalCounts.positive + personaLearner.signalCounts.negative + personaLearner.signalCounts.neutral;
   if (totalFeedback === 0) {

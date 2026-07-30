@@ -167,45 +167,68 @@ bun run repl
 | `/proactive trigger` | 手动触发一次主动消息 |
 | `/proactive reset` | 重置状态 |
 
-### 会话
+### 会话（CLI 与网页版共享 `data/sessions/`）
 
 | 命令 | 作用 |
 |---|---|
+| `/session list` | 列出所有 session（按最近活跃倒序） |
+| `/session current` | 显示当前 session 详情（id + 标题 + 历史条数 + 关联人设） |
+| `/session new [描述]` | 新建 session（可选立刻 init 人设；首条消息自动创建） |
+| `/session switch <id>` | 切换到指定 session（保存当前 → 加载目标 → 重载人设） |
+| `/session save` | 手动保存当前 session（退出时也会自动保存） |
+| `/session delete <id>` | 删除指定 session + 关联人设（不能删当前） |
 | `/stats` | 会话统计 + compact 建议 + 记忆数 |
 | `/compact` | 手动压缩历史 |
 | `/quiet` | 切换 [情绪:...] 调试标签 |
 | `/clear` | 清空会话历史 |
 
+### 大五人设（OCEAN）
+
+| 命令 | 作用 |
+|---|---|
+| `/persona show` | 显示当前 OCEAN 5 维 + oceanHint 行为描述 + preferences |
+| `/persona init <一句话描述>` | 调 LLM 把描述翻译成 OCEAN JSON，写入 `data/personality/{sessionId}.json` |
+| `/persona describe <文本>` | 不调 LLM，直接修改 preferences 字段 |
+| `/persona reset` | 删人设文件，回到默认中性（OCEAN 全 0.5） |
+
+### CLI 与网页版互通
+
+`data/sessions/` 是两个入口共用的存储：
+- 在 web 聊了一段 → 启动 CLI → CLI 自动加载最近一个有对话的 session（banner 显示「标题」和"已加载 N 条历史对话"）
+- 在 CLI 聊了一段 → 关掉 web → 重启 web → web 也加载同一段
+- 切换会话：在 CLI 用 `/session switch <id>`，在 web 用左侧 sidebar
+
+如果两个端同时跑，**写入是 last-write-wins**（文件系统无锁）。建议一次只开一个端。
+
 ---
 
-## 🌊 人设系统
+## 🌊 人设系统（OCEAN）
 
-**没有"切换人格"按钮了**。人格由三层叠加：
+人格由两部分组成：
 
-```
-┌─────────────────────────────────────┐
-│ 第 1 层：OCEAN（基础设定）            │ ← 新会话时通过一句话描述生成
-├─────────────────────────────────────┤
-│ 第 2 层：反馈学习器（动态叠加）       │ ← 每轮反馈自动学习
-├─────────────────────────────────────┤
-│ 第 3 层：软引导 body（共享）          │ ← data/personality/default.md
-└─────────────────────────────────────┘
-```
+| 部分 | 来源 | 何时生效 |
+|---|---|---|
+| **OCEAN 5 维数值 + preferences** | 用户主动 init（CLI `/persona init`，web 弹窗）| 写入 `data/personality/{sessionId}.json`，永久绑定到该 session |
+| **反馈学习观察** | 用户每次给的反馈（"别回太长"、"叫我老王"）| 自动累积到 `data/learned-prefs/default.json`，下次 system prompt 注入 |
 
-### OCEAN 大五人设
+### 启动时的加载行为
 
-每个 session 在首次启动时会：
+- **CLI 启动**：`listSessions()` 找最近一个有真实对话的 session → 自动加载，banner 显示「标题」和已加载条数
+- **网页版启动**：加载最近一个 session；首次发消息才创建新 session
 
-1. **CLI 模式**：直接用默认中性 OCEAN（全 0.5 + "用户尚未描述人格偏好"）
-2. **网页版**：弹 init modal，提示你描述想要的人设
+### OCEAN 5 维
 
-如果你描述了（比如"像苏格拉底那样的智者"），`src/persona-init.ts` 会调用 LLM：
+每个 session 在 init 时会调 LLM 把你的描述（如"像苏格拉底那样的智者"）翻译成：
 
-- 输出 5 维数值（Openness / Conscientiousness / Extraversion / Agreeableness / Neuroticism），每维 0-1
-- 输出 `preferences` 自由文本（行为倾向描述，如"用具体例子而非抽象概念"）
+- 5 维数值（Openness / Conscientiousness / Extraversion / Agreeableness / Neuroticism），每维 0-1
+- `preferences` 自由文本（行为倾向描述，如"用具体例子而非抽象概念"）
 - 保存到 `data/personality/{sessionId}.json`
 
-后续该 session 所有对话都用这个人设。
+后续该 session 所有对话都用这个人设。**跳过 init**（web 关掉弹窗 / CLI 不调 init）→ 用默认中性 OCEAN（全 0.5）。
+
+### OCEAN 影响表述而非内容
+
+OCEAN 翻译（`oceanHint`）让模型知道"这种性格的人会怎么表达"，比如 `openness=0.85` 会让回复带更多跨领域联想。但 OCEAN **不规定**回复长度、风格、是否用 emoji —— 这些应该从用户的反馈循环中自然长出来。
 
 ### 反馈学习器
 

@@ -112,6 +112,16 @@ bun run repl
 | Command | What it does |
 |---|---|
 | Just type | Start chatting |
+| `/persona show` | Show current OCEAN persona + preferences |
+| `/persona init <one-sentence description>` | Use LLM to generate OCEAN for current session (prompted on first launch) |
+| `/persona describe <text>` | Edit `preferences` without calling LLM |
+| `/persona reset` | Reset persona to neutral default (all 0.5) |
+| `/session list` | List all sessions (most-recent-active first) |
+| `/session current` | Show current session details (id + title + history length + persona) |
+| `/session new [description]` | Create new session (optionally init persona immediately; CLI and web share session data) |
+| `/session switch <id>` | Switch to a specific session (save current → load target → reload persona) |
+| `/session save` | Manually save current session (also auto-saved on exit) |
+| `/session delete <id>` | Delete a session + its persona file (cannot delete the current one) |
 | `/memory list` / `read <name>` / `types` / `save <type> <name> <desc>` | Memory management (2 main + 1 minor types) |
 | `/memory auto <on\|off\|status>` | Auto-extract toggle (default on) |
 | `/memory suggest` | Manually trigger an extraction |
@@ -126,7 +136,14 @@ bun run repl
 | `/quiet` | Toggle `[emotion: ...]` debug labels |
 | `/clear` | Clear current session history |
 | `/help` | Full help |
-| `/quit` | Exit |
+| `/quit` | Exit (auto-saves current session) |
+
+### CLI & Web share sessions
+
+`data/sessions/` is shared between CLI and web:
+- Chat on web → start CLI → CLI auto-loads the most recent session with real conversation
+- Chat on CLI → quit web → restart web → web loads the same session
+- Switch sessions with `/session switch <id>` (CLI) or the left sidebar (web)
 
 ### Proactive care
 
