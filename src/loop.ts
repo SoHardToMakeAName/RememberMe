@@ -210,7 +210,11 @@ export async function runTurn(
  ...messages.slice(-6),
  { role: "assistant" as const, content: fullText.slice(0, 500) },
  ];
- maybeUpdateProfile(deps.dataDir, deps.provider, recentForProfile)
+ maybeUpdateProfile(deps.dataDir, deps.provider, recentForProfile, {
+   userId: deps.userId ?? "default",
+   memoryDir: deps.memoryDir,
+   timeline: deps.timeline,
+ })
  .then((result) => {
  if (result.updated && result.changes && result.changes.length > 0) {
  const time = new Date().toISOString().slice(11, 19);

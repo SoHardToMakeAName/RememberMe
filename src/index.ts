@@ -192,11 +192,15 @@ async function main() {
   // 3.5 初始化 profile（首次使用自动创建默认模板）
   let profile: Profile;
   try {
-    profile = await loadProfile(DATA_DIR);
+    profile = await loadProfile(DATA_DIR, {
+      userId: USER_ID,
+      memoryDir: MEMORY_DIR,
+      timeline,
+    });
     if (profile.initialized) {
       console.log(`${color.green("✓")} 用户画像已初始化（首次使用，已创建默认模板）`);
     } else {
-      console.log(`${color.green("✓")} 用户画像已加载`);
+      console.log(`${color.green("✓")} 用户画像已加载（含数据源同步）`);
     }
   } catch (e) {
     console.error(color.yellow(`⚠️ profile 加载失败，将跳过: ${(e as Error).message}`));
@@ -1082,10 +1086,17 @@ async function handleProfileCommand(
     try {
       const { unlink } = await import("node:fs/promises");
       await unlink(profilePath);
-      console.log(color.green("✓ 已删除画像文件，下次启动会重建默认模板"));
     } catch {
-      console.log(color.dim("画像文件本来就不存在"));
+      // 文件本来就不存在
     }
+    // 重新加载（触发 syncFromSources 用默认模板 + memory + learner 数据源）
+    // 注：timeline 需要 main() 的实例，handleProfileCommand 拿不到；
+    // 用户在下一轮对话时由 maybeUpdateProfile 再写入 timeline 数据
+    await loadProfile(DATA_DIR, {
+      userId: "default",
+      memoryDir: MEMORY_DIR,
+    });
+    console.log(color.green("✓ 画像已重置（默认模板 + 数据源同步）"));
     return;
   }
   // 默认：显示当前画像内容

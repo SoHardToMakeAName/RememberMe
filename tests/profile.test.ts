@@ -142,30 +142,49 @@ describe("saveProfile", () => {
 // mergeProfileUpdate
 // =====================================================================
 
-describe("mergeProfileUpdate - 字符串段", () => {
+describe("mergeProfileUpdate - 字符串段（v0.20：段 1 结构化覆盖）", () => {
   let profile: Profile;
 
   beforeAll(async () => {
     profile = await loadProfile(join(tmpDir, "merge-string"));
   });
 
-  it("空段直接替换为新内容", () => {
+  it("空段直接填充为新内容", () => {
     profile.sections["基本信息"] = "";
     const changed = mergeProfileUpdate(profile, {
       基本信息: "- 昵称：小阳\n- 职业：前端工程师",
     });
     expect(changed).toBe(true);
     expect(profile.sections["基本信息"]).toContain("昵称：小阳");
+    expect(profile.sections["基本信息"]).toContain("前端工程师");
   });
 
-  it("包含「未知」占位时直接替换", () => {
-    profile.sections["基本信息"] = "- 昵称：未知\n- 职业：未知";
+  it("特定字段覆盖原占位（'未知'→'阳光'）", () => {
+    profile.sections["基本信息"] = "- 昵称：未知\n- 职业：未知\n- 性别：未知\n- 年龄段：未知\n- 所在地：未知";
     mergeProfileUpdate(profile, {
       基本信息: "- 昵称：阳光\n- 职业：产品经理",
     });
-    expect(profile.sections["基本信息"]).toContain("阳光");
-    expect(profile.sections["基本信息"]).toContain("产品经理");
-    expect(profile.sections["基本信息"]).not.toContain("未知");
+    // 指定的字段被覆盖
+    expect(profile.sections["基本信息"]).toContain("昵称：阳光");
+    expect(profile.sections["基本信息"]).toContain("职业：产品经理");
+    // 未指定的字段保留原值（模板字段完整保留）
+    expect(profile.sections["基本信息"]).toContain("性别：未知");
+  });
+
+  it("空 update 不触发变更", () => {
+    profile.sections["基本信息"] = "- 昵称：小阳\n- 职业：前端";
+    const before = profile.sections["基本信息"];
+    const changed = mergeProfileUpdate(profile, {});
+    expect(changed).toBe(false);
+    expect(profile.sections["基本信息"]).toBe(before);
+  });
+});
+
+describe("mergeProfileUpdate - 段 2 沟通风格（append 风格 + 日期）", () => {
+  let profile: Profile;
+
+  beforeAll(async () => {
+    profile = await loadProfile(join(tmpDir, "merge-style"));
   });
 
   it("已有内容时追加而非覆盖", () => {
@@ -177,7 +196,7 @@ describe("mergeProfileUpdate - 字符串段", () => {
     expect(profile.sections["沟通风格"]).toContain("不喜欢被总结");
   });
 
-  it("相似内容去重，不重复追加", () => {
+  it("相似内容去重（30 字符前缀匹配）", () => {
     profile.sections["沟通风格"] = "- 喜欢简短回复";
     const before = profile.sections["沟通风格"];
     mergeProfileUpdate(profile, {
@@ -187,86 +206,59 @@ describe("mergeProfileUpdate - 字符串段", () => {
   });
 
   it("带日期前缀", () => {
-    profile.sections["长期情绪基线"] = "- 整体平稳";
+    profile.sections["沟通风格"] = "";
     const fixedDate = new Date("2026-01-15T10:00:00Z");
     mergeProfileUpdate(
       profile,
-      { 长期情绪基线: "工作日傍晚容易焦虑" },
+      { 沟通风格: "工作日傍晚容易焦虑" },
       fixedDate,
     );
-    expect(profile.sections["长期情绪基线"]).toContain("(2026-01-15)");
-    expect(profile.sections["长期情绪基线"]).toContain("工作日傍晚");
+    expect(profile.sections["沟通风格"]).toContain("(2026-01-15)");
   });
 });
 
-describe("mergeProfileUpdate - 列表段", () => {
-  let profile: Profile;
-
-  beforeAll(async () => {
-    profile = await loadProfile(join(tmpDir, "merge-list"));
-  });
-
-  it("空列表直接添加", () => {
-    profile.sections["关注议题"] = "";
-    mergeProfileUpdate(profile, {
-      关注议题: ["工作压力", "睡眠质量"],
-    });
-    expect(profile.sections["关注议题"]).toContain("工作压力");
-    expect(profile.sections["关注议题"]).toContain("睡眠质量");
-  });
-
-  it("已存在条目不去重", () => {
-    profile.sections["关注议题"] = "- 工作压力";
-    mergeProfileUpdate(profile, {
-      关注议题: ["工作压力", "人际关系"],
-    });
-    // 工作压力应该保留且不重复追加
-    const matches = profile.sections["关注议题"].match(/工作压力/g) ?? [];
-    expect(matches.length).toBe(1);
-    expect(profile.sections["关注议题"]).toContain("人际关系");
-  });
-
-  it("新增条目追加到末尾", () => {
-    profile.sections["已知偏好与禁忌"] = "- 不喜欢被总结";
-    mergeProfileUpdate(profile, {
-      已知偏好与禁忌: ["喜欢轻松的氛围", "讨厌说教"],
-    });
-    expect(profile.sections["已知偏好与禁忌"]).toContain("不喜欢被总结");
-    expect(profile.sections["已知偏好与禁忌"]).toContain("喜欢轻松的氛围");
-    expect(profile.sections["已知偏好与禁忌"]).toContain("讨厌说教");
-  });
-
-  it("空数组不触发更新", () => {
-    profile.sections["关注议题"] = "- 工作压力";
-    const before = profile.sections["关注议题"];
+describe("mergeProfileUpdate - 段 3/4/5（v0.20：不在 merge 处理，由 syncFromSources 管理）", () => {
+  it("关注议题 merge 不会更新（由 sync 管理）", () => {
+    const profile = makeEmptyProfile();
     const changed = mergeProfileUpdate(profile, {
-      关注议题: [],
+      关注议题: ["前端技术", "AI"],
     });
     expect(changed).toBe(false);
-    expect(profile.sections["关注议题"]).toBe(before);
+    expect(profile.sections["关注议题"]).toBe("");
+  });
+
+  it("已知偏好与禁忌 merge 不会更新（由 sync 管理）", () => {
+    const profile = makeEmptyProfile();
+    const changed = mergeProfileUpdate(profile, {
+      已知偏好与禁忌: ["喜欢简洁"],
+    });
+    expect(changed).toBe(false);
+    expect(profile.sections["已知偏好与禁忌"]).toBe("");
+  });
+
+  it("长期情绪基线 merge 不会更新（由 sync 管理）", () => {
+    const profile = makeEmptyProfile();
+    const changed = mergeProfileUpdate(profile, {
+      长期情绪基线: "工作日傍晚容易焦虑",
+    });
+    expect(changed).toBe(false);
+    expect(profile.sections["长期情绪基线"]).toBe("");
   });
 });
 
 describe("mergeProfileUpdate - 综合", () => {
-  it("一次更新多个段", () => {
+  it("一次更新多个段（仅段 1/2/6 处理）", () => {
     const profile = makeEmptyProfile();
     const changed = mergeProfileUpdate(profile, {
       基本信息: "- 昵称：小阳",
-      关注议题: ["前端技术", "AI"],
-      已知偏好与禁忌: ["喜欢简洁"],
+      沟通风格: "喜欢简洁",
+      关注议题: ["前端技术"], // 这个会被忽略
     });
     expect(changed).toBe(true);
     expect(profile.sections["基本信息"]).toContain("小阳");
-    expect(profile.sections["关注议题"]).toContain("前端技术");
-    expect(profile.sections["已知偏好与禁忌"]).toContain("喜欢简洁");
-    // 未指定的段保持空
-    expect(profile.sections["沟通风格"]).toBe("");
-  });
-
-  it("空 update 不触发变更", () => {
-    const profile = makeEmptyProfile();
-    const changed = mergeProfileUpdate(profile, {});
-    expect(changed).toBe(false);
+    expect(profile.sections["沟通风格"]).toContain("喜欢简洁");
+    // 关注议题 不被 merge 处理
+    expect(profile.sections["关注议题"]).toBe("");
   });
 });
 
@@ -449,37 +441,37 @@ describe("maybeUpdateProfile", () => {
 // maybeUpdateProfile 返回 changes 数组（v0.9 起；v0.19 移除行为提醒）
 // =====================================================================
 
-describe("v0.9: maybeUpdateProfile 返回实际变化", () => {
-  it("更新时返回 changes 数组（每个变更的具体内容）", async () => {
+describe("v0.20: maybeUpdateProfile 整合段 1/2/6（LLM 抽取）+ 段 3/4/5（数据源同步）", () => {
+  it("LLM 抽取段 2 → 返回 changes", async () => {
     const dataDir = join(tmpDir, "auto-update-changes");
     const provider = makeJsonProvider(
       JSON.stringify({
         沟通风格: "用户偏好短回复（≤3句）（用户说'别回太长'）",
-        已知偏好与禁忌: ["别用心理咨询师腔（'我懂你'）"],
       }),
     );
 
     const result = await maybeUpdateProfile(dataDir, provider, [
       { role: "user", content: "别回太长" },
       { role: "assistant", content: "好的" },
-      { role: "user", content: "别用心理咨询师腔，我懂你这种话听着烦" },
+      { role: "user", content: "别回太长啦" },
     ]);
 
     expect(result.updated).toBe(true);
     expect(result.changes).toBeDefined();
-    expect(result.changes!.length).toBeGreaterThan(0);
     expect(result.changes!.some((c) => c.section === "沟通风格")).toBe(true);
-    expect(result.changes!.some((c) => c.section === "已知偏好与禁忌")).toBe(true);
+    // v0.20：已知偏好与禁忌不在 changes 里（由 sync 管理）
+    expect(result.changes!.some((c) => c.section === "已知偏好与禁忌")).toBe(false);
   });
 
-  it("空 update 时不返回 changes", async () => {
+  it("空 update 时不返回有内容的 changes", async () => {
     const dataDir = join(tmpDir, "auto-update-empty");
     const provider = makeJsonProvider("{}");
     const result = await maybeUpdateProfile(dataDir, provider, [
       { role: "user", content: "今天天气不错" },
     ]);
     expect(result.updated).toBe(false);
-    expect(result.changes).toBeUndefined();
+    // v0.20：changes 可能为空数组（sync 仍跑，但不计入 LLM-driven 变化）
+    expect(result.changes?.length ?? 0).toBe(0);
   });
 
   it("提取失败时（不是 JSON）静默返回 updated=false", async () => {
@@ -575,11 +567,11 @@ describe("v0.19: 端到端流程 — 用户反馈被自动捕获并应用（不�
     expect(rendered).not.toContain("严格遵守");
   });
 
-  it("用户说'别提我前任' → 已知偏好与禁忌 自动更新", async () => {
+  it("用户说'别提我前任' → 沟通风格 更新（段 4 由 sync 管理）", async () => {
     const dataDir = join(tmpDir, "e2e-taboo");
     const provider = makeJsonProvider(
       JSON.stringify({
-        已知偏好与禁忌: ["别提用户的前任（用户说'别提我前任'）"],
+        沟通风格: "别提用户的前任（用户说'别提我前任'）",
       }),
     );
 
@@ -589,6 +581,8 @@ describe("v0.19: 端到端流程 — 用户反馈被自动捕获并应用（不�
 
     expect(result.updated).toBe(true);
     const profile = await loadProfile(dataDir);
-    expect(profile.sections["已知偏好与禁忌"]).toContain("前任");
+    // v0.20：段 4 已知偏好与禁忌 不再由 LLM 抽取填充，而是从 learner state 聚合
+    // 所以这里只验证段 2 沟通风格 被更新
+    expect(profile.sections["沟通风格"]).toContain("前任");
   });
 });

@@ -1,21 +1,30 @@
 // src/profile.ts
 // 用户画像系统（Profile）。
 //
-// 设计目标：
-// - 单一结构化文档 PROFILE.md，包含 6 个固定段
-// - 每次对话前自动加载，注入到 system prompt
-// - 对话中隐式识别新信息 → 触发融合更新（不覆盖已有事实）
-// - 初次使用时用默认模板初始化
-// - 融合策略：基于段落语义去重 + 时间戳标注 + 冲突时以新信息为准
+// v0.20 重构：消除 profile 孤岛
 //
-// 文件格式（v0.6 起与 personality 统一）：
-//   YAML frontmatter + Markdown body
-//   body 推荐用 6 段 ## 结构（详见 PROFILE_SECTIONS）
-//   也支持自由格式 body——sections 留空，meta 仍然完整
+// profile 不再是独立抽取 + append-only 的文档。
+// 它是**多个数据源的视图**：
+//   - 段 1 基本信息：LLM 抽取（结构化覆盖式）
+//   - 段 2 沟通风格：LLM 抽取（带日期的覆盖式）
+//   - 段 3 关注议题：从 memory/event/*.md 聚合
+//   - 段 4 已知偏好与禁忌：从 learner.positivePatterns + negativePatterns 聚合
+//   - 段 5 长期情绪基线：从 memory/emotion/*.md 聚合（trigger + manifestation）
+//   - 段 6 近期变化：从 timeline 最近 7 天 + 最近 memory 写入
+//
+// 写入策略：
+//   - LLM 抽取只更新段 1/2/6
+//   - 段 3/4/5 永远从数据源同步，不让 LLM 重复抽取
+//   - 段 1 改成结构化覆盖（识别 "字段：值"，替换占位）
+//   - 段 2 改成"最新覆盖"风格（带日期，方便看历史）
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import type { ModelProvider } from "./provider.ts";
+import type { LearnerState } from "./persona-learner.ts";
+import { loadLearner } from "./persona-learner.ts";
+import { scanMemory, type MemoryFile } from "./memory.ts";
+import type { Timeline } from "./timeline.ts";
 import {
   parseContextFile,
   serializeContextFile,
@@ -30,14 +39,12 @@ import {
 // 类型定义
 // =====================================================================
 
-// Re-export 供外部使用
 export const PROFILE_SECTIONS = CONTEXT_PROFILE_SECTIONS;
 export { PROFILE_FILENAME, getProfilePath };
 export type { ProfileSection };
 
-/** 用户画像的结构化表示。 */
 export type Profile = {
-  /** 6 段内容（key = 段落名，value = 段落正文）；如果文件不含 6 段结构，全为空字符串 */
+  /** 6 段内容（key = 段落名，value = 段落正文） */
   sections: Record<ProfileSection, string>;
   /** 文件路径 */
   path: string;
@@ -50,16 +57,13 @@ export type Profile = {
 };
 
 // =====================================================================
-// 默认模板（首次使用时初始化）
+// 默认模板
 // =====================================================================
 
-/**
- * 默认模板纯 Markdown 格式（v0.8 起，无 YAML frontmatter）。
- */
 const DEFAULT_META: ContextFileMeta = {
   name: "用户画像",
-  version: "0.5",
-  description: "用户长期画像，从历史对话累积",
+  version: "0.6",
+  description: "用户长期画像，多数据源整合视图",
   author: "emotalk",
   kind: "profile",
 };
@@ -78,66 +82,75 @@ const DEFAULT_BODY = `> 自动从对话中累积维护。每次对话开始前�
 - （暂无——等用户表现出偏好后再填）
 
 ## 3. 关注议题
-- （暂无——观察用户反复提到的话题）
+- （暂无——从 memory/event 自动聚合）
 
 ## 4. 已知偏好与禁忌
-- （暂无——等用户明确表达喜欢/不喜欢）
+- （暂无——从反馈学习自动聚合）
 
 ## 5. 长期情绪基线
-- （暂无——观察用户日常情绪水平）
+- （暂无——从 memory/emotion 自动聚合）
 
 ## 6. 近期变化
-- （暂无——积累 3 天以上对话后开始填）`;
+- （暂无——从 timeline 最近 7 天自动聚合）`;
 
 // =====================================================================
 // 加载 / 保存
 // =====================================================================
 
 /**
- * 加载 profile。如果文件不存在，自动用默认模板初始化。
+ * 加载 profile，自动从其他数据源同步段 3/4/5/6。
  *
- * 容错策略：
- * - 文件不存在 → 用默认模板初始化
- * - 文件无 frontmatter → 自动补默认 meta
- * - 文件无 6 段结构 → sections 全空字符串
- *
- * @param dataDir  data 根目录（默认是 ./data）
- * @returns 加载好的 Profile
+ * @param dataDir  data 根目录
+ * @param options.userId  用户 ID（用于加载 learner state）
+ * @param options.memoryDir  memory 目录
+ * @param options.timeline  Timeline 实例
  */
-export async function loadProfile(dataDir: string): Promise<Profile> {
+export async function loadProfile(
+  dataDir: string,
+  options?: {
+    userId?: string;
+    memoryDir?: string;
+    timeline?: Timeline;
+  },
+): Promise<Profile> {
   const path = getProfilePath(dataDir);
   const dir = path.replace(/[/\\][^/\\]+$/, "");
 
-  // 不存在则初始化
   if (!existsSync(path)) {
     await mkdir(dir, { recursive: true });
     const initialContent = serializeContextFile(DEFAULT_META, DEFAULT_BODY);
     await writeFile(path, initialContent, "utf-8");
     const ctx = parseContextFile(initialContent, path);
-    return {
+    const profile: Profile = {
       sections: ctx.structuredSections ?? emptySections(),
       path,
       updatedAt: Date.now(),
       initialized: true,
       meta: ctx.meta,
     };
+    await syncFromSources(profile, dataDir, options);
+    await saveProfile(profile);
+    return profile;
   }
 
-  // 存在则读取
   const raw = await readFile(path, "utf-8");
   const ctx = parseContextFile(raw, path);
   const stats = await import("node:fs/promises").then((fs) => fs.stat(path));
-  return {
+  const profile: Profile = {
     sections: ctx.structuredSections ?? emptySections(),
     path,
     updatedAt: stats.mtimeMs,
     initialized: false,
     meta: ctx.meta,
   };
+  await syncFromSources(profile, dataDir, options);
+  // sync 后写盘（把数据源整合结果落盘，避免每次都重新聚合）
+  await saveProfile(profile);
+  return profile;
 }
 
 /**
- * 保存 profile 到磁盘。
+ * 把 profile 写入磁盘。
  */
 export async function saveProfile(profile: Profile): Promise<void> {
   const body = serializeProfileBody(profile.sections);
@@ -153,7 +166,7 @@ function serializeProfileBody(
     "# 用户画像（Profile）",
     "",
     "> 自动从对话中累积维护。每次对话开始前注入到 system prompt。",
-    "> 段顺序固定，不要改动；内容用 Markdown 列表/小标题组织。",
+    "> 段 3/4/5/6 由其他数据源自动同步，段 1/2 由 LLM 抽取更新。",
     "",
   ];
   PROFILE_SECTIONS.forEach((name, i) => {
@@ -172,29 +185,124 @@ function emptySections(): Record<ProfileSection, string> {
 }
 
 // =====================================================================
+// 同步：从其他数据源填充段 3/4/5/6
+// =====================================================================
+
+/**
+ * 从其他数据源填充段 3/4/5/6：
+ * - 段 3 关注议题：从 memory/event/*.md 聚合
+ * - 段 4 已知偏好与禁忌：从 learner.positivePatterns + negativePatterns
+ * - 段 5 长期情绪基线：从 memory/emotion/*.md 聚合
+ * - 段 6 近期变化：从 timeline 最近 7 天
+ *
+ * 失败容错：任何数据源失败都不抛异常。
+ */
+export async function syncFromSources(
+  profile: Profile,
+  dataDir: string,
+  options?: {
+    userId?: string;
+    memoryDir?: string;
+    timeline?: Timeline;
+  },
+): Promise<void> {
+  const memoryDir = options?.memoryDir ?? joinSafe(dataDir, "memory");
+  const userId = options?.userId ?? "default";
+  const learner = loadLearner(dataDir, userId);
+
+  // 段 3：从 memory/event/*.md 聚合
+  try {
+    const memories = await scanMemory(memoryDir);
+    const events = memories.filter((m) => m.subtype === "event");
+    if (events.length > 0) {
+      const lines = events
+        .sort((a, b) => b.mtimeMs - a.mtimeMs)
+        .map((e) => `- **${e.name}** — ${e.description || e.body.slice(0, 80)}`);
+      profile.sections["关注议题"] = lines.join("\n");
+    }
+  } catch {
+    // 静默
+  }
+
+  // 段 4：从 learner.positivePatterns + negativePatterns 聚合
+  try {
+    const lines: string[] = [];
+    if (learner.positivePatterns.length > 0) {
+      lines.push("**用户喜欢的：**");
+      for (const p of learner.positivePatterns.slice(-10)) {
+        lines.push(`- ${p}`);
+      }
+    }
+    if (learner.negativePatterns.length > 0) {
+      lines.push("");
+      lines.push("**用户不喜欢的：**");
+      for (const p of learner.negativePatterns.slice(-10)) {
+        lines.push(`- ${p}`);
+      }
+    }
+    if (lines.length > 0) {
+      profile.sections["已知偏好与禁忌"] = lines.join("\n");
+    }
+  } catch {
+    // 静默
+  }
+
+  // 段 5：从 memory/emotion/*.md 聚合 trigger + manifestation
+  try {
+    const memories = await scanMemory(memoryDir);
+    const emotions = memories.filter((m) => m.subtype === "emotion");
+    if (emotions.length > 0) {
+      const lines = emotions
+        .sort((a, b) => b.mtimeMs - a.mtimeMs)
+        .map((e) => {
+          const trigger = e.fields.trigger;
+          const manifest = e.fields.manifestation;
+          const parts = [`**${e.name}**`];
+          if (trigger) parts.push(`触发：${trigger}`);
+          if (manifest) parts.push(`表现：${manifest}`);
+          return `- ${parts.join("；")}`;
+        });
+      profile.sections["长期情绪基线"] = lines.join("\n");
+    }
+  } catch {
+    // 静默
+  }
+
+  // 段 6：从 timeline 最近 7 天
+  if (options?.timeline) {
+    try {
+      const summary = await options.timeline.renderSummary(10);
+      profile.sections["近期变化"] = summary;
+    } catch {
+      // 静默
+    }
+  }
+}
+
+function joinSafe(parent: string, child: string): string {
+  // 跨平台 join
+  return parent.endsWith("/") || parent.endsWith("\\")
+    ? parent + child
+    : parent + "/" + child;
+}
+
+// =====================================================================
 // 渲染（注入到 system prompt）
 // =====================================================================
 
 /**
- * 把 profile 渲染成一段紧凑的 Markdown 文本（用于 system prompt 注入）。
+ * 把 profile 渲染成紧凑 markdown 文本（用于 system prompt 注入）。
  *
  * 设计原则：
- * - 跳过空段落（避免冗余）
- * - 加漂移警告（profile 是历史快照，与当前情绪可能不一致）
- * - 总长度控制在合理范围（不超过 ~1500 字）
- */
-/**
- * 把 profile 渲染成一段紧凑的 Markdown 文本（用于 system prompt 注入）。
- *
- * v0.19：不再从 profile 自动派生"行为提醒"硬指令。
- * 用户的偏好应该通过反馈学习循环（feedback-detector + persona-learner）
- * 从对话中自然积累，而不是由开发者 regex 强制。
+ * - 跳过空段落
+ * - 加漂移警告
+ * - 总体保持紧凑（不超过 ~1500 字）
  */
 export function renderProfileForPrompt(profile: Profile): string {
   const lines: string[] = [];
   lines.push("## 用户画像（Profile）");
   lines.push("");
-  lines.push("> 用户长期画像，从历史对话累积而来。**这是历史快照，不是当前状态。**");
+  lines.push("> 用户长期画像，多数据源整合视图（v0.20+）。**这是历史快照，不是当前状态。**");
   lines.push("> 用户当下的情绪/态度以本轮 side-query 识别结果为准，不要被画像里的旧印象绑架。");
   lines.push("");
 
@@ -218,50 +326,36 @@ export function renderProfileForPrompt(profile: Profile): string {
 }
 
 // =====================================================================
-// 隐式识别 + 融合更新
+// 隐式识别 + 融合更新（v0.20：只更新段 1/2/6）
 // =====================================================================
 
 /**
- * 从单次对话中提取可能要更新到 profile 的信息。
- *
- * 调用 provider 一次，让模型从最近 N 轮对话里抽取：
- * - 用户新透露的基本信息（昵称、职业等）
- * - 表现出的沟通风格偏好
- * - 提到的话题
- * - 明确表达的喜欢/不喜欢
- * - 情绪模式
- * - 近期变化信号
- *
- * 返回的 JSON 严格按 6 段组织，便于后续融合。
+ * LLM 抽取的 prompt（v0.20：精简，只让 LLM 写段 1/2/6）。
  */
-const PROFILE_EXTRACT_PROMPT = `你是用户画像更新助手。下面是一段对话历史。请从中提取**新增或变化**的用户信息。
+const PROFILE_EXTRACT_PROMPT = `你是用户画像更新助手。下面是一段对话历史。
 
-**严格按以下 6 段输出 JSON**（没有信息就返回空字符串 "" 或空数组）：
+**v0.20：只更新三段**（其他段由系统从其他数据源自动同步，不需要你写）：
 
 {
-  "基本信息": "新增/变化的事实，例如 '昵称：小阳' 或 '职业：前端工程师'",
+  "基本信息": "结构化字段，用「字段：值」格式。多行用 \\n 分隔。例：'职业：前端工程师\\n所在地：上海'",
   "沟通风格": "新增/变化的偏好，例如 '喜欢简洁回复（≤3句）' 或 '讨厌被总结教训'",
-  "关注议题": ["新提到的反复话题1", "新话题2"],
-  "已知偏好与禁忌": ["新增的喜欢/不喜欢条目"],
-  "长期情绪基线": "新增的情绪模式描述，例如 '工作日傍晚容易焦虑'",
-  "近期变化": "最近 N 天的新趋势，例如 '最近一周睡眠变差' 或 '情绪比上月平稳'"
+  "近期变化": "最近 N 天的新趋势，例如 '最近一周睡眠变差'"
 }
 
 要求：
-1. **只输出有把握的**——没有明确信号就输出空
-2. **保留用户原话片段**（≤ 30 字）作为证据（放在条目的括号里）
-3. **不要重复已有信息**——只标记新的或变化的
-4. 用第三人称叙述（"用户说..."、"用户表示..."）
-5. 严格 JSON 输出，不要 Markdown 代码块
+1. **严格只输出这三段**，不要输出"关注议题"、"已知偏好"、"长期情绪基线"（那些由系统聚合）
+2. **基本信息必须用「字段：值」格式**（如 "职业：xxx"、"所在地：xxx"、"昵称：xxx"），不要写叙述句
+3. **只输出有把握的**——没有明确信号就输出空字符串
+4. **保留用户原话片段**（≤ 30 字）作为证据（放在条目的括号里）
+5. 用第三人称叙述
+6. 严格 JSON 输出，不要 Markdown 代码块
 
-特别注意这些"明确反馈信号"（confidence 高，优先捕获）：
-- 用户说"我喜欢 X" / "我讨厌 Y" / "别 Z" → 已知偏好与禁忌
-- 用户说"你回得太长了/太短了" / "你说话慢点" → 沟通风格
-- 用户说"叫我 XX" / "别叫我 XX" → 基本信息（称呼）
-- 用户说"别用 emoji" / "别教训我" / "别说教" → 已知偏好与禁忌
-- 用户纠正你的某句话 / 否定你的回应 → 已知偏好与禁忌（你踩到了雷）
-- 用户多次提到同一话题 → 关注议题
-- 用户聊到自己工作/生活细节 → 基本信息
+特别注意（confidence 高）：
+- 用户说"我喜欢 X" / "我讨厌 Y" / "别 Z" → 沟通风格
+- 用户说"叫我 XX" / "我叫 XX" / "我名字是 XX" → 基本信息（昵称）
+- 用户聊到具体职业、地点、年龄段 → 基本信息
+- 用户纠正你 / 否定你 → 沟通风格
+- 用户提到近期生活变化 → 近期变化
 
 对话如下：
 
@@ -280,15 +374,11 @@ function buildConversationText(
   messages: { role: string; content: string }[],
 ): string {
   return messages
-    .slice(-20) // 只看最近 20 条
+    .slice(-20)
     .map((m, i) => `${i + 1}. [${m.role}] ${m.content}`)
     .join("\n\n");
 }
 
-/**
- * 调用模型从对话中抽取可能要更新的 profile 信息。
- * 如果模型返回的不是有效 JSON，返回空对象（不更新）。
- */
 export async function extractProfileUpdate(
   provider: ModelProvider,
   recentMessages: { role: string; content: string }[],
@@ -305,7 +395,7 @@ export async function extractProfileUpdate(
       params: {
         system: "你是结构化信息抽取助手，严格输出 JSON。",
         messages: [{ role: "user", content: prompt }],
-        maxTokens: 800,
+        maxTokens: 600,
         temperature: 0.2,
       },
     });
@@ -316,7 +406,6 @@ export async function extractProfileUpdate(
     return {};
   }
 
-  // 尝试解析 JSON（容忍 markdown 包裹）
   const cleaned = raw
     .trim()
     .replace(/^```(?:json)?\n?/, "")
@@ -330,24 +419,38 @@ export async function extractProfileUpdate(
 }
 
 // =====================================================================
-// 融合策略
+// 融合策略（v0.20 重写）
 // =====================================================================
 
 /**
- * 把抽取到的新信息融合进 profile。
- *
- * 融合策略：
- * - 字符串段（基本信息/沟通风格/长期情绪基线/近期变化）：
- *   - 如果新内容为空，跳过
- *   - 如果旧内容为空，直接用新内容
- *   - 否则：保留旧内容，在末尾追加新内容（带时间戳），不覆盖
- *   - 例外：如果旧内容是 "（暂无）" 或包含 "未知"，直接替换
- *
- * - 列表段（关注议题/已知偏好与禁忌）：
- *   - 去重（规范化后字符串相等视为重复）
- *   - 新条目追加到列表末尾
- *
- * 返回 true 表示有变化（调用方决定是否写盘）。
+ * 解析 "字段：值" 行，返回 Map<字段, 值>。
+ */
+function parseFieldLines(text: string): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const line of text.split("\n")) {
+    const m = line.match(/^-?\s*(\S+?)\s*[:：]\s*(.+)$/);
+    if (m) map.set(m[1].trim(), m[2].trim());
+  }
+  return map;
+}
+
+/**
+ * 把字段 Map 序列化回 markdown 行。
+ */
+function serializeFieldLines(map: Map<string, string>, prefix = "- "): string {
+  const lines: string[] = [];
+  for (const [k, v] of map) {
+    lines.push(`${prefix}${k}：${v}`);
+  }
+  return lines.join("\n");
+}
+
+/**
+ * v0.20 融合策略：
+ * - 段 1 基本信息：结构化字段更新（识别 "字段：值"，新值覆盖旧值；空值不动）
+ * - 段 2 沟通风格：保留 append（带日期），但有 ≤30 行的滚动上限
+ * - 段 6 近期变化：保留 append（带日期）
+ * - 段 3/4/5：syncFromSources 在 loadProfile 时已经写过，不再处理
  */
 export function mergeProfileUpdate(
   profile: Profile,
@@ -357,172 +460,156 @@ export function mergeProfileUpdate(
   let changed = false;
   const dateStr = now.toISOString().slice(0, 10);
 
-  // 字符串段
-  const stringSections: ProfileSection[] = [
-    "基本信息",
-    "沟通风格",
-    "长期情绪基线",
-    "近期变化",
-  ];
+  // 段 1 基本信息：结构化字段更新
+  const basicIncoming = update["基本信息"];
+  if (basicIncoming && basicIncoming.trim()) {
+    const current = profile.sections["基本信息"] ?? "";
+    const currentFields = parseFieldLines(current);
+    const newFields = parseFieldLines(basicIncoming);
+    let basicChanged = false;
+    for (const [k, v] of newFields) {
+      // 新值非"未知"/"（暂无）"才覆盖
+      if (!v || v === "未知" || v === "（暂无）") continue;
+      if (currentFields.get(k) !== v) {
+        currentFields.set(k, v);
+        basicChanged = true;
+      }
+    }
+    if (basicChanged) {
+      // 保留模板字段顺序
+      const orderedLines: string[] = [];
+      const templateKeys = ["昵称", "性别", "年龄段", "职业", "所在地"];
+      for (const k of templateKeys) {
+        const v = currentFields.get(k);
+        orderedLines.push(`- ${k}：${v ?? "未知"}`);
+      }
+      // 其他字段
+      for (const [k, v] of currentFields) {
+        if (templateKeys.includes(k)) continue;
+        orderedLines.push(`- ${k}：${v}`);
+      }
+      profile.sections["基本信息"] = orderedLines.join("\n");
+      changed = true;
+    }
+  }
 
-  for (const section of stringSections) {
-    const incomingRaw = update[section];
-    // LLM 偶尔会返回数组形式，规范化成字符串
-    const incoming = Array.isArray(incomingRaw)
-      ? incomingRaw.join("; ")
-      : incomingRaw;
-    if (!incoming || !incoming.trim()) continue;
-
-    const current = profile.sections[section] || "";
+  // 段 2 沟通风格：append 风格 + 滚动上限（空段首次也带日期）
+  const styleIncoming = update["沟通风格"];
+  if (styleIncoming && styleIncoming.trim()) {
+    const current = profile.sections["沟通风格"] ?? "";
+    const incoming = styleIncoming.trim();
     const isEmpty =
       !current.trim() ||
-      current.includes("未知") ||
-      current.trim() === "（暂无）" ||
-      current.trim().startsWith("（暂无");
+      current === "（暂无）" ||
+      current.startsWith("（暂无");
 
-    if (isEmpty) {
-      profile.sections[section] = incoming.trim();
-      changed = true;
+    const isDup = current.replace(/\s+/g, "").includes(incoming.replace(/\s+/g, "").slice(0, 30));
+    if (!isEmpty && isDup) {
+      // 重复，跳过
     } else {
-      // 追加而非覆盖（带日期前缀）
-      const normalizedIncoming = incoming.trim().replace(/\s+/g, "");
-      const normalizedCurrent = current.replace(/\s+/g, "");
-      if (normalizedCurrent.includes(normalizedIncoming.slice(0, 20))) {
-        continue;
-      }
-      const appended = `${current}\n- (${dateStr}) ${incoming.trim()}`;
-      profile.sections[section] = appended;
+      const lines = isEmpty ? [] : current.split("\n").filter((l) => l.trim());
+      lines.push(`- (${dateStr}) ${incoming}`);
+      const trimmed = lines.slice(-30);
+      profile.sections["沟通风格"] = trimmed.join("\n");
       changed = true;
     }
   }
 
-  // 列表段
-  const listSections: ProfileSection[] = ["关注议题", "已知偏好与禁忌"];
-  for (const section of listSections) {
-    const incoming = update[section];
-    if (!Array.isArray(incoming) || incoming.length === 0) continue;
+  // 段 6 近期变化：append 风格 + 滚动上限（空段首次也带日期）
+  const recentIncoming = update["近期变化"];
+  if (recentIncoming && recentIncoming.trim()) {
+    const current = profile.sections["近期变化"] ?? "";
+    const incoming = recentIncoming.trim();
+    const isEmpty =
+      !current.trim() ||
+      current === "（暂无）" ||
+      current.startsWith("（暂无");
 
-    const current = profile.sections[section] || "";
-    const existingItems = current
-      .split("\n")
-      .map((line) => line.replace(/^-\s*/, "").trim())
-      .filter(Boolean);
-
-    const newItems: string[] = [];
-    for (const item of incoming) {
-      const trimmed = String(item).trim();
-      if (!trimmed) continue;
-      const normalized = trimmed.replace(/\s+/g, "");
-      const isDup = existingItems.some(
-        (e) => e.replace(/\s+/g, "") === normalized,
-      );
-      if (!isDup) newItems.push(trimmed);
+    const isDup = current.replace(/\s+/g, "").includes(incoming.replace(/\s+/g, "").slice(0, 30));
+    if (!isEmpty && isDup) {
+      // 重复
+    } else {
+      const lines = isEmpty ? [] : current.split("\n").filter((l) => l.trim());
+      lines.push(`- (${dateStr}) ${incoming}`);
+      const trimmed = lines.slice(-30);
+      profile.sections["近期变化"] = trimmed.join("\n");
+      changed = true;
     }
-
-    if (newItems.length === 0) continue;
-
-    const updated = [...existingItems, ...newItems].join("\n- ");
-    profile.sections[section] = updated.startsWith("- ") ? updated : `- ${updated}`;
-    changed = true;
   }
+
+  // 段 3/4/5 由 syncFromSources 管理，不在 merge 中处理（保留类型兼容）
 
   return changed;
 }
 
 // =====================================================================
-// 一站式入口（loop.ts 用）
+// 一站式入口
 // =====================================================================
 
 /**
- * 一站式：从对话中抽取 + 融合 + 保存。
+ * 完整流程：抽取 → 融合段 1/2/6 → 从数据源同步 3/4/5/6 → 保存。
  *
- * 关键改进：自动从 update 中**挑出真正有信息量的**条目，写入 profile。
- *
- * "有信息量"的判断（粗启发式，避免 LLM 误判时污染 profile）：
- * - 包含用户原话引用（括号里）→ 高质量
- * - 包含具体数字 / 时间 / 名字 → 中质量
- * - 长度 > 5 字符 → 否则可能是空
- * - 不重复已有内容（依赖 mergeProfileUpdate 的去重）
+ * @param dataDir data 根目录
+ * @param options.memoryDir  memory 目录
+ * @param options.timeline  Timeline 实例（用于段 6）
  */
 export async function maybeUpdateProfile(
   dataDir: string,
   provider: ModelProvider,
   recentMessages: { role: string; content: string }[],
+  options?: {
+    userId?: string;
+    memoryDir?: string;
+    timeline?: Timeline;
+  },
 ): Promise<{
   updated: boolean;
   profile: Profile;
-  /** 实际被写入的条目（用于 REPL 显示"自动更新了什么"） */
   changes?: { section: ProfileSection; value: string }[];
 }> {
   try {
-    const profile = await loadProfile(dataDir);
+    const profile = await loadProfile(dataDir, options);
     const update = await extractProfileUpdate(provider, recentMessages);
-    if (Object.keys(update).length === 0) {
-      return { updated: false, profile };
-    }
 
-    if (process.env.EC_DEBUG_PROFILE) {
-      console.log(
-        `[profile.maybeUpdate] update keys: ${Object.keys(update).join(", ")}`,
-      );
-    }
-
-    // 记录"实际新增的"（过滤掉空 / 重复 / 太短）
-    // 注意：PROFILE_SECTIONS 是 readonly tuple，`in` 操作符行为不可靠，
-    // 所以转成普通数组后再 includes 检查
-    const validSections = new Set<string>(PROFILE_SECTIONS as readonly string[]);
-    const sectionsAffected: ProfileSection[] = Object.keys(update).filter(
-      (k): k is ProfileSection => validSections.has(k),
-    );
-
-    if (process.env.EC_DEBUG_PROFILE) {
-      console.log(
-        `[profile.maybeUpdate] sectionsAffected: ${sectionsAffected.join(", ")}`,
-      );
-    }
+    // 段 1/2/6 由 LLM 抽取填充
     const sectionsBefore = new Map<ProfileSection, string>();
-    for (const s of sectionsAffected) {
+    for (const s of ["基本信息", "沟通风格", "近期变化"] as ProfileSection[]) {
       sectionsBefore.set(s, profile.sections[s] ?? "");
     }
 
-    const changed = mergeProfileUpdate(profile, update);
-    if (changed) {
+    let changed = false;
+    if (Object.keys(update).length > 0) {
+      changed = mergeProfileUpdate(profile, update);
+    }
+
+    // 段 3/4/5/6 永远从数据源同步（每次都重写，但不计入"changed"）
+    await syncFromSources(profile, dataDir, options);
+
+    if (changed || true /* always save after sync */) {
       await saveProfile(profile);
 
       // 收集"实际变化"
       const changes: { section: ProfileSection; value: string }[] = [];
-      for (const s of sectionsAffected) {
+      for (const s of ["基本信息", "沟通风格", "近期变化"] as ProfileSection[]) {
         const after = profile.sections[s] ?? "";
         const before = sectionsBefore.get(s) ?? "";
-        if (process.env.EC_DEBUG_PROFILE) {
-          console.log(
-            `[profile.changes] section=${s} after != before? ${after !== before}; after len=${after.length}, before len=${before.length}`,
-          );
-        }
         if (after !== before) {
-          // 提取"新追加"的部分（取最后一行）
-          const newLine = after
+          const newLines = after
             .split("\n")
             .map((l) => l.trim())
-            .filter((l) => l && !before.includes(l))
-            .pop();
-          if (process.env.EC_DEBUG_PROFILE) {
-            console.log(
-              `[profile.changes] section=${s} newLine=${newLine?.slice(0, 50)}`,
-            );
-          }
-          if (newLine) {
-            changes.push({ section: s, value: newLine });
+            .filter((l) => l && !before.includes(l));
+          if (newLines.length > 0) {
+            changes.push({ section: s, value: newLines.join(" | ") });
           }
         }
       }
 
-      return { updated: true, profile, changes };
+      return { updated: changed, profile, changes };
     }
     return { updated: false, profile };
   } catch (e) {
     console.error(`[profile] 更新失败:`, (e as Error).message);
-    const profile = await loadProfile(dataDir);
+    const profile = await loadProfile(dataDir, options);
     return { updated: false, profile };
   }
 }

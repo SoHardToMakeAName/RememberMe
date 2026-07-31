@@ -173,7 +173,11 @@ async function runTurn(
         ...messages.slice(-6),
         { role: "assistant" as const, content: fullText.slice(0, 500) },
       ];
-      const result = await maybeUpdateProfile(DATA_DIR, state.provider, recent);
+      const result = await maybeUpdateProfile(DATA_DIR, state.provider, recent, {
+        userId: state.userId,
+        memoryDir: MEMORY_DIR,
+        timeline: state.timeline,
+      });
       if (result.updated) profileUpdated = true;
     } catch {
       // ignore
