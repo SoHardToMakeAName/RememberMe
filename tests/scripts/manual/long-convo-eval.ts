@@ -1,5 +1,5 @@
 // tests/scripts/manual/long-convo-eval.ts
-// 多轮长对话效果评估脚本（100 轮版）
+// 多轮长对话效果评估脚本（500 轮压测版）
 //
 // 目的：实测 EmoTalk 主对话循环在超长对话下的真实表现与稳定性
 // 不修改 src/ 任何文件，所有数据隔离到临时目录
@@ -113,7 +113,7 @@ const POOL: Pool[] = [
 ];
 
 // =====================================================================
-// 把池子翻成 100 轮（4 轮循环，每轮 cycle 内做轻微改写）
+// 把池子翻成 500 轮（20 轮循环，每轮 cycle 内做轻微改写）
 // =====================================================================
 
 function rewrite(base: string, cycle: number, idx: number): string {
@@ -146,16 +146,17 @@ function rewrite(base: string, cycle: number, idx: number): string {
 }
 
 const SCRIPT: Pool[] = [];
-const CYCLE_COUNT = 4; // 30 * 3 + 10 = 100?  25 * 4 = 100
+const CYCLE_COUNT = 20; // 25 * 20 = 500
 const POOL_FOR_100 = 25;
-// 拿前 25 条循环 4 次
+const TOTAL_TURNS = POOL.length * CYCLE_COUNT; // =500（脚本展开后总轮数）
+// 拿前 25 条循环 20 次
 for (let c = 0; c < CYCLE_COUNT; c++) {
   for (let i = 0; i < POOL_FOR_100; i++) {
     const base = POOL[i % POOL_FOR_100];
     SCRIPT.push({ user: rewrite(base.user, c, i), expect: base.expect });
   }
 }
-// 100 条确定
+// 500 条确定
 
 // =====================================================================
 // 日志结构
@@ -239,7 +240,7 @@ async function main() {
   const startWall = Date.now();
 
   // REPL 同款 compact 配置（默认 triggerAt=20 / recentKept=6）
-  // 100 轮必然触发多轮 compact
+  // 500 轮必然触发多轮 compact
   const compactConfig = {
     triggerAt: 20,
     recentKept: 6,
@@ -467,7 +468,7 @@ function writeReport(log: any) {
   const max = Math.max(...lengths);
   const min = Math.min(...lengths);
 
-  // === 区间统计：每 10 轮一个区间 ===
+  // === 区间统计：每 50 轮一个区间 ===
   const buckets: Array<{
     range: string;
     turns: number;
@@ -479,7 +480,7 @@ function writeReport(log: any) {
     memExtractCount: number;
     emotionHist: Record<string, number>;
   }> = [];
-  const BUCKET = 10;
+  const BUCKET = 50;
   for (let i = 0; i < turns.length; i += BUCKET) {
     const slice = turns.slice(i, i + BUCKET);
     const l = slice.map((t) => t.responseLength);
@@ -581,12 +582,12 @@ function writeReport(log: any) {
 
   // === 写出报告 ===
   const L: string[] = [];
-  L.push(`# 多轮长对话效果评估报告（100 轮）`);
+  L.push(`# 多轮长对话效果评估报告（500 轮）`);
   L.push(``);
   L.push(`> 生成时间：${log.finishedAt}`);
   L.push(`> 隔离目录：${log.evalDir}（跑完已清理）`);
   L.push(`> Provider：${log.provider.name} / ${log.provider.model}`);
-  L.push(`> 总轮数：${turns.length}（脚本为 4 轮循环 × 25 条用户消息池）`);
+  L.push(`> 总轮数：${turns.length}（脚本为 20 轮循环 × 25 条用户消息池）`);
   L.push(`> 完成：${okCount} 轮，失败：${log.errors.length} 轮`);
   L.push(`> 总耗时：${(log.totalWallMs / 1000).toFixed(1)}s（平均每轮 ${(avgMs / 1000).toFixed(1)}s）`);
   L.push(`> 估算 API 调用次数：约 ${log.totalApiCallsApprox} 次`);
@@ -616,8 +617,8 @@ function writeReport(log: any) {
   L.push(`- Timeline 条目：${log.timelineAfterCount} 条`);
   L.push(``);
 
-  // 1. 响应字数分布（每 10 轮一个桶）
-  L.push(`## 1. 响应字数分布（每 10 轮一个区间）`);
+  // 1. 响应字数分布（每 50 轮一个桶）
+  L.push(`## 1. 响应字数分布（每 50 轮一个区间）`);
   L.push(``);
   L.push(`| 区间 | 轮数 | 均值 | min | max | compact | profile+ | mem+ | 主情绪 |`);
   L.push(`| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |`);
@@ -637,7 +638,7 @@ function writeReport(log: any) {
   const last10 = buckets[buckets.length - 1]?.avgLen ?? 0;
   const drift = last10 - first10;
   L.push(
-    `**字数漂移**：前 10 轮均值 ${first10.toFixed(0)} 字 → 后 10 轮均值 ${last10.toFixed(0)} 字（${drift > 0 ? "+" : ""}${drift.toFixed(0)} 字）`,
+    `**字数漂移**：前 50 轮均值 ${first10.toFixed(0)} 字 → 后 50 轮均值 ${last10.toFixed(0)} 字（${drift > 0 ? "+" : ""}${drift.toFixed(0)} 字）`,
   );
   L.push(``);
 
@@ -732,7 +733,7 @@ function writeReport(log: any) {
     }
     L.push(``);
   } else {
-    L.push(`本次 100 轮对话未触发 compact（异常，应至少触发 5+ 次）。`);
+    L.push(`本次 500 轮对话未触发 compact（异常，应至少触发 25+ 次）。`);
     L.push(``);
   }
 
@@ -774,7 +775,7 @@ function writeReport(log: any) {
 
   L.push(`### 8.1 回复长度收敛/发散`);
   if (Math.abs(drift) < 50) {
-    L.push(`- 字数漂移小（${drift.toFixed(0)} 字），100 轮内没出现明显"越说越长/越短"的失控。`);
+    L.push(`- 字数漂移小（${drift.toFixed(0)} 字），500 轮内没出现明显"越说越长/越短"的失控。`);
   } else if (drift > 50) {
     L.push(`- 字数在长对话中**变长**了（+${drift.toFixed(0)} 字），需要看是否在合理范围内。`);
   } else {
@@ -799,7 +800,7 @@ function writeReport(log: any) {
   L.push(`### 8.3 Profile 填充情况`);
   const filled = Object.values(sectionStatus).filter((s) => s.filled).length;
   if (filled >= 4) {
-    L.push(`- 100 轮下来 Profile 填充 ${filled}/6 段，符合预期（工作/伴侣/猫/催婚/昵称/偏好 等信号充足）。`);
+    L.push(`- 500 轮下来 Profile 填充 ${filled}/6 段，符合预期（工作/伴侣/猫/催婚/昵称/偏好 等信号充足）。`);
   } else if (filled >= 2) {
     L.push(`- Profile 填充 ${filled}/6 段，部分段未触发（可能是 LLM 抽取未覆盖或 fire-and-forget 漏掉）。`);
   } else {
@@ -824,13 +825,13 @@ function writeReport(log: any) {
   L.push(`### 8.5 Compact 行为`);
   if (compactTriggers.length >= 3) {
     L.push(
-      `- Compact 触发 ${compactTriggers.length} 次（${compactTriggers.map((c) => c.turn).join(", ")} 轮），符合 100 轮对话压力测试预期。`,
+      `- Compact 触发 ${compactTriggers.length} 次（${compactTriggers.map((c) => c.turn).join(", ")} 轮），符合 500 轮对话压力测试预期。`,
     );
     L.push(`- 总节省约 ${totalSaved} tokens，避免主对话 prompt 撑爆。`);
   } else if (compactTriggers.length > 0) {
-    L.push(`- Compact 触发 ${compactTriggers.length} 次（偏少；按 20 条 triggerAt + 100 轮循环应触发约 5 次）。`);
+    L.push(`- Compact 触发 ${compactTriggers.length} 次（偏少；按 20 条 triggerAt + 500 轮循环应触发约 25 次）。`);
   } else {
-    L.push(`- Compact **未触发**，异常——100 轮对话 history 必然超过 20 条。`);
+    L.push(`- Compact **未触发**，异常——500 轮对话 history 必然超过 20 条。`);
   }
   L.push(``);
 
@@ -859,7 +860,7 @@ function writeReport(log: any) {
   if (forgetSignals.length > 0) {
     L.push(`- AI 在 ${forgetSignals.length} 轮出现"忘了/不记得"信号（轮次：${forgetSignals.slice(0, 10).join(", ")}…）。`);
   } else {
-    L.push(`- AI 在 100 轮中未出现"忘了/不记得"的上下文丢失信号。`);
+    L.push(`- AI 在 500 轮中未出现"忘了/不记得"的上下文丢失信号。`);
   }
   // 检测循环：相邻回复几乎完全相同
   let loopCount = 0;
@@ -876,7 +877,7 @@ function writeReport(log: any) {
   L.push(``);
 
   L.push(`### 8.8 "懂用户"程度（综合判断）`);
-  L.push(`- 偏好植入（"别回太长" "别总说教" "叫我老周" "直接点"）在 100 轮中**至少重复 4 次**。`);
+  L.push(`- 偏好植入（"别回太长" "别总说教" "叫我老周" "直接点"）在 500 轮中**至少重复 20 次**。`);
   L.push(`- 若 learner 沉淀的 positive/negative patterns 里有以上关键词，则说明反馈学习真正生效。`);
   L.push(`- 若 AI 回复中后期明显变短/不再说教/使用了"老周"称呼，则说明 prompt 实际用上了 learner 沉淀。`);
   L.push(``);
@@ -933,7 +934,7 @@ function printSummary(log: any) {
   const mem = log.memoryAfter;
   const lr = log.learnerAfter;
 
-  console.log(`\n══════ 100 轮长对话评估结果摘要 ══════`);
+  console.log(`\n══════ 500 轮长对话评估结果摘要 ══════`);
   console.log(`Provider: ${log.provider.name} / ${log.provider.model}`);
   console.log(`完成: ${ok}/${turns.length} 轮（失败 ${log.errors.length}）`);
   console.log(`总耗时: ${(log.totalWallMs / 1000).toFixed(1)}s / 估算 API: ${log.totalApiCallsApprox} 次`);
