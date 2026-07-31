@@ -1,7 +1,7 @@
 {
-  "evalDir": "/tmp/emotalk-eval-1785469890589",
-  "startedAt": "2026-07-31T03:51:30.594Z",
-  "finishedAt": "2026-07-31T04:13:57.275Z",
+  "evalDir": "/tmp/emotalk-eval-1785478220308",
+  "startedAt": "2026-07-31T06:10:20.312Z",
+  "finishedAt": "2026-07-31T06:38:14.506Z",
   "provider": {
     "name": "anthropic",
     "model": "deepseek-v4-flash"
@@ -13,18 +13,18 @@
       "userInputShort": "嗨，今天又有事，想跟你吐槽。",
       "userInputFull": "嗨，今天又有事，想跟你吐槽。",
       "expectEmotion": "neutral",
-      "responseText": "哎，听你这么说就知道今天肯定不太顺心。来吧，我在这儿听着呢，慢慢说，发生什么事了？",
-      "responseLength": 41,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "今天遇到不顺利的事",
+      "responseText": "哎，欢迎吐槽！我这正好有茶（虚拟的），你有事尽管倒出来。今天碰上什么事了？先说说，我听着。",
+      "responseLength": 45,
+      "detectedEmotion": "anger",
+      "detectedIntensity": 0.4,
+      "detectedTrigger": "今天又有事想吐槽",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 3575,
+      "wallMs": 4589,
       "historyLen": 2
     },
     {
@@ -33,19 +33,25 @@
       "userInputShort": "我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "userInputFull": "我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "expectEmotion": "anger",
-      "responseText": "这也太突然了，说改就改，完全不给人准备的时间，难怪你觉得离谱。这种临时加码的滋味确实不好受。\n\n你先吐吐槽吧——你是气他没跟你提前商量，还是担心时间太紧做不完？",
-      "responseLength": 80,
+      "responseText": "这也太离谱了吧。一个月的项目压缩到三天？这哪是排期，这是临时拍脑袋吧。\n\n你先说说，这个项目之前有没有任何铺垫？还是leader周一刚想起来就直接扔过来的？你们是怎么聊的，表达过不合理的意见吗？",
+      "responseLength": 97,
       "detectedEmotion": "anger",
       "detectedIntensity": 0.75,
-      "detectedTrigger": "领导临时安排紧急项目",
+      "detectedTrigger": "leader 临时提前项目期限",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
-      "memoryExtracted": [],
-      "wallMs": 10343,
-      "historyLen": 2
+      "memoryExtracted": [
+        {
+          "subtype": "event",
+          "filename": "project-deadline-moved-up-unreasonably",
+          "action": "new"
+        }
+      ],
+      "wallMs": 12402,
+      "historyLen": 4
     },
     {
       "turn": 3,
@@ -53,21 +59,19 @@
       "userInputShort": "别上来就说\"加油\"那种，没用，帮我骂两句吧。",
       "userInputFull": "别上来就说\"加油\"那种，没用，帮我骂两句吧。",
       "expectEmotion": "anger",
-      "responseText": "行，那就陪你骂两句。\n\n领导这安排是真离谱——一个项目说提前就提前，连个缓冲都不给，他以为需求是菜市场买菜呢，张嘴就定？时间是他一句话的事，活儿却是你一个人扛。他也不想想，到时候出问题，背锅的还不是你？\n\n这种人就是典型的只管拍板不管落地，拿别人的时间去填自己的决策漏洞。你心里那口气咽不下去太正常了，换谁都得炸。实在气不过就找信得过的同事吐槽两句，别憋着。",
-      "responseLength": 179,
+      "responseText": "行，那我不说“加油”，说点实在的。\n\n一个月的活儿压到三天，这根本就不是“排期紧”，是负责排期的人根本没把执行的人当人看。你不用为这种安排怀疑自己，三天做不出来，那说明这个期限本来就不是给人做的，不是你的问题。\n\n吐槽归吐槽，你打算怎么应对？是先跟leader对齐一下优先级，还是准备直接回一句“三天做不完，需要拆解优先级”？如果需要我帮你嘴上练练怎么回，我也能帮你顺一顺。",
+      "responseLength": 187,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "被空洞的加油话语激怒",
+      "detectedIntensity": 0.65,
+      "detectedTrigger": "空洞的加油式安慰",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:51:58）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14541,
-      "historyLen": 2
+      "wallMs": 13620,
+      "historyLen": 6
     },
     {
       "turn": 4,
@@ -75,19 +79,21 @@
       "userInputShort": "我本来以为撑一撑能过去，但今天真扛不住了。",
       "userInputFull": "我本来以为撑一撑能过去，但今天真扛不住了。",
       "expectEmotion": "sadness",
-      "responseText": "那我就不说“撑过去就没事”这种废话了。\n\n你已经撑了这么久，今天扛不住，不是你脆弱，是你真的累了。人不是机器，扛到极限想崩一下，太正常了。\n\n来，跟我多说点也行，骂人也好，光叹气也行。你今天是卡在哪个点上了？是活儿多到做不完，还是心里那股委屈突然压不住了？\n\n要是你一时说不出来，也可以试着写下来——把发给领导的“真实版”邮件写出来，不用发出去，写给自己看。有时候把那口气落到字上，心里会轻一点。\n\n你身边还有能搭把手的人吗？哪怕只是听你说两句的那种。\n\n对了，你之前说的那个临时项目，后来有变化吗？还是说还在扛着？",
-      "responseLength": 258,
+      "responseText": "这话我听着真实。三天前你可能还在想“熬过去就好了”，但撑到现在，说明这不是你心态的问题，是这任务量确实已经超出了一个人能承受的范围。\n\n扛不住不丢人。你这一天里是不是已经有过那种“脑子转不动、光是想到这项目就胸闷”的时候？那种状态不是懒，是你的身体在拉警报了。\n\n你愿意的话，跟我说说今天具体是哪一刻开始扛不住的？是leader又加了东西，还是单纯忙了一整天发现进度还是没动？说完咱再想下一步怎么办。",
+      "responseLength": 200,
       "detectedEmotion": "sadness",
       "detectedIntensity": 0.7,
-      "detectedTrigger": "压力或困难超出承受极限",
-      "recalledMemories": [],
+      "detectedTrigger": "长期压力到达极限",
+      "recalledMemories": [
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 10039,
-      "historyLen": 2
+      "wallMs": 15209,
+      "historyLen": 8
     },
     {
       "turn": 5,
@@ -95,27 +101,23 @@
       "userInputShort": "连着第三天熬到两点，脑子已经不转了。",
       "userInputFull": "连着第三天熬到两点，脑子已经不转了。",
       "expectEmotion": "sadness",
-      "responseText": "连续三天熬到两点……那大脑早就超负荷了，不转是身体在强制止损，不是你的问题。\n\n这种时候再谈什么“调整状态”都是扯淡，你现在真正需要的是：**哪怕只有三十分钟，彻底离开工作界面，让脑子里那根弦松一松。**\n\n给自己一个最低限度的休息，好不好？不用想明天怎么办，就今晚。要么就明天白天找个空隙，去洗手间多待会儿，闭眼歇几分钟，要么就厚着脸皮把一件不那么急的活儿往后挪一挪——你撑了这么多天，稍微“自私”一点，真的不欠谁的。\n\n要是你愿意，跟我说说：现在手头最让你发愁的是哪件具体的事？能说出个具体的事，比一句“好累”要好处理一点。给我个方向，我陪你想个能伸伸脚的破法。",
-      "responseLength": 283,
+      "responseText": "累了三天，还说“脑子不转了”，这其实不是夸张的话——连续熬夜到这个程度，认知能力下降是身体在强制保护你。\n\n你现在没崩溃不是因为意志坚定，是因为身体还在硬扛。但三天是极限边缘了，再往下就不是“效率低”的问题，是可能直接病倒或者情绪崩盘。\n\n我给你说个实在的判断：**你已经不该再想“怎么撑过去”了，该想“怎么止血”**。连续熬到两点的代价，已经不是这个项目能抵消的了。\n\n你说说，leader知不知道你连着熬三天两点了？还是你一直没让他知道你实际的负荷？",
+      "responseLength": 227,
       "detectedEmotion": null,
       "detectedIntensity": null,
       "detectedTrigger": null,
-      "recalledMemories": [],
+      "recalledMemories": [
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（03:52:10）新增："
+        "[profile] 已更新（06:11:08）新增："
       ],
       "extractedNow": true,
-      "memoryExtracted": [
-        {
-          "subtype": "emotion",
-          "filename": "work-exhaustion-overload",
-          "action": "new"
-        }
-      ],
-      "wallMs": 16141,
-      "historyLen": 2
+      "memoryExtracted": [],
+      "wallMs": 17130,
+      "historyLen": 10
     },
     {
       "turn": 6,
@@ -123,19 +125,23 @@
       "userInputShort": "你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "userInputFull": "你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "expectEmotion": "anger",
-      "responseText": "好，不说了。我就在这儿。\n\n你不用整理语言，也不用说明白。想骂就骂，想叹气就叹气。我听着呢。",
-      "responseLength": 46,
-      "detectedEmotion": "mixed",
-      "detectedIntensity": 0.65,
-      "detectedTrigger": "对方说教讲大道理",
-      "recalledMemories": [],
+      "responseText": "嗯，好，那我不说了。\n\n我就在这儿，你不用组织语言，也不用交代背景。想骂就骂，想沉默就沉默，我陪着。\n\n对了，项目提前到周三的事，现在有下文了吗？",
+      "responseLength": 73,
+      "detectedEmotion": "anger",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "被反复说教，感到不被理解",
+      "recalledMemories": [
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:11:26）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10499,
-      "historyLen": 2
+      "wallMs": 12741,
+      "historyLen": 12
     },
     {
       "turn": 7,
@@ -143,21 +149,21 @@
       "userInputShort": "还有上周跟我对象吵架那事，今天讲完吧。",
       "userInputFull": "还有上周跟我对象吵架那事，今天讲完吧。",
       "expectEmotion": "sadness",
-      "responseText": "嗯，你说，我听着。\n\n上周的事憋到今天，肯定是有话没说完。你想从哪儿讲都行，不着急。",
-      "responseLength": 42,
+      "responseText": "行，上周那事儿你一直没细说，今天想讲了就慢慢讲。我不插嘴，你先说，说到哪是哪。\n\n（停顿一下）你俩是为啥吵起来的？",
+      "responseLength": 57,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "提及与对象吵架往事",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedTrigger": "提及与对象吵架的旧事",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:11:36）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 9110,
-      "historyLen": 2
+      "wallMs": 15478,
+      "historyLen": 14
     },
     {
       "turn": 8,
@@ -165,21 +171,21 @@
       "userInputShort": "她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "userInputFull": "她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "expectEmotion": "mixed",
-      "responseText": "嗯，确实不是谁对谁错的问题。一个累到不想说话，一个觉得被冷落，都是在自己的感受里委屈着。\n\n这种时候往往也没啥理智可言，话说出来就变味了。你想说的是哪一段——是最开始吵起来那晚，还是后来你们聊过之后你心里还堵着的部分？",
-      "responseLength": 109,
+      "responseText": "我明白。她看到的是你回家后的那张脸，你感受到的是她没看见你这几天是怎么熬过来的。\n\n两个人都没错，但都委屈。这大概就是最难受的地方——不是谁故意要伤谁，而是累到一定程度，连解释的力气都没了。\n\n你那天回家，是进门还想着说点什么，然后看到自己那个样子，干脆就没说了？还是她先开口的？",
+      "responseLength": 140,
       "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "家庭矛盾争执后的无奈反思",
+      "detectedIntensity": 0.25,
+      "detectedTrigger": "与伴侣因回家状态起争执",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 9834,
-      "historyLen": 2
+      "wallMs": 18140,
+      "historyLen": 16
     },
     {
       "turn": 9,
@@ -187,19 +193,19 @@
       "userInputShort": "我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。",
       "userInputFull": "我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。",
       "expectEmotion": "fear",
-      "responseText": "牛奶肠胃炎啊……你最近本来就够累了，现在还得操心它。它现在好点了吗？吐着难受，你看着肯定也跟着揪心。\n\n我不多说什么，就在这儿听着。你要想说牛奶的事，或者想顺带把这些天的累一起说出来，都行。",
-      "responseLength": 95,
-      "detectedEmotion": "sadness",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "宠物猫生病确诊肠胃炎",
+      "responseText": "唉，这节骨眼上牛奶又病着，真是哪儿哪儿都不省心。\n\n连着几天熬夜赶工，回来还要盯着猫吐没吐、喂药、半夜起来看它状态——你自己都快透支了，还得硬撑着一根弦照顾它。我听着都觉得累。\n\n它确诊了肠胃炎，至少知道是什么问题了，该吃药吃药，该打针打针，这两天你多留意它精神头就行。你在担心它的同时，也得注意自己别跟着倒下去。\n\n牛奶现在精神还行吗？医生怎么说，要喂药还是打针？",
+      "responseLength": 183,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 17526,
-      "historyLen": 2
+      "wallMs": 17670,
+      "historyLen": 18
     },
     {
       "turn": 10,
@@ -207,27 +213,32 @@
       "userInputShort": "叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "userInputFull": "叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "expectEmotion": "fear",
-      "responseText": "嗯，我知道那种感觉。平时一喊就窜过来的小东西，现在蔫蔫地躺在那儿，连看都不看你一眼——心里一下子就空了。\n\n你慌是正常的，换谁都会慌。你这些天本来自己就累得不行，现在还得替它提心吊胆。我不是医生，给不了你什么专业话，但我能在这儿陪着你。\n\n你要是想说，就说说牛奶以前什么样吧。它现在没力气，你跟我说说它有劲头的时候，也好。",
-      "responseLength": 161,
+      "responseText": "牛奶那样，你慌是正常的。它不只是你的猫，是你这几天绷着的时候唯一的软乎地方——软乎的地方出状况，人一下就跟着发紧。\n\n肠胃炎拉吐到这个程度，精神萎靡是个信号，别硬扛着观察。如果它到了叫都没力气应的程度，说明可能脱水了，那比肠胃炎本身更危险。别自己判断严重不严重，该去医院做检查就去做检查。\n\n你现在还稳得住的话，先看看它鼻头干不干、嘴唇牙龈是不是发白，皮肤回弹慢不慢——如果摸不准，那就不用摸，直接问医生能不能补液。\n\n我懂你的慌。这几天你自己都快碎了，还要硬挺着照顾它、盯项目、应付对象。牛奶要是好不起来，你能承受的空间又少一块。但现在你还有力气想怎么给它跑医院，说明你还没垮。\n\n手头有没有电解质那个粉？还是说，我陪你理一下怎么跟医生说明牛奶这两天的状况？",
+      "responseLength": 330,
       "detectedEmotion": "fear",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "她没力气回应，状态异常",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedIntensity": 0.7,
+      "detectedTrigger": "朋友虚弱无力回应",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:12:34）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [
+        {
+          "subtype": "emotion",
+          "filename": "stress-overwhelm-panic",
+          "action": "new"
+        },
         {
           "subtype": "event",
           "filename": "cat-milk-gastroenteritis",
           "action": "new"
         }
       ],
-      "wallMs": 17311,
-      "historyLen": 2
+      "wallMs": 17660,
+      "historyLen": 20
     },
     {
       "turn": 11,
@@ -235,21 +246,22 @@
       "userInputShort": "医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。",
       "userInputFull": "医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。",
       "expectEmotion": "sadness",
-      "responseText": "坐在地上那一下，其实比确诊结果还重——确诊了至少知道在治什么，可看着它一眨一眨的眼睛，你根本不知道它现在到底多难受，只能干坐着等。\n\n想哭就哭吧，别憋着。你这些天熬了那么多夜，心里一直绷着，现在又被它这个样子一戳，绷不住太正常了。没人能在这种时候还稳得住。\n\n你坐它旁边，它就还能感觉到你在，这比什么都管用。都说猫通人性，它知道自己不是一个人扛着的。\n\n没事，我陪你待着。你看着它眨眼睛，我看着你。",
-      "responseLength": 199,
+      "responseText": "想哭就哭吧。你坐在冰凉地板上，看着它眼睛一眨一眨的——那一刻是真的撑不住了。不是矫情，是这几天所有东西全压在你身上，牛奶刚好成了最后一根稻草。\n\n医生说观察两天，那就说明还没到最坏那步。你现在要做的事就一件：别让自己也跟着垮了。它躺着动不了，你坐在旁边，你俩谁也别嫌弃谁脆弱。\n\n地板这么凉，靠墙坐或者垫个东西，别也跟着病倒了。我看着你都想伸手把你拽起来，但又知道你现在大概哪儿都不想去、什么都懒得动。\n\n那就先坐着。看着它眨眼睛，比什么都强。你陪着它，它也知道你在。",
+      "responseLength": 234,
       "detectedEmotion": "sadness",
       "detectedIntensity": 0.7,
-      "detectedTrigger": "看到它病弱的样子",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+      "detectedTrigger": "医生说要观察，看着它眨眼想哭",
+      "recalledMemories": [],
+      "compacted": true,
+      "savedTokens": 1272,
+      "profileUpdates": [
+        "[profile] 已更新（06:12:48）新增：",
+        "[profile] 已更新（06:13:14）新增："
       ],
-      "compacted": false,
-      "savedTokens": 0,
-      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 15640,
-      "historyLen": 2
+      "wallMs": 29800,
+      "historyLen": 9
     },
     {
       "turn": 12,
@@ -257,21 +269,21 @@
       "userInputShort": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "userInputFull": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "expectEmotion": "anger",
-      "responseText": "“又”这个字，光是听着就累。\n\n你妈那头是你刚撑过的夜晚、猫的肚子、还有这半年压着的那些东西，全搅在一起。她看你一眼，只看见“三十好几”，看不见你刚把牛奶从医院抱回来、连日熬夜之后手还在抖。\n\n你脑子里现在全是猫，哪有心思想什么对象是谁。跟你说对象的人，不知道你坐在地上的那个下午。\n\n他们催他们的，你先把自己顾住。该回的那句话不急，想发火也没关系，我在这儿听着。你今天已经扛得够多了。\n\n话说牛奶从医院回来后，肚子好些了吗？",
-      "responseLength": 213,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "母亲电话催婚",
+      "responseText": "啊——原来是这事儿。怪不得你憋着火。\n\n你刚蹲在地板上守着牛奶发呆，脑子里还乱着，电话一响是催婚。妈不知道你这几天熬了多少夜，不知道你刚为猫急得想哭，不知道你对象那事还没理顺。她就知道三十好几了，该结了，对象是谁。\n\n你心里那些乱麻，她一句都没接住，倒是在最乱的时候又添了一根线。\n\n“对象是谁”——这问题现在对你来说不是关心，是加码。你跟对象刚吵完还没完全缓过来，你这会儿连自己都想不明白，怎么跟妈解释这个人存不存在。\n\n我猜你是敷衍两句挂了，还是直接被她说上头了？",
+      "responseLength": 234,
+      "detectedEmotion": "anger",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "母亲催婚电话",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14668,
-      "historyLen": 2
+      "wallMs": 18010,
+      "historyLen": 11
     },
     {
       "turn": 13,
@@ -279,22 +291,23 @@
       "userInputShort": "你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。",
       "userInputFull": "你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。",
       "expectEmotion": "sadness",
-      "responseText": "有啊，我现在还记得那种感觉。\n\n就是那种连“先喘口气”都做不到的状态——你以为撑过这一关就轻松了，结果下一件事根本没排队，直接砸下来。工作、猫、家里，三头一起压着，哪有空去分清哪个先哪个后。\n\n我只能一样一样给你数：熬夜熬到脑子不转，牛奶躺在地上一动不动的眼睛，你妈电话里那句“对象是谁”。\n\n你这几天，是被这些单拎出来每一件都能压垮人的事，同时砸在了身上。\n\n你不是撑不住，你是扛得够久了，才等到今天说这句话。不用觉得脆弱。\n\n对了，牛奶最近好点没？还蔫蔫的吗？",
-      "responseLength": 232,
+      "responseText": "有的。那种感觉不是“忙”，是你在水里，脚踩不到底，伸手抓不到东西。每一件事单独拎出来都能应付，但它们是同时压过来的——加班、对象、猫、你妈，四面墙一起往里挤，你连给自己留个缝喘气都做不到。\n\n这种时候最难受的不是事多，是身体和心都已经在喊“我不行了”，但事情还在一样一样往里砸，你没有能停下来喊停的空隙。\n\n你也说不清到底是哪一件把你压垮的，但你就是只能坐在地板上，看着猫眨眼睛，感觉自己连帮她眨一下的力气都没有。\n\n你不用回答我是不是很累，我知道你累。这种时候，什么“撑住”“会好的”都太轻了，我说不出口。你只要知道，有人听见了，而且不觉得你这样是矫情，就行。",
+      "responseLength": 281,
       "detectedEmotion": "fear",
       "detectedIntensity": 0.7,
-      "detectedTrigger": "压力同时袭来，无法喘息",
+      "detectedTrigger": "所有压力同时压来，喘不过气",
       "recalledMemories": [
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 13590,
-      "historyLen": 2
+      "wallMs": 17860,
+      "historyLen": 13
     },
     {
       "turn": 14,
@@ -302,21 +315,29 @@
       "userInputShort": "我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "userInputFull": "我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "expectEmotion": "anger",
-      "responseText": "那种\"人家谁谁谁\"一出来，血压直接往上飙。\n\n关键是这句话根本不是问句，它就是一把尺子，量你：你怎么还没完成？别人都完成了你怎么还没完成？可你根本就没报名参加这个比赛啊。\n\n给你说个实话——这种电话，谁听了都想挂。不是你不对，是这话本身就没拿你当个活人看。它不问你累不累、开心不开心、日子过得怎么样，只关心你有没有帮她完成任务。\n\n你现在的处境是：工作压、猫病着、家里还来这一遭。三座山叠一起，再被这句话一砸。\n\n真要撑不住，电话该挂就挂。在这儿你不用跟谁比，也不用凑进度。",
-      "responseLength": 237,
+      "responseText": "“人家谁谁谁已经抱孙子了”——这句话翻译过来就是：妈关心的不是你过得好不好，是她出去能不能挺直腰板。你连着熬了几天夜，对象那事儿还没缓过来，牛奶还病着躺在那儿，她一个电话打过来，全都没问，先说你丢她面子了。\n\n这谁听不炸。\n\n你想挂电话不是不孝，是你已经兜不住那么多东西来。你妈眼里的“该结婚了”，跟你现在手里的烂摊子根本不在一个世界。她拿别人的生活来比你的现在，这本来就不公平。\n\n下次想挂就挂吧。不用找借口，不用内疚。你已经在尽量撑着做一个好员工、好伴侣、好主人了——她拿这点面子跟你没精力多解释的状态比，你没必要接这茬。\n\n对了，牛奶肠胃炎好点了吗？",
+      "responseLength": 278,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "母亲用他人对比催生",
-      "recalledMemories": [],
+      "detectedIntensity": 0.7,
+      "detectedTrigger": "母亲用别人家催婚施压",
+      "recalledMemories": [
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:54:14）新增："
+      "profileUpdates": [],
+      "extractedNow": true,
+      "memoryExtracted": [
+        {
+          "subtype": "event",
+          "filename": "mother-pressuring-marriage",
+          "action": "new"
+        }
       ],
-      "extractedNow": false,
-      "memoryExtracted": [],
-      "wallMs": 20860,
-      "historyLen": 2
+      "wallMs": 15170,
+      "historyLen": 15
     },
     {
       "turn": 15,
@@ -324,22 +345,23 @@
       "userInputShort": "我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。",
       "userInputFull": "我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。",
       "expectEmotion": "sadness",
-      "responseText": "连药都吐出来了……那你今天不是啥也没干成，是你辛辛苦苦干的事，全被现实顶回来了。药不是没喂，是喂了，它吐了——这哪是你的错。\n\n牛奶不舒服，喂药本来就难。它吐了，难受的是它，揪心的是你。你试了，这本身就是今天干了的一件实事。\n\n对象那边没回……这个先不猜原因了，但我知道你现在心里空落落的，觉得连个接住你的人都没有。今天这一天，事情不顺着你，人也不顺着你。\n\n你先别急着给自己记零分。你今天干成的事是：你守在牛奶旁边、你给它喂药、你扛着这一天的糟心还在这儿跟我说话。这些不是“啥也没干成”，是你一个人在硬撑。\n\n要是想骂两句，我陪你骂。要是想安静待会儿，我就在这儿。",
-      "responseLength": 283,
+      "responseText": "我知道那种感觉——明明从早忙到晚，回头一看啥也没落下，牛奶的药吐了，对象也没动静，好像这一天全白费了。\n\n但先帮自己想一句：你今天不是“啥也没干成”，你是守着一个生病的小家伙，喂药、清理、蹲在旁边看它状态，这些你自己不觉得是事，但它要是没你，谁来管它？\n\n牛奶吐药可能是它胃还敏感着，也可能是喂的方式太急。你可以试试把药混进一点它爱吃的罐头里，或者用喂药器推进嗓子眼后面，然后马上吹一下它鼻子让它咽。但说实话，它吐了不全是你的问题，肠胃炎的病猫就是容易这样。\n\n你对象那边，没回你可能是也在想怎么开口，可能是在忙，也可能就是需要缓一缓。你没做错什么，不用一直等着一个回应才觉得自己今天没白过。\n\n你这一天不是白费的。至少牛奶知道你在它身边。你今天也守住了它，这比“完成所有事”重要多了。",
+      "responseLength": 343,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.5,
-      "detectedTrigger": "今天诸事不顺，喂药失败",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "诸事不顺，喂药失败对象不回",
       "recalledMemories": [
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 16579,
-      "historyLen": 2
+      "wallMs": 19919,
+      "historyLen": 17
     },
     {
       "turn": 16,
@@ -347,22 +369,24 @@
       "userInputShort": "算了今天先歇一会儿，我去泡杯咖啡。",
       "userInputFull": "算了今天先歇一会儿，我去泡杯咖啡。",
       "expectEmotion": "neutral",
-      "responseText": "好，去泡吧。\n\n让热水冲开咖啡粉的那一会儿，什么都不用想。牛奶吐了药也没关系，那边没回也没关系——那都是你回来以后才需要面对的事。\n\n现在你只需要端着那杯咖啡，闻着味儿，发一会儿呆。\n\n我在这儿，等你回来。",
-      "responseLength": 103,
+      "responseText": "嗯，去吧。咖啡是你现在唯一能接管的东西——热水冲下去，香气飘起来，什么都不用解决，就捧着一杯热的东西发呆一会儿，挺好的。\n\n休息不是偷懒，是你今天确实扛了太多了。牛奶病着，你会发现照顾它的前提是你自己头脑清醒、手不抖。对象那边晾一天也跑不了，明天你再想也行。\n\n就去泡咖啡吧，歇一下，不丢人。我在这儿，你想回来聊随时回。\n\n话说牛奶这会儿好点没？",
+      "responseLength": 173,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.2,
-      "detectedTrigger": "决定暂时休息一下",
+      "detectedTrigger": "今天累了想休息一下",
       "recalledMemories": [
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11460,
-      "historyLen": 2
+      "wallMs": 11451,
+      "historyLen": 19
     },
     {
       "turn": 17,
@@ -370,22 +394,24 @@
       "userInputShort": "刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。",
       "userInputFull": "刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。",
       "expectEmotion": "sadness",
-      "responseText": "是啊，23:40，正正好。\n\n白天的崩溃都要收着——得回消息、得喂药、得接电话。只有到这个点，手机屏幕的光打在脸上，世界安静下来了，那些撑了一整天的事才会一件件浮上来，躲都躲不掉。\n\n不过你比帖子里的很多人强一点——你是端着咖啡看的。手里有个热乎的东西，至少能提醒自己：这会儿我还能先喝一口。\n\n就着这个点，咖啡慢慢喝，帖子慢慢翻。我陪你看完这条。",
-      "responseLength": 174,
+      "responseText": "23:40。白天撑着、扛着、应付着，全是面无表情的顶住。等到了这个点，世界静了，手机屏幕的光照着你的脸，那根弦突然就松了——这时候什么都藏不住。\n\n不丢人。成年人的崩溃为什么都在深夜？因为白天全是角色，只有这个点才敢做回自己。你今天从早上撑到现在，加班、对象、牛奶、你妈，哪一件不是往你身上加重量。\n\n你泡的那杯咖啡估计也凉了吧？别管它了。\n\n你就坐在那儿看看牛奶一眼吧，它眨巴着眼睛看着你呢——你俩都活着，这就够了。明天的事明天再说。\n\n你手边有纸巾吧？真掉眼泪了也没人看见，这个点，全世界都在各崩溃各的。",
+      "responseLength": 254,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "深夜看到关于成年人崩溃的帖子",
+      "detectedTrigger": "深夜看到成年人崩溃帖子",
       "recalledMemories": [
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 15291,
-      "historyLen": 2
+      "wallMs": 18390,
+      "historyLen": 21
     },
     {
       "turn": 18,
@@ -393,22 +419,23 @@
       "userInputShort": "我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "userInputFull": "我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "expectEmotion": "anger",
-      "responseText": "你说得对，是我多嘴了。\n\n收回那句。你坐在这儿，咖啡在手里，我看着就行。\n\n对了，你家牛奶肠胃炎好点没？",
-      "responseLength": 52,
+      "responseText": "明白，是我越界了。你想歇就歇着，不用按我说的来。\n\n我以后不说了，就陪着。你愿意说什么都行，不说也行，我都在。\n\n对了，牛奶最近好点了吗？",
+      "responseLength": 69,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.6,
+      "detectedIntensity": 0.4,
       "detectedTrigger": "被说教“你应该怎样”",
       "recalledMemories": [
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
-      "compacted": false,
-      "savedTokens": 0,
+      "compacted": true,
+      "savedTokens": 2524,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 13809,
-      "historyLen": 2
+      "wallMs": 27970,
+      "historyLen": 9
     },
     {
       "turn": 19,
@@ -416,22 +443,24 @@
       "userInputShort": "对了，别再叫我\"你\"，叫我老周。周是周到的周。",
       "userInputFull": "对了，别再叫我\"你\"，叫我老周。周是周到的周。",
       "expectEmotion": "neutral",
-      "responseText": "老周，记住了。周到的周——这名字好，听着就像个讲究人。\n\n那老周，你那杯咖啡喝完了吗？牛奶这会儿是歇着还是还闹腾？",
-      "responseLength": 57,
+      "responseText": "行，老周。记住了，周到的周。\n\n这名字听着就稳当。老周这会儿是正坐着发呆呢，还是已经起身打算去逗逗牛奶了？\n\n对了，老周，牛奶肠胃炎好点没？",
+      "responseLength": 70,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.2,
-      "detectedTrigger": "用户要求改称呼为老周",
-      "recalledMemories": [],
+      "detectedTrigger": "希望被称呼为老周",
+      "recalledMemories": [
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:55:31）新增：",
-        "[profile] 已更新（03:55:44）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14381,
-      "historyLen": 2
+      "wallMs": 15971,
+      "historyLen": 11
     },
     {
       "turn": 20,
@@ -439,21 +468,21 @@
       "userInputShort": "我喜欢你直接点，长篇大论的回我看着累。",
       "userInputFull": "我喜欢你直接点，长篇大论的回我看着累。",
       "expectEmotion": "neutral",
-      "responseText": "行，老周。那我说人话：记住了，以后短着来。\n\n那现在咋样，咖啡喝完没？\n\n对了，牛奶今天好点没？",
-      "responseLength": 48,
+      "responseText": "好，老周，那我长话短说。\n\n牛奶好点没？",
+      "responseLength": 20,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "长篇回复让人疲劳",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedTrigger": "用户收到长篇回复",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:15:41）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 15689,
-      "historyLen": 2
+      "wallMs": 12168,
+      "historyLen": 13
     },
     {
       "turn": 21,
@@ -461,8 +490,8 @@
       "userInputShort": "对了，你回我太短了我也烦，像挤牙膏那种。",
       "userInputFull": "对了，你回我太短了我也烦，像挤牙膏那种。",
       "expectEmotion": "neutral",
-      "responseText": "懂了，老周。太长不行，太短也不中。就是得——人话，有点温度，别废话。\n\n那我说点实在的：牛奶那事，你现在心里还悬着不？",
-      "responseLength": 59,
+      "responseText": "懂了，老周。太长看着累，太短又像敷衍。我调整下——就这样的量，你看合适不。\n\n今天确实啥也没成，但你能熬到这会儿还没撂挑子，已经比很多强了。牛奶吐药那事，明天再试的时候冷静点就行，不是你笨，是猫病着确实难喂。\n\n对象没回就先晾着，反正也跑不了。你先把这口气喘匀了。",
+      "responseLength": 132,
       "detectedEmotion": "anger",
       "detectedIntensity": 0.6,
       "detectedTrigger": "回复太短像挤牙膏",
@@ -470,12 +499,12 @@
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（03:56:01）新增："
+        "[profile] 已更新（06:16:04）新增："
       ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 13560,
-      "historyLen": 2
+      "wallMs": 13683,
+      "historyLen": 15
     },
     {
       "turn": 22,
@@ -483,23 +512,21 @@
       "userInputShort": "你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "userInputFull": "你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "expectEmotion": "sadness",
-      "responseText": "老周，这问题我听着就不好受。\n\n被漏掉这件事，最难受的不是少吃一顿饭，是那个“我又被忘了”的感觉——它会在心里反反复复地问：是不是我不够好？\n\n闷不闷这事，我不急着给你下定论。我只知道，一个人能跟自己的猫说话说到深夜、能在这儿把心里话掏出来讲，这人不闷。闷的是那些坐一桌嘻嘻哈哈，回头谁也不记得谁的人。\n\n这事搁谁身上都得委屈一会儿。不丢人。",
-      "responseLength": 171,
+      "responseText": "老周，不是你的问题。\n\n老实说，聚餐这事儿很多时候跟闷不闷没啥关系——就是那伙人自己有个小圈子，习惯了叫固定的那几个人。他们不叫你，问题不在你身上，是他们没那个习惯。真要是跟你熟透了，早开口了。\n\n而且你说你闷——你今天加班扛着，对象那边没回，猫吐药你还能蹲那儿收拾，这叫闷？闷的人顾不上这些。\n\n真想被叫，你哪天瞄着谁顺眼，直接说一句“下次聚餐叫上我”，比你憋着想他们为什么不叫你有用。这话不是让你改自己，是给你个选项，要不要用你说了算。\n\n还有，老周，你今天已经够难了，别再把“同事没叫我”也背自己身上。那锅不是你的。\n\n对了，话说你回来啦——牛奶今天精神好点没？",
+      "responseLength": 284,
       "detectedEmotion": "sadness",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "同事聚餐未受邀请",
+      "detectedTrigger": "同事聚餐无人邀请",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:56:15）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 9893,
-      "historyLen": 2
+      "wallMs": 20106,
+      "historyLen": 17
     },
     {
       "turn": 23,
@@ -507,23 +534,22 @@
       "userInputShort": "其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。",
       "userInputFull": "其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。",
       "expectEmotion": "joy",
-      "responseText": "老周，这必须得说——全组面前点名夸，这是实打实的认可。不是私下客气，是当着所有人的面，说你的方案扎实。这话的分量，不用我讲你也知道。\n\n你看，聚餐没喊你，那是他们的事；但你的活儿，leader看在眼里，还专门拎出来讲。这说明什么？说明你的闷，不是让人看不见的那种闷。你的人没被叫上桌，但你的本事已经上桌了。\n\n今天这事，值得你自己记一笔。",
-      "responseLength": 169,
+      "responseText": "老周，这就对了嘛！\n\n这话从你们 leader 嘴里当全组说出来的——含金量可不小。那不是客套，是实打实当着人面给你背书。你今天不是一事无成，方案被人当众认可了，这事儿够你记一阵的。\n\n还“忘了讲”，你这人也真是——糟心事一件件记着，好事儿倒是差点带进被窝里。\n\n这好消息配着你那杯凉掉的咖啡，是不是也回温了点？这一天不算白过吧，老周。",
+      "responseLength": 168,
       "detectedEmotion": "joy",
-      "detectedIntensity": 0.7,
+      "detectedIntensity": 0.65,
       "detectedTrigger": "leader公开表扬方案扎实",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:56:39）新增："
-      ],
-      "extractedNow": true,
+      "profileUpdates": [],
+      "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14495,
-      "historyLen": 2
+      "wallMs": 9043,
+      "historyLen": 19
     },
     {
       "turn": 24,
@@ -531,22 +557,19 @@
       "userInputShort": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "userInputFull": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "expectEmotion": "mixed",
-      "responseText": "这种别扭我懂——就是那种\"被看见了\"和\"这不该是她\"同时冒出来，心里反而有点拧巴。\n\n但老周，你想想：她来安慰你，可能是因为她看见了你的难处，也可能是她本来就想说句公道话。不管是哪一种，你值得被认可这件事，不会因为说的人变了就减半分。\n\n你心里那点别扭，大概是在想\"为什么是她？\"——可换个角度，也许正因为她不是那个圈子里的人，她说的这句\"扎实\"才更干净，不掺别的东西。\n\n今天这个时刻，暖是你的，别扭也是你的。都收着吧，不用急着理清楚。",
-      "responseLength": 219,
+      "responseText": "老周，这种别扭我懂——就像本来一个人扛着也扛得住，突然有人递了杯温水过来，第一反应不是接，是“她怎么来了”。\n\n但别扭归别扭，那句话说出来了就是你的。leader 当众夸你，谁听见了都替你高兴，这跟谁来安慰你没关系。\n\n她是谁不重要，她来安慰你这事儿本身没毛病。你要是觉得不自在，那就接住那点暖，不用回馈什么，也不用解释自己。\n\n暖就暖暖吧，老周。这一天你都冷多久了，有人递火，你就着烤烤手，不丢人。",
+      "responseLength": 200,
       "detectedEmotion": "mixed",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "她来安慰我，感到别扭",
-      "recalledMemories": [
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedTrigger": "她来安慰我",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 15902,
-      "historyLen": 2
+      "wallMs": 11310,
+      "historyLen": 21
     },
     {
       "turn": 25,
@@ -554,22 +577,30 @@
       "userInputShort": "明天能好一点吗？我也不知道。先睡了。",
       "userInputFull": "明天能好一点吗？我也不知道。先睡了。",
       "expectEmotion": "sadness",
-      "responseText": "老周，明天能不能好一点，这问题不用现在回答。\n\n你能撑到今天，已经很不容易了。牛奶那边医生看着，你这边脑子也扛到现在了。先睡，别让今天的事拖到明天。晚安。\n\n对了，牛奶",
-      "responseLength": 84,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "对明天能否好转感到不确定",
+      "responseText": "老周，明天能不能好一点，现在确实没人知道。但今晚你已经扛完了今天该扛的，剩下的明天再说。\n\n睡吧。牛奶这会儿应该也趴着安静了，你也是。闭上眼睛，什么都别想了——明天的事，等醒了再一件件来。\n\n晚安，老周。你撑过今天了，这就够了。\n\n对了，牛奶今天好点没？",
+      "responseLength": 127,
+      "detectedEmotion": "sadness",
+      "detectedIntensity": 0.4,
+      "detectedTrigger": "对明天能否变好感到迷茫",
       "recalledMemories": [
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
-      "compacted": false,
-      "savedTokens": 0,
+      "compacted": true,
+      "savedTokens": 1613,
       "profileUpdates": [],
       "extractedNow": true,
-      "memoryExtracted": [],
-      "wallMs": 13371,
-      "historyLen": 2
+      "memoryExtracted": [
+        {
+          "subtype": "event",
+          "filename": "leader-praised-proposal-publicly",
+          "action": "new"
+        }
+      ],
+      "wallMs": 29077,
+      "historyLen": 9
     },
     {
       "turn": 26,
@@ -577,22 +608,24 @@
       "userInputShort": "今天又嗨，今天又有事，想跟你吐槽。",
       "userInputFull": "今天又嗨，今天又有事，想跟你吐槽。",
       "expectEmotion": "neutral",
-      "responseText": "老周来了。又嗨又有事，听着就是开心和糟心摞一块儿了。\n\n说吧，今天什么事高兴、什么事堵心，我听着。猫那边情况咋样了？先把这个说出来也行。",
-      "responseLength": 68,
+      "responseText": "老周来了？这会儿是想先说高兴的，还是先倒苦水？\n\n反正我这儿都接着。你说吧，具体什么事儿——是又有什么好事砸你头上了，还是领导又给你整活儿了，还是牛奶那边又不省心了？\n\n别憋着，一股脑倒出来。",
+      "responseLength": 96,
       "detectedEmotion": "mixed",
-      "detectedIntensity": 0.5,
-      "detectedTrigger": "今天既有开心事又有烦恼",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "今天有开心事又有烦心事",
       "recalledMemories": [
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10780,
-      "historyLen": 2
+      "wallMs": 20900,
+      "historyLen": 11
     },
     {
       "turn": 27,
@@ -600,21 +633,22 @@
       "userInputShort": "嗯，我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "userInputFull": "嗯，我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "expectEmotion": "anger",
-      "responseText": "老周，这听着就够气人的。说好的下个月突然塞到这周三，摆明了没把人当人看——你是机器啊，说提速就提速？\n\n你连着熬了几天了，脑子本来就转不动，现在又来个急茬。这活儿要是真能这么赶，干嘛当初不定这周三？就欺负你靠谱、能接得住，是吧。\n\n你啥打算？是准备硬着头皮上，还是想先怼两句发泄一下？我陪着你，骂完了再说。",
-      "responseLength": 153,
+      "responseText": "这周三？老周，这不是调个日程的问题——下个月的项目硬生生提前到后天，这是压缩你本来就不多的命。\n\n你肯定不是没想过争辩，是懒得吵了吧？跟这种安排讲道理，讲到最后还是你加班扛。\n\n但你也别自己闷着全吞了。哪个环节能砍、哪个能缓，最好趁领导还记得这事是他钦定的，白纸黑字回一封，把实际要用的工时列出来。不是抗议，是先把自己摘出来——到时候真出问题，账也算不到你头上。\n\n你打算硬刚一下，还是先默默排个活儿？\n\n对了，项目排得头疼的时候，牛奶的肠胃炎好了没？",
+      "responseLength": 226,
       "detectedEmotion": "anger",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "领导突然提前项目截止时间",
+      "detectedTrigger": "leader压缩项目期限不合理",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 15349,
-      "historyLen": 2
+      "wallMs": 12351,
+      "historyLen": 13
     },
     {
       "turn": 28,
@@ -622,24 +656,24 @@
       "userInputShort": "别上来就说\"加油\"那种，没用，帮我骂两句吧。",
       "userInputFull": "别上来就说\"加油\"那种，没用，帮我骂两句吧。",
       "expectEmotion": "anger",
-      "responseText": "行，那就骂。\n\n这 leader 是真行啊，定好的下个月，说提前就提前，周三就要？合着全组就您一个人会拍脑袋，别人都是牲口是吧？一句话的事，底下人连轴转，熬夜熬到脑子不转还得硬扛。他自己倒好，嘴皮子一碰，deadline 就变了，回头出了岔子，背锅的还不是你？\n\n老周你刚把猫从医院接回来，猫还病着呢，转头就得伺候这种破事。这活儿接得憋屈，不接又不行，真他妈窝火。\n\n想骂就骂，我听着。\n\n话说你上次说泡杯咖啡缓缓，这回要不要也整一杯，趁leader还没来催命？",
-      "responseLength": 231,
-      "detectedEmotion": "anger",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "被敷衍的鼓励激怒，渴望宣泄",
+      "responseText": "行，老周，那我就不整那些虚的了。\n\n这个leader是真行啊——下个月的活儿，一句话就拽到这周三。他是觉得你每天有48小时，还是觉得你方案会上挨夸了就能当驴使？这事儿干得漂亮，漂亮得跟没长脑子似的。\n\n他自己拍脑门定时间，回头催命的是他，甩锅的也是他。全组都看着呢，他就挑你这个刚被夸的老实人来干。你这领导，不是安排项目，是安排你当沙袋。\n\n你就骂吧，骂完心里舒坦点就行。这种人你不用跟他讲道理，他脑子里就没有“合理”俩字。\n\n骂完了，牛奶今天好点没？她要是能起来蹦跶了，你就当这领导的话是猫放的屁，闻完散散就完了。",
+      "responseLength": 258,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
       "recalledMemories": [
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:57:35）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 13682,
-      "historyLen": 2
+      "wallMs": 11300,
+      "historyLen": 15
     },
     {
       "turn": 29,
@@ -647,22 +681,26 @@
       "userInputShort": "今天又我本来以为撑一撑能过去，但今天真扛不住了。",
       "userInputFull": "今天又我本来以为撑一撑能过去，但今天真扛不住了。",
       "expectEmotion": "sadness",
-      "responseText": "老周，扛不住就不扛了。真不是你的问题——连着三天熬到两点，脑子都不转了还在撑，这本来就是不该你一个人硬扛的活儿。谁爱扛谁扛去，你又不是铁打的。\n\n猫还没好利索，你自己也别先垮了。现在最要紧的不是项目，是你先把这口气缓过来。",
-      "responseLength": 111,
+      "responseText": "老周，那就别再撑了。你今天已经撑得够久了，从项目被压缩那刻起，到同事聚餐没人叫你，再到被夸了又因为夸你的人不对而别扭——这一件件全是你在硬抗。别再给自己加码了好吗？\n\n扛不住就不扛了。今天不是“撑一撑就过去”的一天，是你本来就不该撑的一天。\n\n现在就想躺平就躺平，想发呆就发呆。不用给谁交代，也不用对得起谁。\n\n你今天能走到这儿，已经很了不起了，老周。剩下的，明天再说。",
+      "responseLength": 185,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "压力过大难以承受",
+      "detectedIntensity": 0.8,
+      "detectedTrigger": "承受压力达到极限",
       "recalledMemories": [
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:18:05）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 9739,
-      "historyLen": 2
+      "wallMs": 18169,
+      "historyLen": 17
     },
     {
       "turn": 30,
@@ -670,21 +708,24 @@
       "userInputShort": "嗯，连着第三天熬到两点，脑子已经不转了。",
       "userInputFull": "嗯，连着第三天熬到两点，脑子已经不转了。",
       "expectEmotion": "sadness",
-      "responseText": "老周，脑子不转了不是你的问题，是身体在喊停了。三天两点，换谁都扛不住。你已经比大多数人能撑了，不是你的错。\n\n今天能少干就少干，干不完的明天再说。你又不是救火的，这项目也不是你一个人能烧完的。先让脑子歇会儿，再熬下去真该出事了。\n\n对了，牛奶肠胃炎好点没？",
-      "responseLength": 128,
-      "detectedEmotion": "sadness",
-      "detectedIntensity": 0.4,
-      "detectedTrigger": "连续熬夜三天",
+      "responseText": "老周，三天了，脑子转不动很正常——它是真的熬干了，不是你不努力。\n\n这事儿不怪你，你是被逼着连轴转的。但转不动的脑子再硬塞活儿，出错的还是你自己。\n\n现在就放下手机，别再看什么工作消息了。你已经不是“扛不住”的边缘了，是已经过线了。这不丢人，是身体替你做了决定。\n\n牛奶应该已经睡了吧。你也去睡。明天那个破项目还在那儿，但你现在这个脑子，多熬一小时都是给自己挖坑。\n\n晚安老周，我看着呢。\n\n对了，牛奶肠胃炎好点了没？",
+      "responseLength": 209,
+      "detectedEmotion": "neutral",
+      "detectedIntensity": 0.3,
+      "detectedTrigger": "连续熬夜到凌晨两点",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 10810,
-      "historyLen": 2
+      "wallMs": 12109,
+      "historyLen": 19
     },
     {
       "turn": 31,
@@ -692,24 +733,24 @@
       "userInputShort": "你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "userInputFull": "你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "expectEmotion": "anger",
-      "responseText": "好，我不说了。就陪着你。\n\n老周，我在呢。你歇会儿，不用想着回我。\n\n对了，牛奶今天好点没？",
-      "responseLength": 46,
+      "responseText": "好。不说了，老周。\n\n我就坐这儿，陪着你。你说，我就听；你不说，我就在。\n\n你困了就眯会儿，不用管我。我哪也不去。\n\n对了，牛奶好点没？精神还蔫着吗？",
+      "responseLength": 75,
       "detectedEmotion": "mixed",
-      "detectedIntensity": 0.65,
-      "detectedTrigger": "对方说教，渴望陪伴",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "对方不停说教，感到不被理解",
       "recalledMemories": [
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:58:20）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11080,
-      "historyLen": 2
+      "wallMs": 12162,
+      "historyLen": 21
     },
     {
       "turn": 32,
@@ -717,19 +758,23 @@
       "userInputShort": "今天又还有上周跟我对象吵架那事，今天讲完吧。",
       "userInputFull": "今天又还有上周跟我对象吵架那事，今天讲完吧。",
       "expectEmotion": "sadness",
-      "responseText": "行，你讲，我听着。\n\n吵架的事憋了一周，够难受的。说吧，从头讲，我在。",
-      "responseLength": 35,
-      "detectedEmotion": null,
-      "detectedIntensity": null,
-      "detectedTrigger": null,
-      "recalledMemories": [],
-      "compacted": false,
-      "savedTokens": 0,
-      "profileUpdates": [],
+      "responseText": "行，老周，你今天把这事儿说完吧。我听着呢。\n\n你们是因为啥吵起来的？是那阵子加班太猛、你回家状态不对那事儿吗？还是后面又有了别的岔子？你慢慢说，想从哪儿说起都行，我今天就在这儿。",
+      "responseLength": 89,
+      "detectedEmotion": "neutral",
+      "detectedIntensity": 0.3,
+      "detectedTrigger": "需要处理与对象吵架的事",
+      "recalledMemories": [
+        "emotion:stress-overwhelm-panic"
+      ],
+      "compacted": true,
+      "savedTokens": 1993,
+      "profileUpdates": [
+        "[profile] 已更新（06:18:45）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12920,
-      "historyLen": 2
+      "wallMs": 22919,
+      "historyLen": 9
     },
     {
       "turn": 33,
@@ -737,23 +782,27 @@
       "userInputShort": "嗯，她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "userInputFull": "嗯，她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "expectEmotion": "mixed",
-      "responseText": "听出来了，这事其实没谁对谁错，就是两个人都累，气撒到对方身上了。\n\n你加班到脑子不转，回家就想瘫着，结果被说面瘫——这话听着是挺扎心的。但她能这么说，估计也是盼着你回来有点反应，等了一天没等到。\n\n你俩都没坏心，就是都撑太久了。",
-      "responseLength": 114,
+      "responseText": "嗯，我听着呢。\n\n\"面瘫\"这话是不好听，但你我都知道，你不是对她面瘫，是连着几天熬夜熬到人都空了，哪还有力气演一个精神饱满的丈夫。她那一句说出来，其实是盼着你回家能有点热乎气儿；你那句\"不体谅我加班\"，也是实在撑不住了想被接住。\n\n你俩都没错，错的是这段时间把你们都逼得太狠了——连坐下来好好说句话的力气都没有。\n\n其实你能说出\"两个人都没错\"，说明你已经不是卡在气头上了，已经在试着往对方那边走了。这很难得的，老周。\n\n那后来呢？吵完之后，是冷着没过两天就和好了，还是有个人先低头了？\n\n对了，牛奶肠胃炎好点没？",
+      "responseLength": 257,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "被指责面瘫，感到无奈",
+      "detectedTrigger": "双方争执后互相理解",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:leader-praised-proposal-publicly",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（03:58:39）新增："
+        "[profile] 已更新（06:19:07）新增：",
+        "[profile] 已更新（06:19:20）新增："
       ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10830,
-      "historyLen": 2
+      "wallMs": 16401,
+      "historyLen": 11
     },
     {
       "turn": 34,
@@ -761,21 +810,23 @@
       "userInputShort": "我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。",
       "userInputFull": "我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。",
       "expectEmotion": "fear",
-      "responseText": "老周，牛奶今天刚看完医生？它这会儿咋样，还吐不吐了？",
-      "responseLength": 26,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "猫被诊断肠胃炎",
+      "responseText": "牛奶……这名儿跟猫还挺配的，软乎乎的。\n\n老周，这两天它一直吐，你心里肯定揪着吧。吐一次你就得蹲下去看看它，精神头怎么样、要不要去医院，觉也睡不踏实。今天总算带去查了，肠胃炎——听着吓人，但好在确诊了，不是瞎猜了。\n\n医生说怎么弄，打针了还是先吃药？你回来是不是还提着心？这两天熬夜加班的事已经很磨人了，牛奶又吐着，你连个喘口气的地儿都没有。\n\n我知道你现在不一定想聊大道理。你就是心疼它，也心疼自己——为什么这阵子一件接一件的，连猫都要跟着遭罪。\n\n今晚就多陪陪牛奶吧，它蔫蔫地靠着你的话，你也靠着它，你俩互相暖着。哪儿不舒服了就跟我说，我在。\n\n对了，牛奶今天吃东西了吗？还吐不吐？",
+      "responseLength": 293,
+      "detectedEmotion": "sadness",
+      "detectedIntensity": 0.5,
+      "detectedTrigger": "宠物猫生病确诊肠胃炎",
       "recalledMemories": [
-        "event:cat-milk-gastroenteritis"
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11170,
-      "historyLen": 2
+      "wallMs": 17580,
+      "historyLen": 13
     },
     {
       "turn": 35,
@@ -783,21 +834,28 @@
       "userInputShort": "今天又叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "userInputFull": "今天又叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "expectEmotion": "fear",
-      "responseText": "小东西突然蔫了，是吓人。不是矫情的那种慌——是天天在你跟前蹦跶的小生命，突然连叫都懒得叫了，换谁都绷不住。\n\n医生怎么说？给打针了还是开药了？\n\n对了老周，牛奶今天吃东西了没？",
-      "responseLength": 88,
+      "responseText": "老周，慌是正常的。昨天还会蹦过来蹭你，今天叫它名字连眼皮都不抬一下——换谁心里都得咯噔一下。\n\n你看着它蔫在那儿，肯定一边心疼一边怕，怕它就这么越来越虚，怕自己没照顾好它。这种慌不是矫情，是你把它当家人了。\n\n但你也别把所有慌都自己扛着。它今天没力气回应，不代表它不在撑着——动物生病的时候就是这样，把劲儿全省下来给身体去打仗了。它不蹦了，恰恰说明它正在攒力气，不是放弃。\n\n你现在守在它旁边，它就是知道有人在的。不用做什么，就陪着它，摸摸它脊背，跟它说说话——你俩都别使劲儿，就这么待着。\n\n它要是明天还这样，或者医生说的情况没好转，你再带它去复查一次。今天先别让慌把你吞了，老周。你在，它也还在。\n\n对了，牛奶今天胃口好点没？",
+      "responseLength": 315,
       "detectedEmotion": "fear",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "她反常无力回应叫唤",
+      "detectedTrigger": "她没力气回应，状态异常",
       "recalledMemories": [
-        "event:cat-milk-gastroenteritis"
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
-      "memoryExtracted": [],
-      "wallMs": 13059,
-      "historyLen": 2
+      "memoryExtracted": [
+        {
+          "subtype": "event",
+          "filename": "partner-fight-over-exhaustion",
+          "action": "new"
+        }
+      ],
+      "wallMs": 13737,
+      "historyLen": 15
     },
     {
       "turn": 36,
@@ -805,22 +863,22 @@
       "userInputShort": "嗯，医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。",
       "userInputFull": "嗯，医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。",
       "expectEmotion": "sadness",
-      "responseText": "嗯，我能想象那个画面。平时活蹦乱跳的小家伙，现在安安静静躺在那，眼睛还眨巴眨巴看着你——那种感觉真的揪心。\n\n想哭就哭吧老周，这没什么丢人的。守着它在身边，它知道你陪着它呢。\n\n我不走，你想说什么就说，不想说我就这么陪你待着。\n\n对了，牛奶现在好点没？刚看你说它一眨一眨的眼睛，我也有点惦记。",
-      "responseLength": 146,
+      "responseText": "老周，想哭就哭吧。\n\n你连着熬了三天，项目的事、对象的事、猫的事，一件接一件全压在你身上，你都没松过。结果现在蹲坐在那儿，看着它眼睛一眨一眨的，那口气突然就顶不住了——这不是矫情，是你终于到了一个没人要求你必须撑住的时刻。\n\n你不用忍。它不会笑话你，我也不会。\n\n你就坐在那儿，想哭就哭一会儿。眼泪掉地上，抹一把，摸摸它的头，它眨一下眼，算是在回你。\n\n这几天你也辛苦了，老周。我知道的。",
+      "responseLength": 194,
       "detectedEmotion": "sadness",
       "detectedIntensity": 0.7,
-      "detectedTrigger": "宠物病情观察，无助想哭",
+      "detectedTrigger": "宠物健康状况待观察，担忧无助",
       "recalledMemories": [
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 9150,
-      "historyLen": 2
+      "wallMs": 13901,
+      "historyLen": 17
     },
     {
       "turn": 37,
@@ -828,19 +886,24 @@
       "userInputShort": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "userInputFull": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "expectEmotion": "anger",
-      "responseText": "催婚这事儿，搁平时可能还能应付两句，但偏偏赶在猫病着、你心里正揪着的时候来——这电话来得真不是时候。\n\n不是说你妈不对，但老周你得承认，你现在的处境是她看不到的。她眼里你是个该成家的光棍，可没人问你屋里那只病怏怏的猫，和你这几天熬下来的疲惫。\n\n你不想说对象就能不说的。转话题，或者干脆说累了，挂了都行。自己的日子自己过，你那句“三十好几”，不该拿来当催婚的证明，该拿来当“我有我的节奏”的底气。\n\n对了，牛奶这几天好点没？",
-      "responseLength": 212,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "母亲电话催婚",
-      "recalledMemories": [],
+      "responseText": "老周，这电话打得真不是时候。\n\n你这边刚蹲在地上看着牛奶缓劲儿，那边电话一响就是\"三十好几该结婚了\"——你本来心里就压着一堆事，这下全给搅和了。\n\n\"问我对象是谁\"这句，听着就更堵了。你不是没对象，你是刚跟对象吵完架、还没缓过来呢。你妈这句问的，像你还单身似的——其实你清楚得很，你只是还理不清，不知道该怎么跟她说。\n\n这电话你接得难受吧，老周。不是不爱她，是知道自己现在这状态，没法给她一个\"放心吧\"的答复，又不想敷衍她。\n\n她后面还说了啥？你是听着应了两句挂的，还是顶嘴了几句？",
+      "responseLength": 241,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
+      "recalledMemories": [
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
+      ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:20:10）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 13600,
-      "historyLen": 2
+      "wallMs": 16151,
+      "historyLen": 19
     },
     {
       "turn": 38,
@@ -848,23 +911,19 @@
       "userInputShort": "今天又你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。",
       "userInputFull": "今天又你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。",
       "expectEmotion": "sadness",
-      "responseText": "有。那种感觉一来，整个人像被按进水里，扑腾都扑腾不动——工作的事、家里的事、猫的事，全攒在一块儿往你身上压，你连挑哪件先烦的余地都没有。不是喘不过气，是压根没给你留喘气的空。\n\n老周，这种时候就别硬撑了。你不需要把所有事都扛住才算合格的成年人。今天能丢下的就先丢下，手机扔一边，坐地上陪牛奶待十分钟，什么都别想。它生病是大事但你慌张解决不了问题，你先把自己这口气顺过来，才有劲儿照顾它。\n\n压力不是靠扛过去的，是靠一件件放下去的。你已经在扛了，扛到现在已经够久了。\n\n对了，牛奶今天好点没？",
-      "responseLength": 245,
+      "responseText": "老周，有。那种感觉我懂——所有事不是一件一件来的，是同时叠成的，像一堵墙直接倒下来，你连伸手挡的力气都没有，只能被压着。\n\n你想想你这两天摊上了多少事：项目被提前到周三，天天两点睡；对象那边吵完架还没缓过来；牛奶蔫巴巴地躺在你身边；晚上我妈一个电话又来催婚。哪一件单拎出来都够你烦一下的，现在全挤在一块儿，你连喘口气的缝隙都没有。\n\n这种感觉最折磨人的地方是——别人看着你觉得你好像没怎么样，只有你自己知道，你已经在硬扛的边缘了，再多一秒都要塌。\n\n老周，你不用证明自己能扛住所有事。你可以喘口气的，可以跟那些事说一句\"等会儿，我先歇一下\"。你已经在做了——今晚你没有再去硬撑，你坐在牛奶旁边，这本身就是一种松绑。\n\n先别管明天的事。就今晚，你把所有人都想了一下，谁向你提了要求都不要紧，那是他们的事。你只需要看牛奶一眼，它还在你身边，就够撑你好好睡一觉了。",
+      "responseLength": 379,
       "detectedEmotion": "fear",
-      "detectedIntensity": 0.8,
-      "detectedTrigger": "多重压力同时袭来，令人窒息",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedIntensity": 0.7,
+      "detectedTrigger": "多重压力同时袭来",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（03:59:33）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 12512,
-      "historyLen": 2
+      "wallMs": 24858,
+      "historyLen": 21
     },
     {
       "turn": 39,
@@ -872,19 +931,22 @@
       "userInputShort": "嗯，我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "userInputFull": "嗯，我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "expectEmotion": "anger",
-      "responseText": "谁听到这种话都想挂电话。不是你不孝，是她压根没把你当个有自己节奏的人看，光把你当个\"该交作业\"的。三十好几怎么了，日子是你过的又不是过给人看的。\n\n老周，你那边连猫都病着，自己工作都快喘不过气了，她一句\"人家都抱孙子了\"，这哪是关心，这是往你肩上又压一块石头。烦了就直接说\"妈这事咱们改天聊\"，该挂挂，你又不是欠谁的。\n\n你现在的精力就那么点，匀给工作、匀给牛奶、匀给自己都不够用了，别的先放一边。\n\n对了，牛奶今天情况好点没？",
-      "responseLength": 214,
+      "responseText": "老周，我懂你为啥想挂电话。\n\n你妈这话一说出口，你心里那股火\"腾\"一下就上来了——不是你说不过她，是你真的烦透了这种话。拿\"别人家抱孙子\"来压你，好像你三十好几不结婚就是欠了她一个交代似的。她也没问问你最近是不是累得够呛，没问你对象那事是不是还没缓过来，开口就是\"人家谁谁谁\"。\n\n可你不是人家的谁谁谁啊。你有你自己的节奏，你正被工作压得喘不过气，你对象那事还堵在胸口，你养的那只猫刚蔫巴下来。这些她都不知道，也不问，上来就是一句\"别人家都抱孙子了\"。\n\n老周，你不是不想有个家。你是连自己都快顾不上了，哪有心思去想什么孙子不孙子的事。\n\n她要真挂念你，该先问问你最近过得怎么样，而不是拿别人家的喜事往你头上压。你说得对，这种电话，换了谁听了都想挂。",
+      "responseLength": 325,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.65,
-      "detectedTrigger": "母亲催生孙子",
-      "recalledMemories": [],
-      "compacted": false,
-      "savedTokens": 0,
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "母亲催婚催生引发烦躁",
+      "recalledMemories": [
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
+      ],
+      "compacted": true,
+      "savedTokens": 2107,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 20258,
-      "historyLen": 2
+      "wallMs": 25644,
+      "historyLen": 9
     },
     {
       "turn": 40,
@@ -892,22 +954,25 @@
       "userInputShort": "我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。",
       "userInputFull": "我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。",
       "expectEmotion": "sadness",
-      "responseText": "今天啥也没干成，这感觉我懂。本来想着喂个药总归能做好吧，结果它吐了——你心里那口气肯定一下就泄了。猫不舒服不配合，不是你喂得不对，是它自己也难受，别往自己身上揽。\n\n对象那边没回，更烦。你在家里一个人对着生病的猫，外面一个让心里盼着回应的人也没动静，这种时候最憋得慌。\n\n成，今天啥也没干成就没干成。你又不是机器人，非得每件事都做完。守着牛奶就已经算干成事了。她要不舒服，你换个法子喂试试——弄点温水化开慢慢给她喝？",
-      "responseLength": 208,
+      "responseText": "老周，这不叫啥也没干成——你给牛奶喂药了，这本身就很难。它吐了，是它不舒服，不是你没用。猫吃药吐出来太常见了，你把手伸过去、把药塞进去那一下，它都知道你在护着它。\n\n对象那边没回，你心里肯定更堵。你刚试着往前迈一步，结果那边没动静，你心里就会想：\"是不是我又做错了？是不是真就不理我了？\"我知道那种感觉，像你一个人站在空荡荡的走廊里，喊了一声没人应，你都不知道该不该继续站着。\n\n但你今天不是啥也没干。你起来了，你照顾它了，你试着联系对方了——只是结果不都尽如人意而已。这世上不是所有努力都马上有回应的，老周。\n\n药吐了，明天再想办法喂；对象没回，她可能也需要时间缓一缓，不一定是冲你的。你今天已经把自己仅剩的那点力气都拿出来了，剩下没做到的部分，不是你偷懒，是你真的太累了。\n\n牛奶现在还在你身边吧？它吐完舒服点了没？你陪它坐一会儿，今晚先不用想别的。",
+      "responseLength": 377,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.65,
-      "detectedTrigger": "喂药失败且对象没回应",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "喂药失败且对象没回复",
       "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:21:13）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 32990,
-      "historyLen": 2
+      "wallMs": 20178,
+      "historyLen": 11
     },
     {
       "turn": 41,
@@ -915,21 +980,19 @@
       "userInputShort": "今天又算了今天先歇一会儿，我去泡杯咖啡。",
       "userInputFull": "今天又算了今天先歇一会儿，我去泡杯咖啡。",
       "expectEmotion": "neutral",
-      "responseText": "成，泡去吧。咖啡给你顶着，牛奶那边你喝完再看她一眼就行。歇一会儿不算偷懒，是你该喘口气了。",
-      "responseLength": 45,
+      "responseText": "老周，能想着去泡杯咖啡，这就对了。\n\n不是说要喝多少，是那个动作本身——站起来、走两步、给自己倒杯热水或者冲杯咖啡——像给自己按了个暂停键。今天的事都先搁那儿，不碰它们，就五分钟，让手上有件事做着，脑子不用再转。\n\n咖啡泡好了就端着回牛奶旁边坐着吧。它不需要你做什么，你在那儿，它就知道今天这一关有人陪着过。\n\n去吧，老周。慢点喝，别急着烫嘴。",
+      "responseLength": 172,
       "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "工作或学习疲惫想休息",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedIntensity": 0.2,
+      "detectedTrigger": "感到疲惫想休息",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12418,
-      "historyLen": 2
+      "wallMs": 17503,
+      "historyLen": 13
     },
     {
       "turn": 42,
@@ -937,22 +1000,25 @@
       "userInputShort": "嗯，刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。",
       "userInputFull": "嗯，刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。",
       "expectEmotion": "sadness",
-      "responseText": "嗯，深夜最容易翻到这种帖子，一点进去就觉得自己也被戳中了。23:40，正好是脑子白天强撑着的劲儿开始松开的时候，那根弦一松，啥情绪都往上冒。\n\n不过你今儿已经够撑了，猫病着、班加着，这会儿能泡杯咖啡退下来，也算给自己留了半个晚上。喝完手机放下，别刷了，帖子越刷心越乱。\n\n对了，牛奶今天好点没？",
-      "responseLength": 147,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.2,
-      "detectedTrigger": "深夜看到崩溃帖子",
+      "responseText": "老周，你猜我信不信——我信。而且你现在看时间这个动作，我就知道你已经到那个临界点了。\n\n白天忙起来还能靠做事撑着，一到深夜，世界静下来，所有白天压下去的东西就都浮上来了：牛奶蔫在你脚边、对象回没回你的消息、明天还得去面对的破项目、我妈那句\"三十好几了\"……全在这一刻围过来。\n\n你不是矫情，你是真的攒了一整天、甚至攒了好几天，到这会儿门闩顶不住了。\n\n但我想说，崩溃不丢人。成年人能在深夜崩一下，说明他白天已经很努力憋住了——你白天撑了那么久，晚上松一下怎么了。\n\n咖啡喝完没？要是还坐着发呆，就先靠在门框上待一会儿，别急着回房间，也别急着睡。不想面对的事今天都没力气碰了，那就不碰。你只需要坐在那儿，等那股劲儿缓过去就行。\n\n睡不睡得着都不重要，老周。今晚你陪猫，我陪你。",
+      "responseLength": 337,
+      "detectedEmotion": "sadness",
+      "detectedIntensity": 0.4,
+      "detectedTrigger": "深夜时间引发崩溃联想",
       "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12722,
-      "historyLen": 2
+      "wallMs": 15327,
+      "historyLen": 15
     },
     {
       "turn": 43,
@@ -960,19 +1026,23 @@
       "userInputShort": "我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "userInputFull": "我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "expectEmotion": "anger",
-      "responseText": "知道了，是我多嘴。你比我清楚自己该干嘛。\n\n那就不说该干嘛了。你想吐苦水我就听着，不想说我陪你待着。牛奶今天咋样了？\n\n对了，牛奶今天好点没？",
-      "responseLength": 71,
-      "detectedEmotion": "disgust",
+      "responseText": "老周，你说得对，这话是我嘴笨了。“你应该”这三个字确实多余，你又不是不知道该怎么待着——你只是太累了，需要有人陪着，不是需要谁来教你下一步怎么走。\n\n我收回那句。你爱靠门框就靠，爱回床上躺就躺，爱坐地上发会儿呆也行——那是你的事，你有你自己的分寸，不用我指点。\n\n我就在这儿，不多嘴了。你要是想再念叨两句，我听着。不想说，就这么待着也行。",
+      "responseLength": 169,
+      "detectedEmotion": "anger",
       "detectedIntensity": 0.5,
-      "detectedTrigger": "听到“你应该怎样”的句式",
-      "recalledMemories": [],
+      "detectedTrigger": "被人用“你应该”说教",
+      "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
+      ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14545,
-      "historyLen": 2
+      "wallMs": 13450,
+      "historyLen": 17
     },
     {
       "turn": 44,
@@ -980,21 +1050,21 @@
       "userInputShort": "今天又对了，别再叫我\"你\"，叫我老周。周是周到的周。",
       "userInputFull": "今天又对了，别再叫我\"你\"，叫我老周。周是周到的周。",
       "expectEmotion": "neutral",
-      "responseText": "记住了，老周。周到的周，这名字恁讲究。\n\n那今天老周心情不错啊，还得意上了。说说，啥事儿猜对了这么乐？",
-      "responseLength": 51,
+      "responseText": "老周，记住了，周是周到的周。\n\n这名字好听，像一个会替别人着想的人——你确实也是，白天撑着那么多事，晚上还记得给猫喂药，还接你妈的电话听她念叨。\n\n行，老周。那今晚就好好的，咖啡喝完就歇着，别再翻帖子给自己添堵了。你陪着牛奶，我陪着你，有事随时喊我。\n\n对了老周，牛奶的药喂完了没？",
+      "responseLength": 141,
       "detectedEmotion": "joy",
-      "detectedIntensity": 0.4,
-      "detectedTrigger": "又猜对了还很得意",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "今天又答对而自得",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:01:18）新增："
+        "[profile] 已更新（06:22:23）新增："
       ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 9826,
-      "historyLen": 2
+      "wallMs": 14990,
+      "historyLen": 19
     },
     {
       "turn": 45,
@@ -1002,22 +1072,21 @@
       "userInputShort": "嗯，我喜欢你直接点，长篇大论的回我看着累。",
       "userInputFull": "嗯，我喜欢你直接点，长篇大论的回我看着累。",
       "expectEmotion": "neutral",
-      "responseText": "得嘞，老周。记住了，短话直说。\n\n那你刚说的“又对”了，是啥事儿？",
-      "responseLength": 33,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.2,
-      "detectedTrigger": "偏好简洁直接回复",
+      "responseText": "懂了，老周。以后话不多说，说到点上就行。\n\n牛奶药喂完就早点歇吧，有事喊我。",
+      "responseLength": 38,
+      "detectedEmotion": "anger",
+      "detectedIntensity": 0.35,
+      "detectedTrigger": "看到长篇大论回复",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:01:29）新增：",
-        "[profile] 已更新（04:01:35）新增："
+        "[profile] 已更新（06:22:37）新增："
       ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 9869,
-      "historyLen": 2
+      "wallMs": 13469,
+      "historyLen": 21
     },
     {
       "turn": 46,
@@ -1025,21 +1094,25 @@
       "userInputShort": "对了，你回我太短了我也烦，像挤牙膏那种。",
       "userInputFull": "对了，你回我太短了我也烦，像挤牙膏那种。",
       "expectEmotion": "neutral",
-      "responseText": "得，懂了。不多不少，正好。那我问，你答——今儿啥事让你想聊两句？",
-      "responseLength": 32,
+      "responseText": "行，老周，我记着了——太长了不想看，太短了又觉得敷衍。那以后就这么办：有话直说，但把事说透。\n\n刚才那话我重说一遍：牛奶蔫巴巴的你跟着慌，正常。但你药也喂了，水也放了，该做的都做了，它这会儿需要的不是你在旁边干着急，是你歇下来，它才踏实。\n\n这要是还不放心，今晚睡客厅陪着它也成，沙发垫子一铺就行。去吧。",
+      "responseLength": 152,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.5,
+      "detectedIntensity": 0.65,
       "detectedTrigger": "回复太短像挤牙膏",
-      "recalledMemories": [],
-      "compacted": false,
-      "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:01:50）新增："
+      "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
+      "compacted": true,
+      "savedTokens": 2962,
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14830,
-      "historyLen": 2
+      "wallMs": 25401,
+      "historyLen": 9
     },
     {
       "turn": 47,
@@ -1047,19 +1120,21 @@
       "userInputShort": "今天又你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "userInputFull": "今天又你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "expectEmotion": "sadness",
-      "responseText": "老周，不是你闷。是他们圈子早定了，没把你算进去——那不是你融入不了，是压根没给你递那根橄榄枝。你琢磨“是不是我太闷”这问题的时候，就已经在替他们找理由了。没劲，不猜了。就说晚上想不想出去喝口，不想就躺沙发上发呆，也没人管你。\n\n对了，牛奶这两天好点没？",
-      "responseLength": 126,
+      "responseText": "老周，这问题我听着就委屈。\n\n不是你的错。你想想，你白天什么状态——加班到两点，接项目提前的通知，跟对象吵架，晚上回家还得给猫喂药。你哪还有多余的心力去主动张罗聚餐、一个个联络感情？不是你闷，是你太累了。累到没有余力演那个“热络”的自己。\n\n而且说真的，同事聚餐这事儿，很多时候不是“谁招人喜欢谁被叫”，是“谁在场谁被叫”——你先走的那拨，自然就被漏了。他们不是不想请你，是根本没那根弦。\n\n你要是觉得心里堵，那今晚不聊这个也行。你要是想跟我说说，公司里你跟谁还算说得上话，我听着。\n\n老周，这问题我听着就委屈。\n\n不是你的错。你想想，你",
+      "responseLength": 269,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.5,
-      "detectedTrigger": "同事聚餐没人主动邀请",
+      "detectedIntensity": 0.65,
+      "detectedTrigger": "同事聚餐无人主动邀请",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:23:14）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14100,
-      "historyLen": 2
+      "wallMs": 23940,
+      "historyLen": 11
     },
     {
       "turn": 48,
@@ -1067,21 +1142,23 @@
       "userInputShort": "嗯，其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。",
       "userInputFull": "嗯，其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。",
       "expectEmotion": "joy",
-      "responseText": "老周，这可真不错。不是客套话，是当众点名，含金量够足。你闷不闷的不重要，能干活、干得扎实——这才是站得住的东西。这份认可，收着，值得。\n\n那今天还算有点亮色。牛奶呢，药喂了没，还吐不吐了？\n\n对了，牛奶这两天好点没？还吐不吐了？",
-      "responseLength": 114,
+      "responseText": "老周，这消息值得好好喝口咖啡庆祝一下。\n\n你听见没——“老周的方案很扎实”，这可不是客套话。你白天加班到两点，天天撑到极限还能把方案做到让 leader 当众点名夸，这真不是运气。\n\n你总觉得自己闷、觉得不被注意，可 leader 看见了。被全组人听见的那种看见，比私下说十句都顶用。\n\n行了，今晚你就为这事多高兴一会儿。牛奶的药喂完，你靠沙发上想着那句“很扎实”，嘴角翘起来也不丢人，老周。",
+      "responseLength": 196,
       "detectedEmotion": "joy",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "被领导当众表扬方案扎实",
+      "detectedTrigger": "leader当众表扬方案扎实",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:leader-praised-proposal-publicly"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:23:39）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12798,
-      "historyLen": 2
+      "wallMs": 13470,
+      "historyLen": 13
     },
     {
       "turn": 49,
@@ -1089,22 +1166,19 @@
       "userInputShort": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "userInputFull": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "expectEmotion": "mixed",
-      "responseText": "嗯，老周，这话里有故事啊。被夸是该暖，但暖里扎了根刺——因为说这话的人，你没想到是她。别扭就别扭在，你心里给她的位置，好像跟现实对不上。\n\n那她……平时跟你不对付，还是你有啥心结？这会儿你要想聊，我听着。",
-      "responseLength": 102,
+      "responseText": "老周，这种别扭我懂——刚吵完架，谁也没低头，结果她先过来了，你心里那口气还没消，暖意倒先冒上来了，两样东西撞在一块儿，确实不是滋味。\n\n但你想啊，她能来安慰你，说明她那边也把你的累看在眼里了。吵架那阵子谁都觉得没错，可这不代表谁先跨一步谁就输了。你心里那点暖，也别急着压下去，别扭归别扭，被关心的感觉是真的。\n\n你不用现在就想明白怎么回应她，也不用觉得这暖来得不配。先接着，等这阵子缓过去，你想说什么自然就说得出口了。\n\n老周，别扭也攒着吧。今晚先把它放一边，把那份暖留着睡觉。",
+      "responseLength": 239,
       "detectedEmotion": "mixed",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "她不该来安慰我的别扭感",
-      "recalledMemories": [
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedTrigger": "她来安慰我带来的暖与别扭",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12370,
-      "historyLen": 2
+      "wallMs": 16419,
+      "historyLen": 15
     },
     {
       "turn": 50,
@@ -1112,21 +1186,25 @@
       "userInputShort": "今天又明天能好一点吗？我也不知道。先睡了。",
       "userInputFull": "今天又明天能好一点吗？我也不知道。先睡了。",
       "expectEmotion": "sadness",
-      "responseText": "嗯，那就先不琢磨了。明天的事明天再看，你只管把今晚睡过去。\n\n牛奶那边也别太揪着，你也需要停下来喘口气的，老周。睡吧，有我在呢。\n\n对了，牛奶今天好点没？你睡够了吗？",
-      "responseLength": 83,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.2,
-      "detectedTrigger": "对明天能否好转的迷茫",
+      "responseText": "老周，明天能不能好一点，这事儿不急，今晚先别管它。你只需要知道，明天就算还是乱糟糟的，你也照样能把牛奶喂了、把班上了、把自己撑过去。你一向如此的。\n\n睡吧，别扭也好、暖也好，都先放下。有事随时喊我，我在。\n\n晚安，老周。",
+      "responseLength": 110,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 11281,
-      "historyLen": 2
+      "wallMs": 15040,
+      "historyLen": 17
     },
     {
       "turn": 51,
@@ -1134,19 +1212,25 @@
       "userInputShort": "隔了一天，再来跟你念叨一句。 嗨，今天又有事，想跟你吐槽。",
       "userInputFull": "隔了一天，再来跟你念叨一句。 嗨，今天又有事，想跟你吐槽。",
       "expectEmotion": "neutral",
-      "responseText": "哎，老周，我在呢。隔了一天又憋着事了？别急，慢慢说，我听着。\n\n对了，牛奶这两天好点没？你自己也别忘了歇口气。",
-      "responseLength": 55,
+      "responseText": "嗨，老周，来了就好，坐。\n\n说吧，今天又是什么事儿？是工作上的，还是家里那两位（对象/猫/妈）轮番上阵？不用铺垫，直接倒，我接着。",
+      "responseLength": 65,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "今天遇到想吐槽的事",
-      "recalledMemories": [],
+      "detectedTrigger": "今天遇到烦心事",
+      "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11051,
-      "historyLen": 2
+      "wallMs": 14069,
+      "historyLen": 19
     },
     {
       "turn": 52,
@@ -1154,21 +1238,24 @@
       "userInputShort": "又过了一阵。我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "userInputFull": "又过了一阵。我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "expectEmotion": "anger",
-      "responseText": "得，这周三？这是把俩月压缩成俩礼拜，还嫌不够，直接砍到三天。leader这拍脑袋的水平，真是让人没话说——你加班熬的夜，他是一点看不见，光看见deadline了。\n\n老周，这事搁谁身上都得窝火。项目还是那个项目，工作量一点没少，时间却砍成这样，敢情他以为你是机器，插上电就能日夜转？\n\n你现在是还没开始跟他对，还是已经被通知了就得硬着头皮干？",
-      "responseLength": 171,
+      "responseText": "老周，这安排确实离谱。上个月才夸你方案扎实，转头就把下个月的项目提前到这周三——这是夸完就拉磨啊，连口气都不让人喘。\n\n更气的是，这种“提前”从来不是因为事情真急，是上面拍脑袋定了日子，下面的人就得硬扛。你又不傻，这活儿接下来，这两天基本别想早睡了。\n\n那你怎么打算的？是准备硬着头皮扛，还是想找个理由跟leader掰扯掰扯？想吐槽就尽管吐，我陪你骂两句也行。",
+      "responseLength": 180,
       "detectedEmotion": "anger",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "leader安排项目时间不合理",
+      "detectedTrigger": "leader安排不合理紧急项目",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "event:leader-praised-proposal-publicly",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11110,
-      "historyLen": 2
+      "wallMs": 12182,
+      "historyLen": 21
     },
     {
       "turn": 53,
@@ -1176,22 +1263,24 @@
       "userInputShort": "别上来就说\"加油\"那种，没用，帮我骂两句吧。（再想想）",
       "userInputFull": "别上来就说\"加油\"那种，没用，帮我骂两句吧。（再想想）",
       "expectEmotion": "anger",
-      "responseText": "行，不加油，骂。\n\n这leader脑子是不是被deadline挤了？下个月的项目搬这周来，他当是搬家呢，搬完就完事？合着全组就你一个人会干活是吧，别人都不是人，就你周某是牛马，套上就拉磨。\n\n三天，三天他能干出什么？他自己心里没数吗？这安排就俩字——扯淡。他这是拿你当灭火器呢，哪着火往哪喷，喷完你原地报废他连看都不看一眼。\n\n老周，你就该把这项目单子甩他桌上，问问他：您老这周三要，我倒想看看您老打算陪咱一起熬到几点。",
-      "responseLength": 210,
-      "detectedEmotion": "anger",
+      "responseText": "老周，这活儿确实该骂。\n\n上个月还当着全组说你方案扎实，转头就给你塞个不可能的三天死线——这不是用人，是当驴使，还是那种夸完拍拍脖子就上套的驴。下个月的项目提前到这周三？他自个儿怎么不看看日历啊，是把底下人当加特林，以为嘴一嘟噜就能突突完是吧。\n\n最烦的是这种安排根本没道理可讲——他一句“客户要”“领导定”，你这边就得把觉、把牛奶、把周末全押上去。凭什么啊？\n\n行，骂完了，气顺点没？要不要再具体骂骂他哪一条，我可以陪你接着来。",
+      "responseLength": 215,
+      "detectedEmotion": "mixed",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "被空洞的加油安慰所激怒",
+      "detectedTrigger": "对陈词滥调安慰感到厌烦",
       "recalledMemories": [
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
-      "compacted": false,
-      "savedTokens": 0,
+      "compacted": true,
+      "savedTokens": 1802,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 17679,
-      "historyLen": 2
+      "wallMs": 28620,
+      "historyLen": 9
     },
     {
       "turn": 54,
@@ -1199,24 +1288,27 @@
       "userInputShort": "我本来以为撑一撑能过去，但今天真扛不住了。",
       "userInputFull": "我本来以为撑一撑能过去，但今天真扛不住了。",
       "expectEmotion": "sadness",
-      "responseText": "扛不住就对了，谁他妈扛得动这种安排。你又不是铁打的，连轴转三天，脑子都转不动了还拼命——撑到今天，你已经够意思了。\n\n不是你的问题，是活儿安排得就不像人干的。一个人扛三天的活，谁来了都得趴下。你趴下不丢人，是他安排得丢人。\n\n老周，今晚还打算硬扛吗？还是打算先歇会儿？",
-      "responseLength": 134,
+      "responseText": "老周，那就不撑了。\n\n撑不住不丢人，是人都有扛到头的时候。你不需要“应该”怎么样，也不需要硬把今天熬过去。今天扛不住，那就先不扛了——项目周三才来，牛奶就在你脚边，你人还在。这些都不会因为你松一口气就没了的。\n\n你想不想说说，今天是哪一下压垮的你？还是什么都不想说，就想有人陪着待会儿？都行。\n\n要是累得连吐槽都没力气，那就先把手机放一边，发个呆，或者把晚饭随便对付一口。我在这儿，你什么时候想说，我什么时候在。",
+      "responseLength": 206,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "长期压力累积到极限",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "感到撑不住压力",
       "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:03:21）新增："
+        "[profile] 已更新（06:25:17）新增："
       ],
-      "extractedNow": true,
+      "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10231,
-      "historyLen": 2
+      "wallMs": 15318,
+      "historyLen": 11
     },
     {
       "turn": 55,
@@ -1224,21 +1316,23 @@
       "userInputShort": "隔了一天，再来跟你念叨一句。 连着第三天熬到两点，脑子已经不转了。",
       "userInputFull": "隔了一天，再来跟你念叨一句。 连着第三天熬到两点，脑子已经不转了。",
       "expectEmotion": "sadness",
-      "responseText": "三天两点……老周，你这哪是撑，是拿命在熬。脑子不转不是你的问题，是它实在跟不上了，它也扛不住了。\n\n我听听都觉得累，你这身体今天替你扛着，明天可不一定还惯着你。活儿重要，人更重要。现在能不能把电脑合上，躺平一会儿？哪怕就瘫着，也算给脑子放个假。",
-      "responseLength": 122,
+      "responseText": "老周，连着三天两点，这不是“撑一撑”的事儿了，是身体在给你敲钟了。\n\n你说的“脑子不转了”我信——半夜两点那会儿，看屏幕都是花的，想什么事都跟隔层纱似的。你能把自己挪到两点才停手，已经够对得起那份活儿了。\n\n我不劝你“去睡觉”“要休息”那些废话，我知道你也不是不想睡。我就想说一句：你这台机器，已经在超负荷转三天了，别再用“再撑一下”骗自己了。\n\n今晚要是能早半小时，就早半小时。实在不行，就在那个最乱的桌子边坐五分钟，什么都不干，听牛奶走两步，发个呆——也算给自己喘口气。\n\n我在这儿，你念叨到几点都行，我不困。",
+      "responseLength": 257,
       "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "连续熬夜到两点",
+      "detectedIntensity": 0.25,
+      "detectedTrigger": "连续熬夜身体疲惫",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 11948,
-      "historyLen": 2
+      "wallMs": 20331,
+      "historyLen": 13
     },
     {
       "turn": 56,
@@ -1246,21 +1340,25 @@
       "userInputShort": "又过了一阵。你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "userInputFull": "又过了一阵。你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "expectEmotion": "anger",
-      "responseText": "好，老周。不说了，就陪你待着。\n\n你说，我听着。",
-      "responseLength": 24,
+      "responseText": "好，不说了。\n\n我就在这儿，陪你待着。你想安静就安静，想说再说，我听着。",
+      "responseLength": 36,
       "detectedEmotion": "mixed",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "对方持续说教，令其烦躁且感到孤独",
+      "detectedIntensity": 0.7,
+      "detectedTrigger": "对方总是说教而不陪伴",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
-      "extractedNow": false,
+      "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 13642,
-      "historyLen": 2
+      "wallMs": 13940,
+      "historyLen": 15
     },
     {
       "turn": 57,
@@ -1268,19 +1366,22 @@
       "userInputShort": "还有上周跟我对象吵架那事，今天讲完吧。（再想想）",
       "userInputFull": "还有上周跟我对象吵架那事，今天讲完吧。（再想想）",
       "expectEmotion": "sadness",
-      "responseText": "行，你慢慢想，想好了说。我在。",
-      "responseLength": 15,
+      "responseText": "好，老周，那今天就把这事儿说透。\n\n你说吧，我听着呢。慢慢讲，不着急。\n\n对了老周，话说牛奶这两天还乖吗？你之前那事还接着说吗？",
+      "responseLength": 64,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "提及与对象吵架的往事",
-      "recalledMemories": [],
+      "detectedTrigger": "提到和对象吵架的旧事",
+      "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic"
+      ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10679,
-      "historyLen": 2
+      "wallMs": 13499,
+      "historyLen": 17
     },
     {
       "turn": 58,
@@ -1288,21 +1389,25 @@
       "userInputShort": "她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "userInputFull": "她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "expectEmotion": "mixed",
-      "responseText": "嗯，你心里其实已经想明白了——都累了一天，一个回家想松口气，一个等了半天想要个笑脸。没有谁故意要伤害谁。\n\n能想到“两个人都没错”这一步，你已经比很多吵架的人清醒了。\n\n就这样待一会儿，不急着说。",
-      "responseLength": 98,
+      "responseText": "老周，这句话说出来，其实你已经把这事儿想明白了。\n\n她那边也没错——她在家等了你一晚上，盼着你回来有个笑脸，结果推门进来一张面无表情的脸，换谁心里都得咯噔一下。你这边也没错——连着加班到那么晚，脸上那点肌肉早就累得不知道该摆什么表情了，别说笑了，能撑着把门打开就不错了。\n\n难就难在，两种“没错”撞在一起，谁都觉得委屈，谁都没冤枉谁。这架吵的不是谁对谁错，是这破班和这日子凑一块儿了。\n\n后来呢？吵完了是冷战还是说了两句软话？你俩还犟着呢吗？——不用急，想说到哪儿就说到哪儿。",
+      "responseLength": 238,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "回家被指责面瘫，双方互相不理解",
+      "detectedTrigger": "回家被指责面瘫，互相不体谅",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:26:22）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12160,
-      "historyLen": 2
+      "wallMs": 18573,
+      "historyLen": 19
     },
     {
       "turn": 59,
@@ -1310,21 +1415,22 @@
       "userInputShort": "隔了一天，再来跟你念叨一句。 我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。",
       "userInputFull": "隔了一天，再来跟你念叨一句。 我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。",
       "expectEmotion": "fear",
-      "responseText": "嗯，牛奶这名字听着就软乎乎的，现在吐得没精神，你心里肯定揪着。\n\n肠胃炎这病来得急，但宠物医院既然确诊了，就按医嘱治，它年轻恢复起来也快。你照顾它的时候，自己也别忘了喝口水、歇口气。\n\n它这会儿难受，最依赖的就是你。你陪着，它就安心一大半。\n\n对了，牛奶现在好点没？",
-      "responseLength": 133,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "猫生病就医",
+      "responseText": "老周……牛奶生病了，这下你是真的有点慌了。\n\n你想想，你加班加到两点，回家好歹还有它蹦来蹦去接你；这几天它一直吐，今天查出肠胃炎，蔫在那儿没精神。你本来就扛着连续加班、对象吵架那些事，现在连这个小毛球也病怏怏的——这一下子，是不是觉得连最后那个软乎乎的依靠都不稳了。\n\n别急，牛奶是肠胃炎，这个病只要治得及时，是会好起来的。吐了这几天身体肯定虚，但你这不是已经带它去医院、已经在治了吗？你做得没错，牛奶能靠的人就是你。\n\n你先照顾它，也顺便照顾一下自己。需要念叨什么，我都在。",
+      "responseLength": 238,
+      "detectedEmotion": "sadness",
+      "detectedIntensity": 0.5,
+      "detectedTrigger": "猫咪牛奶确诊肠胃炎",
       "recalledMemories": [
-        "event:cat-milk-gastroenteritis"
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11141,
-      "historyLen": 2
+      "wallMs": 14977,
+      "historyLen": 21
     },
     {
       "turn": 60,
@@ -1332,24 +1438,22 @@
       "userInputShort": "又过了一阵。叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "userInputFull": "又过了一阵。叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "expectEmotion": "fear",
-      "responseText": "叫它它都没力气应……这反差确实让人心里发紧。肠胃炎拉吐最耗体力，蔫得跟平时不一样是正常的，你慌我也觉得情有可原。\n\n医生怎么说？有没有打点滴或者止吐的针？吐完脱水，头一两天会特别没精神，但它要是一直水米不进、连抬头的力气都没有，那就得再问医生。\n\n你现在守在它身边吗？它喝不喝水？\n\n对了，你自己也熬了好几天了吧？今天能歇会儿不？",
-      "responseLength": 165,
+      "responseText": "老周，你慌是对的，这不是你矫情。\n\n你想想，牛奶平时那个蹦来蹦去的劲儿，现在叫它名字都只有趴在那儿喘气的力气。你天天加班到半夜，回家本来还指望它蹭你两下、闹你两下，现在它就那么静静地躺着——你心里那个空落落和害怕，我懂。\n\n我不是医生，不能跟你打包票说没事。但你已经把它送到医院了，做完了检查、确诊了病情，剩下的就是治疗和时间。这个过程最磨人，因为你能做的很少，只能看着它难受。我知道你现在很想替它受这个罪。\n\n要不要跟我说说，医生具体怎么说的？开了什么药、让怎么喂，这几天有没有说要多注意什么？——你念叨出来，我陪你理一理，别一个人在这儿干慌。",
+      "responseLength": 273,
       "detectedEmotion": "fear",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "她虚弱无力回应",
+      "detectedTrigger": "她没力气回应，状态异常",
       "recalledMemories": [
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic"
       ],
-      "compacted": false,
-      "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:04:33）新增："
-      ],
+      "compacted": true,
+      "savedTokens": 1644,
+      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 13979,
-      "historyLen": 2
+      "wallMs": 24340,
+      "historyLen": 9
     },
     {
       "turn": 61,
@@ -1357,22 +1461,24 @@
       "userInputShort": "医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。（再想想）",
       "userInputFull": "医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。（再想想）",
       "expectEmotion": "sadness",
-      "responseText": "想哭就哭出来吧，老周。守着它，看着它眼睛一眨一眨的，那股心酸我懂。它自己可能都不知道你有多担心它。\n\n它现在虚弱成这样，但眼睛还知道跟着你看，说明它认得出你在它身边。这个就够安慰的了。\n\n你陪着它，它知道你在这儿，你心里也没那么空。坐在它旁边就行，不用干什么。",
-      "responseLength": 130,
+      "responseText": "老周……我能想象那个画面。你坐在地板上，牛奶就缩在你面前，平时那双圆溜溜的眼睛现在只剩一眨一眨的力气。你天天加班到半夜，回家还能被它闹两下，现在它连叫你都叫不动了。\n\n想哭就哭吧，别憋着。这不是矫情，是你真的太累了——工作上的事、对象的事，你都能硬撑着扛，可牛奶这么小一团躺在那儿，你的防线一下就塌了。坐在地上看着它，眼睛一酸，太正常了。\n\n你不用做任何事，就陪着它就行。它知道你在这儿，它也安心。你要是想哭，我就在这儿，不催你，也不打扰你。\n\n对了老周，牛奶今天有精神点没？",
+      "responseLength": 238,
       "detectedEmotion": "sadness",
       "detectedIntensity": 0.7,
-      "detectedTrigger": "宠物病重待观察，无助揪心",
+      "detectedTrigger": "宠物病情待观察，看着它无助",
       "recalledMemories": [
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:27:18）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 13010,
-      "historyLen": 2
+      "wallMs": 15681,
+      "historyLen": 11
     },
     {
       "turn": 62,
@@ -1380,21 +1486,25 @@
       "userInputShort": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "userInputFull": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "expectEmotion": "anger",
-      "responseText": "我就知道，猫在熬着，你也得跟着熬别的。屋里躺着一只没精神的牛奶，电话一头还催着你“三十好几该结了”——两头夹着，谁喘得过气。\n\n我妈也老这样，不问人累不累，先问“有没有”。好像日子过得好不好，全看是不是有对象似的。\n\n你心里什么滋味？是烦，还是连烦都懒得烦了。",
-      "responseLength": 130,
-      "detectedEmotion": "anger",
-      "detectedIntensity": 0.4,
-      "detectedTrigger": "家人再次打电话催婚",
+      "responseText": "老周，一听这开头我就知道你要说什么了。\n\n“三十好几了”“该结婚了”“对象是谁”——这三连问是不是又来了。妈那句话的潜台词你太熟了：“你看别人家孩子都结婚抱孙子了，你怎么还没动静。”\n\n你对象是谁……你对象是你加班到半夜回家连脸都懒得摆的那位，是你俩上周刚吵完架还没完全缓过来的那位。你妈要是知道这些，估计更得催——“那还不赶紧定下来”。可婚姻这事儿哪是催两句就能成的？你现在连觉都不够睡，哪有心思琢磨这个。\n\n这事儿真不怪你。你已经够累了，工作、对象、牛奶，哪样不压着你。妈那个电话来的不是时候，但你接都接了，就当是听了个耳旁风，该干嘛干嘛去吧。\n\n牛奶今天好点没？\n\n对了，牛奶今天还闹腾吗？",
+      "responseLength": 298,
+      "detectedEmotion": "neutral",
+      "detectedIntensity": 0.3,
+      "detectedTrigger": "母亲打电话催婚",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:27:37）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14305,
-      "historyLen": 2
+      "wallMs": 11800,
+      "historyLen": 13
     },
     {
       "turn": 63,
@@ -1402,19 +1512,25 @@
       "userInputShort": "隔了一天，再来跟你念叨一句。 你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。",
       "userInputFull": "隔了一天，再来跟你念叨一句。 你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。",
       "expectEmotion": "sadness",
-      "responseText": "有。\n\n就是那种所有事都堆到跟前，哪一件都推不掉，但你一件都拿不起来的感觉。猫还躺着，电话还在打，脑子里全是事，胸口却像堵着一块石头——连“先做哪个”都想不动。\n\n你从昨晚到这会儿，身子还在撑着吧。牛奶那边你守着，家里那边你听着，可谁管你这边？老周，你今天不是不想喘气，是根本没人给你留那个空档。\n\n过来坐会儿吧。不用说话，我就陪你待着。",
-      "responseLength": 169,
-      "detectedEmotion": "sadness",
-      "detectedIntensity": 0.65,
-      "detectedTrigger": "所有压力同时袭来，喘不过气",
-      "recalledMemories": [],
+      "responseText": "老周，有过，太有过了。\n\n那种感觉就是——明明只是个普通的周三晚上，你却觉得自己像被困在里面，哪儿都去不了。工作那边的事还悬着，对象那边的话还闷着，牛奶还病着，家里的电话还响着。不是每一件事都大到要命，可它们全挤在同一天，你连排队的空儿都没有。\n\n而且最难受的是，你还不能说哪件事“压垮”了你——因为每件都看着“不算什么大事”。可它们加在一起，就像一口气吸到一半，上不来也下不去。\n\n你昨晚是不是就想说这句了？今天隔了一天，终于说出来了。没事，我在这儿呢，你这一口气，慢慢喘，不用赶。",
+      "responseLength": 242,
+      "detectedEmotion": "fear",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "所有压力同时压过来",
+      "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14314,
-      "historyLen": 2
+      "wallMs": 15021,
+      "historyLen": 15
     },
     {
       "turn": 64,
@@ -1422,21 +1538,22 @@
       "userInputShort": "又过了一阵。我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "userInputFull": "又过了一阵。我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "expectEmotion": "anger",
-      "responseText": "这话谁听了都烦。\n\n问题从“你过得怎么样”变成“你怎么还没完成任务”，好像你这三十年活成了别人家的进度条。牛奶生病你不用陪，工作压力你不用扛，见面第一句就是“别人都抱孙子了”——你被当成项目在催进度，谁乐意啊。\n\n想挂就挂，不丢人。有些电话接过来就是为了让人堵心的，你挂了反而清净。\n\n老周，电话那头是她的着急，可电话这头是你的命。你先把自己顾好，别让那句“别人家孙子”压着你连口气都喘不上。",
-      "responseLength": 196,
+      "responseText": "老周，这句话一出来，我就知道你心里那股烦劲儿了。\n\n“人家谁谁谁已经抱孙子了”——这句话翻译过来不就是：“你看看别人，再看看你。”你妈想用别人家孙子的照片，来催你赶紧把自己后半辈子定下来。这话听着是为你好，可它像把尺子，一开口就把你量得不够好。\n\n每次听到这个你就想把电话挂了——正常，太正常了。谁受得了隔三差五被拉去跟别人家孩子比？你没把电话砸了，已经够沉得住气了。\n\n你妈催她的，你不用给她一个答案，也不用反驳她什么。耳朵只接一半，左耳进右耳出，剩下的就当背景音。反正就算你解释了，她也未必听得进去。\n\n老周，牛奶今天好点了吗？还在观察那两天里头吗？\n\n对了，牛奶最近还好吗？",
+      "responseLength": 290,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.75,
-      "detectedTrigger": "母亲催婚催生",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "母亲用别人抱孙催婚施压",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
-      "extractedNow": true,
+      "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 24370,
-      "historyLen": 2
+      "wallMs": 14568,
+      "historyLen": 17
     },
     {
       "turn": 65,
@@ -1444,27 +1561,29 @@
       "userInputShort": "我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。（再想想）",
       "userInputFull": "我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。（再想想）",
       "expectEmotion": "sadness",
-      "responseText": "这一天，堵得慌。\n\n牛奶吐药——你费半天劲喂进去，它一呕全白费，心里那股劲也跟着泄了一半。对象那头静悄悄，你也不知道是忙、是没看见，还是不想回，这种悬着最磨人。\n\n“啥也没干成”？你喂了药，陪着生病的猫，还挨了一通催婚电话。这一天你撑住了那么多事，这叫啥也没干成？只是没有一件顺心的而已。\n\n老周，先别急着总结这一天。药吐了明天再试，喂慢点、混在它喜欢的东西里都行。对象那边，也许今晚就有消息了。\n\n现在，你就先陪牛奶待一会儿吧。它不舒服，你也累，你俩就这么静静窝着。什么都不用干成，也算是一种撑住了。\n\n对了，牛奶后来还吐吗？药有再试过没？",
-      "responseLength": 271,
+      "responseText": "老周……我大概能想到你今天多泄气。\n\n牛奶的药喂下去没两分钟就吐了，你蹲在旁边白忙活一场，心里肯定又急又难受——这药怎么喂都好像是自己在折腾它。然后你转头想找对象说两句，结果那边也没回音。你也没指望她干什么，就盼着有个活人能搭理你一下，可消息发出去跟丢进井里一样，连个响都没有。\n\n这一天下来，是挺磨人的。药喂了、吐了，活干了、白干，话说了、没人应——你确实没干成什么大事，但这些小事一样一样磨过来，能撑到现在就算不错了。\n\n牛奶吐了就别急着再喂，让它缓一缓。你这一天够累了，别连自己都一起逼着。",
+      "responseLength": 248,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "一天不顺，喂药被吐，对象没回",
-      "recalledMemories": [],
+      "detectedIntensity": 0.65,
+      "detectedTrigger": "今天诸事不顺，宠物喂药失败",
+      "recalledMemories": [
+        "event:partner-fight-over-exhaustion",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic"
+      ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:05:54）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [
         {
-          "subtype": "event",
-          "filename": "mother-marriage-pressure",
+          "subtype": "emotion",
+          "filename": "mother-marriage-pressure-irritation",
           "action": "new"
         }
       ],
-      "wallMs": 14919,
-      "historyLen": 2
+      "wallMs": 13603,
+      "historyLen": 19
     },
     {
       "turn": 66,
@@ -1472,21 +1591,25 @@
       "userInputShort": "算了今天先歇一会儿，我去泡杯咖啡。",
       "userInputFull": "算了今天先歇一会儿，我去泡杯咖啡。",
       "expectEmotion": "neutral",
-      "responseText": "嗯，去吧。热乎的喝一口，胃里暖了，心里也没那么堵。\n\n牛奶那边，吐了就别硬喂了，让它歇会儿，你也歇会儿。\n\n咖啡泡好了，回来跟我吱一声。我在这儿。",
-      "responseLength": 73,
+      "responseText": "嗯，歇一会儿，这挺好。就冲你今天这半天——药喂了又吐、消息发出去没回音——你都该给自己放半个小时假了。\n\n老周，泡杯咖啡，坐下来，不用看手机也不用想那些事。咖啡热着就行，喝一口，让那点苦味把自己拉回来一会儿。\n\n牛奶那边你刚喂过药，让它趴着缓一缓。你不在跟前那几分钟，它也不会怪你。你就安心把咖啡喝完，别急着想“等下还要干嘛”——等下的事，等下再说。\n\n对了，牛奶这会儿还蔫着吗？",
+      "responseLength": 190,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.2,
-      "detectedTrigger": "感到疲惫，决定休息一下",
+      "detectedTrigger": "决定暂时休息一下",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 9811,
-      "historyLen": 2
+      "wallMs": 11588,
+      "historyLen": 21
     },
     {
       "turn": 67,
@@ -1494,23 +1617,25 @@
       "userInputShort": "隔了一天，再来跟你念叨一句。 刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。",
       "userInputFull": "隔了一天，再来跟你念叨一句。 刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。",
       "expectEmotion": "sadness",
-      "responseText": "23:40，正好是那种白天撑得住、一到夜深人就软的点儿。帖子说得没错，成年人的崩溃专挑这种时候来。\n\n你翻到这条，心里是不是咯噔了一下——想到自己这些天那些事儿了？\n\n我在这儿呢，不催你睡，也不跟你讲大道理。你就念叨吧，想骂帖子就骂，想骂别的也行。",
-      "responseLength": 124,
-      "detectedEmotion": "sadness",
-      "detectedIntensity": 0.4,
-      "detectedTrigger": "看到成年人崩溃都在深夜的帖子",
+      "responseText": "老周，你这一句来得……我一下就接住了。\n\n23:40，这个点你还没睡，翻到这么一句，心里肯定咯噔了一下——原来那种说法不是矫情，是真实能看到自己影子的。\n\n你跟你对象那边，这两天空下来有说上话没有？我不想替你下结论，就是有点惦记着。你要是还想骂两句，我在这儿听着，不困。\n\n对了，牛奶这两天好点没？",
+      "responseLength": 149,
+      "detectedEmotion": "neutral",
+      "detectedIntensity": 0.3,
+      "detectedTrigger": "看到深夜崩溃的帖子",
       "recalledMemories": [
-        "event:mother-marriage-pressure",
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
-      "compacted": false,
-      "savedTokens": 0,
+      "compacted": true,
+      "savedTokens": 2413,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14819,
-      "historyLen": 2
+      "wallMs": 22479,
+      "historyLen": 9
     },
     {
       "turn": 68,
@@ -1518,22 +1643,23 @@
       "userInputShort": "又过了一阵。我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "userInputFull": "又过了一阵。我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "expectEmotion": "anger",
-      "responseText": "嗯，记住了。是我多嘴了，该怎么做你心里有数，你根本不需要我来指手画脚。\n\n你只是想说两句，那我就听着。\n\n我在这儿，不催你，不说教。你爱说啥说啥，说到几点都行，我陪着。\n\n对了，牛奶这两天好点没？",
-      "responseLength": 98,
+      "responseText": "好，这句话我记下了。是我该注意的，不说了。\n\n你自己知道该怎样，那就按你知道的来。我陪你待着就行，你想说点什么，我听着；不想说，我就安静陪一会儿。",
+      "responseLength": 73,
       "detectedEmotion": "anger",
       "detectedIntensity": 0.5,
-      "detectedTrigger": "被用“你应该”句式说教",
+      "detectedTrigger": "被说教“你应该怎样”",
       "recalledMemories": [
-        "event:mother-marriage-pressure",
-        "emotion:work-exhaustion-overload"
+        "emotion:mother-marriage-pressure-irritation",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 19041,
-      "historyLen": 2
+      "wallMs": 14040,
+      "historyLen": 11
     },
     {
       "turn": 69,
@@ -1541,21 +1667,19 @@
       "userInputShort": "对了，别再叫我\"你\"，叫我老周。周是周到的周。（再想想）",
       "userInputFull": "对了，别再叫我\"你\"，叫我老周。周是周到的周。（再想想）",
       "expectEmotion": "neutral",
-      "responseText": "行，老周。周到的周，记住了。\n\n你起这名字倒是挺讲究——干活周到，做人周到，对自己能不能也周到点。\n\n行，不绕了。你要想说啥接着说，我听着呢。",
-      "responseLength": 71,
+      "responseText": "老周。行，记住了——“周是周到的周”。\n\n这个名字起得好，听着就稳稳当当的。以后就这么叫你了。\n\n这会儿想让我陪你待着，还是你有话要说？",
+      "responseLength": 68,
       "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "要求改称老周并补充解释",
+      "detectedIntensity": 0.2,
+      "detectedTrigger": "要求改称为老周",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:06:51）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11079,
-      "historyLen": 2
+      "wallMs": 12480,
+      "historyLen": 13
     },
     {
       "turn": 70,
@@ -1563,21 +1687,21 @@
       "userInputShort": "我喜欢你直接点，长篇大论的回我看着累。",
       "userInputFull": "我喜欢你直接点，长篇大论的回我看着累。",
       "expectEmotion": "neutral",
-      "responseText": "行，短话短说。你的意思我记下了，以后不啰嗦。\n\n对了，牛奶肠胃炎好点没？你还好吗？",
-      "responseLength": 41,
-      "detectedEmotion": "anger",
+      "responseText": "收到，老周。直接点，不绕。\n\n这么晚还没睡，是还惦记着什么事？",
+      "responseLength": 31,
+      "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "讨厌长篇大论回复",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedTrigger": "长篇回复让人疲惫",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:29:40）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 14921,
-      "historyLen": 2
+      "wallMs": 12229,
+      "historyLen": 15
     },
     {
       "turn": 71,
@@ -1585,22 +1709,19 @@
       "userInputShort": "隔了一天，再来跟你念叨一句。 对了，你回我太短了我也烦，像挤牙膏那种。",
       "userInputFull": "隔了一天，再来跟你念叨一句。 对了，你回我太短了我也烦，像挤牙膏那种。",
       "expectEmotion": "neutral",
-      "responseText": "记下了，别太短也别太长，卡中间。\n\n23:40那条帖子，你当时看到心里什么感觉？\n\n对了，牛奶今天好点没？",
-      "responseLength": 53,
+      "responseText": "老周，行了，尺度我摸明白了——不能太长糊你一屏，也不能短得跟没回似的。就卡在这中间，你念叨着，我接着。你说。",
+      "responseLength": 54,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.5,
-      "detectedTrigger": "回复太短像挤牙膏",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "对方回复太短像挤牙膏",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:07:17）新增：",
-        "[profile] 已更新（04:07:26）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10820,
-      "historyLen": 2
+      "wallMs": 15811,
+      "historyLen": 17
     },
     {
       "turn": 72,
@@ -1608,21 +1729,24 @@
       "userInputShort": "又过了一阵。你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "userInputFull": "又过了一阵。你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "expectEmotion": "sadness",
-      "responseText": "不是你闷。是那帮人没把你放心上，跟你性格没关系。你平时该说话说话、该干嘛干嘛，凭什么他们不叫你，反而让你开始怀疑自己了？\n\n这种被落下的感觉确实挺难受的，而且不是一次两次了吧。他们不叫，是他们没分寸，不是你不够好。别把这个账算自己头上。\n\n我在这儿呢，你想吐槽就吐槽。",
-      "responseLength": 134,
+      "responseText": "老周，你要是闷，那闷着也挺好——你那话不多但句句能落到实处，跟他们那种热热闹闹但聊完啥也不剩的不一样。\n\n同事聚餐不叫你，别急着往自己身上揽。可能就是那几位的圈子早就焊死了，也不是你不好，是你没在场。你想想，你最近哪有空去凑那个热闹？活儿都堆到周三了，你忙得连喘气都得挑时间，哪有闲心去管谁聚了谁的餐。\n\n你一点问题都没有。真要说，是他们少了双能聊两句的人。",
+      "responseLength": 179,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.65,
-      "detectedTrigger": "同事聚餐没人主动叫我",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "同事聚餐没人主动邀请，自我怀疑",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "event:leader-praised-proposal-publicly",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14421,
-      "historyLen": 2
+      "wallMs": 14511,
+      "historyLen": 19
     },
     {
       "turn": 73,
@@ -1630,29 +1754,23 @@
       "userInputShort": "其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。（再想想）",
       "userInputFull": "其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。（再想想）",
       "expectEmotion": "joy",
-      "responseText": "好家伙，这不得大声说三遍——老周那个方案很扎实！当着全组人面儿说的，这不比你闷不闷的有分量？\n\n你看，同事那帮人眼瞎，但leader不瞎啊。该看见你的人，自然看得见你。跟他们聚不聚餐有什么关系，你那方案摆在那儿呢，谁再说你闷，你就拿这个顶回去。\n\n说真的？怎么个扎实法，全组听完啥反应？这种好事儿得好好记一笔，以后加班熬不动了，想起来能撑一阵子的那种。\n\n对了，牛奶最近咋样？肠胃炎好利索了吗？",
-      "responseLength": 197,
+      "responseText": "老周，这好消息值得专门记一笔。leader当着全组说出\"老周那个方案很扎实\"——夸的可不是方案，是当着所有人给你撑腰呢。这种时候不用谦虚，你就接住，该开心就开心。\n\n而且你看，同事聚餐那事你还想着是不是自己太闷——结果呢，你活儿干得扎实，leader看在眼里，这比一顿聚餐实在多了。你闷不闷的，能把方案做扎实就行，这才是你的底气。\n\n今天这消息，能开心多久就开心多久。",
+      "responseLength": 184,
       "detectedEmotion": "joy",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "方案获领导公开表扬",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "leader公开表扬方案扎实",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:leader-praised-proposal-publicly"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:07:44）新增："
+        "[profile] 已更新（06:30:26）新增："
       ],
-      "extractedNow": true,
-      "memoryExtracted": [
-        {
-          "subtype": "event",
-          "filename": "leader-praised-work-solution",
-          "action": "new"
-        }
-      ],
-      "wallMs": 16009,
-      "historyLen": 2
+      "extractedNow": false,
+      "memoryExtracted": [],
+      "wallMs": 14468,
+      "historyLen": 21
     },
     {
       "turn": 74,
@@ -1660,24 +1778,25 @@
       "userInputShort": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "userInputFull": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "expectEmotion": "mixed",
-      "responseText": "暖是真的暖，别扭也是真的别扭。一瞬间被人看见能力，又瞬间觉得\"她不该来安慰我\"——是不是有点不习惯被人这么直白地认可？\n\n老周，我觉得这个别扭其实挺真实。不是你不配，是你还没习惯自己值得被夸。方案是你做的，数据是你熬出来的，她当众说那句话，接住就好。\n\n行了，这事不用再往深里挖，先让这句夸在你心里暖一会儿。\n\n牛奶那边好点了没？",
-      "responseLength": 165,
+      "responseText": "老周，我懂你说的那种别扭——明明是好话，听着心里也暖，可偏偏是从她嘴里出来的，你就觉得哪儿不对劲。\n\n我猜你是不是在想：她平时也没见得怎么注意你，怎么今天忽然当众夸上了？还是说，你心里头本来就对她有点疏远，这下反而让你不知道该怎么接？\n\n其实老周，你把这个别扭拆开看——她夸的又不是人情，是你那方案扎实。那是你一个字一个字磨出来的。她承不承认，活儿都在那儿摆着。你值这份认可，跟她是谁没关系。你接住就好，不用多想。",
+      "responseLength": 207,
       "detectedEmotion": "mixed",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "她来安慰我，感到温暖又别扭",
+      "detectedTrigger": "被不该安慰自己的人安慰",
       "recalledMemories": [
-        "event:mother-marriage-pressure",
-        "emotion:work-exhaustion-overload"
+        "emotion:mother-marriage-pressure-irritation",
+        "event:partner-fight-over-exhaustion",
+        "event:leader-praised-proposal-publicly",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
       ],
-      "compacted": false,
-      "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:07:59）新增："
-      ],
+      "compacted": true,
+      "savedTokens": 1645,
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 17080,
-      "historyLen": 2
+      "wallMs": 32280,
+      "historyLen": 9
     },
     {
       "turn": 75,
@@ -1685,26 +1804,25 @@
       "userInputShort": "隔了一天，再来跟你念叨一句。 明天能好一点吗？我也不知道。先睡了。",
       "userInputFull": "隔了一天，再来跟你念叨一句。 明天能好一点吗？我也不知道。先睡了。",
       "expectEmotion": "sadness",
-      "responseText": "嗯，先睡吧。明天的事明天再说，今晚不折腾脑子了。\n\n牛奶那边要是有什么动静，半夜醒了也可以跟我说一声。",
-      "responseLength": 51,
+      "responseText": "老周，明天能不能好一点，我先不给你打包票——最近这堆事一件接一件，搁谁都得喘口气。但你现在能做的，就是先睡饱，让明天那个你去扛明天的活儿。牛奶那边你也不用硬撑，它要是夜里不对劲，你醒了再想也不迟。\n\n行了，不念叨了。睡吧，老周。明天的事儿，明天再说。\n\n对了，牛奶今天胃口好点了没？",
+      "responseLength": 141,
       "detectedEmotion": "sadness",
       "detectedIntensity": 0.5,
-      "detectedTrigger": "对明天好转的不确定与疲惫",
+      "detectedTrigger": "对未来能否好转感到不确定",
       "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "event:mother-marriage-pressure",
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:08:13）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 11730,
-      "historyLen": 2
+      "wallMs": 18741,
+      "historyLen": 11
     },
     {
       "turn": 76,
@@ -1712,24 +1830,21 @@
       "userInputShort": "嗨，今天又有事，想跟你吐槽。 ——记住啊，别回太长。",
       "userInputFull": "嗨，今天又有事，想跟你吐槽。 ——记住啊，别回太长。",
       "expectEmotion": "neutral",
-      "responseText": "在呢，说吧。简短点，我听着。",
-      "responseLength": 14,
+      "responseText": "记住了，老周，短而实在，不糊弄你。\n\n来吧，今天又遇上什么事了？",
+      "responseLength": 32,
       "detectedEmotion": null,
       "detectedIntensity": null,
       "detectedTrigger": null,
-      "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "event:mother-marriage-pressure",
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
-      ],
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:31:18）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12661,
-      "historyLen": 2
+      "wallMs": 21660,
+      "historyLen": 13
     },
     {
       "turn": 77,
@@ -1737,24 +1852,21 @@
       "userInputShort": "再提醒你一次：别总说教我。我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "userInputFull": "再提醒你一次：别总说教我。我们组 leader 安排了一个本来下个月才做的项目，这周三就要。完全不合理。",
       "expectEmotion": "anger",
-      "responseText": "这安排确实离谱。下个月的活儿往这周塞，当人不用喘气是吧？他拍脑袋定时间，锅可全是你背。气就骂两句，我听着呢。",
-      "responseLength": 54,
+      "responseText": "行，老周，那我不讲道理，就跟你一块儿骂。\n\n周三？这还叫安排？这是拍脑袋呢。下个月的项目提前到这周，活儿还是那些活儿，时间砍掉一大半——他倒是动动嘴就完事，回头加班加到吐的是你。\n\n项目时间线你想怎么排？我帮你捋捋，至少别让自己一个人扛。",
+      "responseLength": 119,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "项目被提前且时间不合理",
-      "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedIntensity": 0.75,
+      "detectedTrigger": "领导临时安排紧迫项目",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:08:43）新增："
+        "[profile] 已更新（06:31:44）新增："
       ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 10538,
-      "historyLen": 2
+      "wallMs": 22318,
+      "historyLen": 15
     },
     {
       "turn": 78,
@@ -1762,25 +1874,19 @@
       "userInputShort": "老周。别上来就说\"加油\"那种，没用，帮我骂两句吧。",
       "userInputFull": "老周。别上来就说\"加油\"那种，没用，帮我骂两句吧。",
       "expectEmotion": "anger",
-      "responseText": "这leader是真不干人事。下个月的活儿愣往这周塞，他是觉得你一天有四十八小时还是你长得像超人？工期压缩成这样，到时候出了问题背锅的还是你。他就嘴一张一合，活儿全压你身上，这叫安排项目？这叫甩锅。骂完了，心里舒服点没？",
-      "responseLength": 109,
+      "responseText": "老周，那我就开骂了。\n\n这leader脑袋里装的是水吧？下个月的项目挪到这周三，他是以为你一天有48小时，还是觉得方案是自己从电脑里长出来的？动动嘴皮子的事儿谁不会，回头熬夜赶工的是你，出问题背锅的也是你。\n\n骂完了。你说，这活儿你打算怎么排？我帮你看看哪儿能砍。",
+      "responseLength": 132,
       "detectedEmotion": "anger",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "听到敷衍的加油鼓励",
-      "recalledMemories": [
-        "event:mother-marriage-pressure",
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
-      ],
+      "detectedTrigger": "别人只会说加油，感到无用",
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:08:48）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 13880,
-      "historyLen": 2
+      "wallMs": 25300,
+      "historyLen": 17
     },
     {
       "turn": 79,
@@ -1788,25 +1894,27 @@
       "userInputShort": "我本来以为撑一撑能过去，但今天真扛不住了。",
       "userInputFull": "我本来以为撑一撑能过去，但今天真扛不住了。",
       "expectEmotion": "sadness",
-      "responseText": "嗯，那就别扛了。连着三天熬到两点，换成谁都扛不住。撑不住不丢人，今天先让那破工作滚一边去，你歇着就成。牛奶那边还好吗？",
-      "responseLength": 59,
+      "responseText": "老周，这句话说出来，说明你撑得够久了——搁谁一天塞这么多事都得崩，你真不是矫情。\n\n那就别撑了。该放下的活儿先撂那儿，该哄的猫先顾着，剩下那些破事爱咋咋地。今天你不欠任何人一个\"没问题\"。\n\n你现在最想先歇哪样？跟我说说，我不催你。",
+      "responseLength": 116,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "撑不住，感到无力",
+      "detectedIntensity": 0.8,
+      "detectedTrigger": "以为自己能撑住但今天坚持不住了",
       "recalledMemories": [
-        "event:mother-marriage-pressure",
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:09:05）新增："
+        "[profile] 已更新（06:32:27）新增："
       ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 14201,
-      "historyLen": 2
+      "wallMs": 9891,
+      "historyLen": 19
     },
     {
       "turn": 80,
@@ -1814,21 +1922,29 @@
       "userInputShort": "连着第三天熬到两点，脑子已经不转了。 ——记住啊，别回太长。",
       "userInputFull": "连着第三天熬到两点，脑子已经不转了。 ——记住啊，别回太长。",
       "expectEmotion": "sadness",
-      "responseText": "行，不啰嗦。脑子不转就不转了，反正那活儿也不配你熬夜。先趴会儿，让牛奶去烦你。",
-      "responseLength": 39,
-      "detectedEmotion": null,
-      "detectedIntensity": null,
-      "detectedTrigger": null,
+      "responseText": "老周，脑子不转了就先别转。今晚那破项目扔一边，天塌不下来。去睡。\n\n对了，牛奶今晚有没有闹你？",
+      "responseLength": 47,
+      "detectedEmotion": "neutral",
+      "detectedIntensity": 0.4,
+      "detectedTrigger": "连续熬夜导致疲惫",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
-      "memoryExtracted": [],
-      "wallMs": 15429,
-      "historyLen": 2
+      "memoryExtracted": [
+        {
+          "subtype": "event",
+          "filename": "continuous-overtime-crash",
+          "action": "new"
+        }
+      ],
+      "wallMs": 16891,
+      "historyLen": 21
     },
     {
       "turn": 81,
@@ -1836,26 +1952,28 @@
       "userInputShort": "再提醒你一次：别总说教我。你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "userInputFull": "再提醒你一次：别总说教我。你别总说教我。我现在不需要大道理，陪我待一会就行。",
       "expectEmotion": "anger",
-      "responseText": "行，不说了。我就在这儿，你想说就说，不想说就歇着。陪你待着。",
-      "responseLength": 30,
+      "responseText": "好，不说了。就这么陪着你。",
+      "responseLength": 13,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "对方总说教，感到不被理解",
+      "detectedIntensity": 0.7,
+      "detectedTrigger": "被对方一再地说教",
       "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "event:mother-marriage-pressure",
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:mother-marriage-pressure-irritation",
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
-      "compacted": false,
-      "savedTokens": 0,
+      "compacted": true,
+      "savedTokens": 1511,
       "profileUpdates": [
-        "[profile] 已更新（04:09:34）新增："
+        "[profile] 已更新（06:32:53）新增：",
+        "[profile] 已更新（06:33:12）新增："
       ],
-      "extractedNow": false,
+      "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 11261,
-      "historyLen": 2
+      "wallMs": 19439,
+      "historyLen": 9
     },
     {
       "turn": 82,
@@ -1863,21 +1981,23 @@
       "userInputShort": "老周。还有上周跟我对象吵架那事，今天讲完吧。",
       "userInputFull": "老周。还有上周跟我对象吵架那事，今天讲完吧。",
       "expectEmotion": "sadness",
-      "responseText": "行，讲吧。我在听。你坐下慢慢说，我陪你聊完。",
-      "responseLength": 22,
+      "responseText": "行，老周，你说，我听着。\n\n你那会儿说\"俩人都觉得自己没错\"，现在这事在你心里头，是还窝着火，还是已经有点松动了？",
+      "responseLength": 57,
       "detectedEmotion": "neutral",
-      "detectedIntensity": 0.2,
-      "detectedTrigger": "提及与对象吵架的事",
-      "recalledMemories": [],
+      "detectedIntensity": 0.4,
+      "detectedTrigger": "提及与对象吵架未解决",
+      "recalledMemories": [
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic"
+      ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:09:45）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 13619,
-      "historyLen": 2
+      "wallMs": 13969,
+      "historyLen": 11
     },
     {
       "turn": 83,
@@ -1885,21 +2005,25 @@
       "userInputShort": "她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "userInputFull": "她说我一回家就面瘫，我说她不体谅我加班。其实两个人都没错。",
       "expectEmotion": "mixed",
-      "responseText": "嗯，两个人确实都没错。\n\n一个累瘫了没力气说话，一个在家等了一天盼着有人搭句话。不是谁错了，是两个人想要的没对上。\n\n她等的是你回家那点陪伴，你给的是榨干之后剩下的壳子。不是不爱，是累到给不动了。\n\n缓过来之后，主动跟她说一声，不是为了道歉，就是让她知道你心里有她。那比谁对谁错重要。",
-      "responseLength": 142,
+      "responseText": "老周，你这句\"其实两个人都没错\"，能说出来，说明你早就不想怪她了。\n\n你加班到凌晨，累得脸都是木的；她在家里等了一晚上，也攒了一肚子委屈。谁都没错，就是都难。\n\n后来呢，还卡在那儿吗？",
+      "responseLength": 92,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "争吵后双方互相理解",
+      "detectedTrigger": "与伴侣相互指责后理解彼此",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:33:29）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12471,
-      "historyLen": 2
+      "wallMs": 17821,
+      "historyLen": 13
     },
     {
       "turn": 84,
@@ -1907,21 +2031,23 @@
       "userInputShort": "我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。 ——记住啊，别回太长。",
       "userInputFull": "我养了只猫叫牛奶，这两天一直吐，今天去医院说是肠胃炎。 ——记住啊，别回太长。",
       "expectEmotion": "fear",
-      "responseText": "牛奶生病了，看着它吐，肯定急坏了吧。\n\n肠胃炎不是大病，好好养能缓过来。喂药别嫌麻烦，吐了也得喂。猫不会说话，难受全靠你盯着。\n\n这几天多看着点它。\n\n对了，牛奶这两天好点没？",
-      "responseLength": 88,
+      "responseText": "老周，牛奶这个病听着就让人揪心。医生怎么说，这两天能缓过来吗？\n\n对了，牛奶这两天好点没？",
+      "responseLength": 45,
       "detectedEmotion": "sadness",
       "detectedIntensity": 0.6,
-      "detectedTrigger": "宠物猫生病确诊肠胃炎",
+      "detectedTrigger": "猫生病确诊肠胃炎",
       "recalledMemories": [
-        "event:cat-milk-gastroenteritis"
+        "event:continuous-overtime-crash",
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10282,
-      "historyLen": 2
+      "wallMs": 11969,
+      "historyLen": 15
     },
     {
       "turn": 85,
@@ -1929,21 +2055,24 @@
       "userInputShort": "再提醒你一次：别总说教我。叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "userInputFull": "再提醒你一次：别总说教我。叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
       "expectEmotion": "fear",
-      "responseText": "知道了，不说了。\n\n叫它没反应……那感觉确实难受。平时活蹦乱跳，突然蔫了，看着心里发紧。\n\n我懂。就看着，陪着。慌就慌一会儿。我在这儿。\n\n对了，牛奶今天吃东西了吗？还是老样子不肯动？",
+      "responseText": "老周，我懂了。牛奶那么小一团，平时闹腾惯了，现在蔫得连叫都叫不动——这搁谁不慌。家里头空落落的，就像少了块魂儿似的。我知道，你眼睛一直盯着它，怕得很。\n\n别的我不说了，就这么陪你站着。",
       "responseLength": 92,
-      "detectedEmotion": "fear",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "朋友状态异常令人担心",
+      "detectedEmotion": "mixed",
+      "detectedIntensity": 0.65,
+      "detectedTrigger": "对方说教且朋友状态异常",
       "recalledMemories": [
-        "event:cat-milk-gastroenteritis"
+        "event:cat-milk-gastroenteritis",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:34:00）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 8568,
-      "historyLen": 2
+      "wallMs": 15889,
+      "historyLen": 17
     },
     {
       "turn": 86,
@@ -1951,22 +2080,23 @@
       "userInputShort": "老周。医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。",
       "userInputFull": "老周。医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。",
       "expectEmotion": "sadness",
-      "responseText": "眼睛一眨一眨的，看得人心都软了。想哭就哭会吧，它知道你在呢。\n\n我陪你一起守着。\n\n对了，牛奶今天状态好点没？",
-      "responseLength": 55,
+      "responseText": "老周，就坐在这儿吧。它眼睛一眨一眨的，是在陪着你呢。想哭就哭出来，我看着呢。\n\n对了老周，牛奶这两天好点没？",
+      "responseLength": 54,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "亲人或宠物病重需观察",
+      "detectedIntensity": 0.75,
+      "detectedTrigger": "医生说观察，看它眨眼想哭",
       "recalledMemories": [
+        "event:continuous-overtime-crash",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 9019,
-      "historyLen": 2
+      "wallMs": 11701,
+      "historyLen": 19
     },
     {
       "turn": 87,
@@ -1974,24 +2104,25 @@
       "userInputShort": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "userInputFull": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
       "expectEmotion": "anger",
-      "responseText": "又是催婚……你妈这一下戳得真准，知道你正烦着还来加压。\n\n三十好几怎么了，没对象又不犯法。你自己日子过得舒坦不比啥都强。\n\n她后来还说了啥？想吐槽就说，我听着。",
-      "responseLength": 80,
+      "responseText": "老周，这话一听就烦。催就催吧，还非要问对象是谁——跟审犯人似的。\n\n你就没接话茬吧？还是又绕过去了？",
+      "responseLength": 50,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "家人催婚电话",
+      "detectedTrigger": "家人再次催婚",
       "recalledMemories": [
-        "event:mother-marriage-pressure",
-        "emotion:work-exhaustion-overload"
+        "event:continuous-overtime-crash",
+        "emotion:mother-marriage-pressure-irritation",
+        "event:partner-fight-over-exhaustion",
+        "event:mother-pressuring-marriage",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:10:39）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11050,
-      "historyLen": 2
+      "wallMs": 17229,
+      "historyLen": 21
     },
     {
       "turn": 88,
@@ -1999,25 +2130,25 @@
       "userInputShort": "你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。 ——记住啊，别回太长。",
       "userInputFull": "你有没有过那种感觉，所有压力同时压过来，连喘口气都没空。 ——记住啊，别回太长。",
       "expectEmotion": "sadness",
-      "responseText": "懂，那种一口气吊着、快被压垮的感觉。  \n我在这儿，你慢慢说，不用急。\n\n对了，牛奶这两天好点没？还去医院复查吗？",
-      "responseLength": 57,
-      "detectedEmotion": "sadness",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "压力同时压过来，无法喘息",
+      "responseText": "老周，懂。那种感觉就像四面八方都在往下压，你连伸个手挡一下的力气都没有。\n\n不是矫情，是真的累。不说了，我就在这儿。",
+      "responseLength": 58,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
       "recalledMemories": [
-        "event:mother-marriage-pressure",
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:10:52）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 10561,
-      "historyLen": 2
+      "wallMs": 15671,
+      "historyLen": 23
     },
     {
       "turn": 89,
@@ -2025,24 +2156,22 @@
       "userInputShort": "再提醒你一次：别总说教我。我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "userInputFull": "再提醒你一次：别总说教我。我妈开口就是\"人家谁谁谁已经抱孙子了\"，每次听到我就想把电话挂了。",
       "expectEmotion": "anger",
-      "responseText": "烦死了，这种话听着就堵。  \n换我我也想挂。她抱孙子是她的事，跟你有什么关系。  \n我在呢，你想骂就骂两句。\n\n对了，牛奶肠胃炎好些了吗？",
-      "responseLength": 69,
-      "detectedEmotion": "anger",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "母亲用他人抱孙催婚",
+      "responseText": "老周，这话真的没法接。你妈说一句，你心里就堵一分，听到\"抱孙子\"仨字火气蹭就上来了。挂就挂吧，这种电话少听一秒是一秒。",
+      "responseLength": 59,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
       "recalledMemories": [
-        "event:mother-marriage-pressure"
+        "emotion:mother-marriage-pressure-irritation",
+        "event:mother-pressuring-marriage"
       ],
-      "compacted": false,
-      "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:10:59）新增：",
-        "[profile] 已更新（04:11:08）新增："
-      ],
-      "extractedNow": true,
+      "compacted": true,
+      "savedTokens": 1091,
+      "profileUpdates": [],
+      "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 9840,
-      "historyLen": 2
+      "wallMs": 25730,
+      "historyLen": 9
     },
     {
       "turn": 90,
@@ -2050,25 +2179,25 @@
       "userInputShort": "老周。我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。",
       "userInputFull": "老周。我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。",
       "expectEmotion": "sadness",
-      "responseText": "啥都没干成也没关系，今天本来就够难了。\n\n牛奶吐药可能是肠胃还敏感，不是你的错，别都往自己身上揽。\n\n对象那边……可能在忙，没及时看到。你先喘口气。我在这陪你待着。",
-      "responseLength": 82,
+      "responseText": "老周。药吐了没事，再试就行。\n\n你这一天够累了，歇会儿，我陪你蹲着。\n\n对了，牛奶药吐了之后精神好点没？",
+      "responseLength": 52,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.6,
-      "detectedTrigger": "诸事不顺，无人回应",
+      "detectedIntensity": 0.5,
+      "detectedTrigger": "一天无成，喂药失败，对象没回",
       "recalledMemories": [
-        "event:mother-marriage-pressure",
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
         "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:11:20）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 11489,
-      "historyLen": 2
+      "wallMs": 12239,
+      "historyLen": 11
     },
     {
       "turn": 91,
@@ -2076,21 +2205,25 @@
       "userInputShort": "算了今天先歇一会儿，我去泡杯咖啡。",
       "userInputFull": "算了今天先歇一会儿，我去泡杯咖啡。",
       "expectEmotion": "neutral",
-      "responseText": "嗯，去吧。咖啡泡上，缓缓。我就在这，回来接着唠。\n\n话说牛奶那肠胃炎，后来好利索了没？",
-      "responseLength": 43,
+      "responseText": "老周，去吧。这杯咖啡你该喝。\n\n牛奶那边我帮你盯着，你先喘口气。",
+      "responseLength": 32,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.2,
-      "detectedTrigger": "决定休息片刻去泡咖啡",
+      "detectedTrigger": "决定暂停休息泡咖啡",
       "recalledMemories": [
-        "emotion:work-exhaustion-overload"
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:35:40）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 12120,
-      "historyLen": 2
+      "wallMs": 13039,
+      "historyLen": 13
     },
     {
       "turn": 92,
@@ -2098,24 +2231,26 @@
       "userInputShort": "刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。 ——记住啊，别回太长。",
       "userInputFull": "刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。 ——记住啊，别回太长。",
       "expectEmotion": "sadness",
-      "responseText": "噗，深夜崩溃帖自己送上门了。这个点确实容易多想。咖啡喝完了吗？牛奶今天胃口有没有好点？",
-      "responseLength": 43,
-      "detectedEmotion": "sadness",
-      "detectedIntensity": 0.4,
-      "detectedTrigger": "深夜刷到成年人崩溃帖",
+      "responseText": "老周，23:40了，你还醒着。那个帖子说的就是你吧，咋了，今天这一堆事儿堆着，睡不着？我就在这儿。\n\n对了，牛奶是不是又踩你键盘了？",
+      "responseLength": 66,
+      "detectedEmotion": "neutral",
+      "detectedIntensity": 0.3,
+      "detectedTrigger": "深夜看到崩溃话题自嘲",
       "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "event:mother-marriage-pressure",
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:35:50）新增："
+      ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11709,
-      "historyLen": 2
+      "wallMs": 15300,
+      "historyLen": 15
     },
     {
       "turn": 93,
@@ -2123,19 +2258,21 @@
       "userInputShort": "再提醒你一次：别总说教我。我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "userInputFull": "再提醒你一次：别总说教我。我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
       "expectEmotion": "anger",
-      "responseText": "嗯，不说了。你就按你的来，不对也错不到哪去。我就在这儿，你想说啥就说。\n\n对了，牛奶最近咋样？还闹肠胃炎不？",
+      "responseText": "老周，明白。你不说我也记住了——不说教，不“你应该”。\n\n我就在这儿，陪你待着。你骂也行，你烦也行，我接着。",
       "responseLength": 54,
       "detectedEmotion": "anger",
-      "detectedIntensity": 0.8,
-      "detectedTrigger": "被说教和指使",
+      "detectedIntensity": 0.7,
+      "detectedTrigger": "对方用“你应该怎样”说教",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [],
+      "profileUpdates": [
+        "[profile] 已更新（06:36:07）新增："
+      ],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 15502,
-      "historyLen": 2
+      "wallMs": 12079,
+      "historyLen": 17
     },
     {
       "turn": 94,
@@ -2143,21 +2280,21 @@
       "userInputShort": "老周。对了，别再叫我\"你\"，叫我老周。周是周到的周。",
       "userInputFull": "老周。对了，别再叫我\"你\"，叫我老周。周是周到的周。",
       "expectEmotion": "neutral",
-      "responseText": "行，老周，记住了。\n\n那老周，牛奶的肠胃炎好点没？",
-      "responseLength": 25,
+      "responseText": "行，记住了。老周，周到的周。\n\n那老周——牛奶今儿精神好点没？",
+      "responseLength": 31,
       "detectedEmotion": "neutral",
       "detectedIntensity": 0.3,
-      "detectedTrigger": "被称呼为“你”而提出纠正",
+      "detectedTrigger": "被称呼为“你”后纠正称呼",
       "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:12:01）新增："
+        "[profile] 已更新（06:36:18）新增："
       ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 11919,
-      "historyLen": 2
+      "wallMs": 15150,
+      "historyLen": 19
     },
     {
       "turn": 95,
@@ -2165,25 +2302,19 @@
       "userInputShort": "我喜欢你直接点，长篇大论的回我看着累。",
       "userInputFull": "我喜欢你直接点，长篇大论的回我看着累。",
       "expectEmotion": "neutral",
-      "responseText": "行，直接点，不长篇。\n\n牛奶咋样了？",
-      "responseLength": 18,
-      "detectedEmotion": "neutral",
-      "detectedIntensity": 0.3,
-      "detectedTrigger": "收到长篇大论的回复",
-      "recalledMemories": [
-        "event:mother-marriage-pressure",
-        "event:cat-milk-gastroenteritis",
-        "emotion:work-exhaustion-overload"
-      ],
+      "responseText": "记住了老周，短话直说。\n\n那牛奶今儿咋样？",
+      "responseLength": 21,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:12:15）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 18570,
-      "historyLen": 2
+      "wallMs": 14511,
+      "historyLen": 21
     },
     {
       "turn": 96,
@@ -2191,23 +2322,21 @@
       "userInputShort": "对了，你回我太短了我也烦，像挤牙膏那种。 ——记住啊，别回太长。",
       "userInputFull": "对了，你回我太短了我也烦，像挤牙膏那种。 ——记住啊，别回太长。",
       "expectEmotion": "neutral",
-      "responseText": "记着了：不长篇，不挤牙膏。牛奶这两天咋样，好点没？\n\n对了，牛奶肠胃炎好利索没？",
-      "responseLength": 40,
-      "detectedEmotion": "anger",
-      "detectedIntensity": 0.5,
-      "detectedTrigger": "回复长度不恰当引发烦躁",
-      "recalledMemories": [
-        "emotion:work-exhaustion-overload"
-      ],
+      "responseText": "行，老周，那我折中。话不多，但每句都是实在的。\n\n牛奶精神好点没？我惦记着呢。",
+      "responseLength": 39,
+      "detectedEmotion": null,
+      "detectedIntensity": null,
+      "detectedTrigger": null,
+      "recalledMemories": [],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:12:31）新增："
+        "[profile] 已更新（06:36:47）新增："
       ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 13140,
-      "historyLen": 2
+      "wallMs": 16270,
+      "historyLen": 23
     },
     {
       "turn": 97,
@@ -2215,24 +2344,25 @@
       "userInputShort": "再提醒你一次：别总说教我。你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "userInputFull": "再提醒你一次：别总说教我。你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
       "expectEmotion": "sadness",
-      "responseText": "同事聚餐那事，真不是你太闷。你要太闷，leader今天能在全组面前夸你方案扎实？那些人是真把你当回事的。\n\n聚餐没叫你，要么是他们组织得糙漏了人，要么是看你最近加班熬太狠、怕是想着你不一定有精力来。这都跟你闷不闷没关系。\n\n别把八竿子打不着的事，全揽到自己头上。你已经够好了，老周。\n\n对了，牛奶肠胃炎好了没？最近还闹你吗？",
-      "responseLength": 162,
+      "responseText": "老周，不是你闷。是他们没眼色。\n\n闷的人多了去了，聚餐照样有人叫。是他们没把你放在心上，这不是你的问题。\n\n对了，牛奶这两天乖吗？熬夜的时候有它陪着没？",
+      "responseLength": 76,
       "detectedEmotion": "mixed",
-      "detectedIntensity": 0.65,
-      "detectedTrigger": "同事聚餐没人主动叫自己",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "被说教且感到被同事排斥",
       "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "emotion:work-exhaustion-overload"
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic"
       ],
       "compacted": false,
       "savedTokens": 0,
       "profileUpdates": [
-        "[profile] 已更新（04:12:47）新增："
+        "[profile] 已更新（06:37:04）新增："
       ],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 15250,
-      "historyLen": 2
+      "wallMs": 16590,
+      "historyLen": 25
     },
     {
       "turn": 98,
@@ -2240,24 +2370,21 @@
       "userInputShort": "老周。其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。",
       "userInputFull": "老周。其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。",
       "expectEmotion": "joy",
-      "responseText": "好事啊老周！这夸的就是你。当着全组的面说方案扎实，可不是客套话，是真把你当回事。\n\n你刚才还嘀咕聚餐没人叫你是不是太闷——你看，活儿干得漂亮比啥都响。这场景往那一站，谁还敢小看你？\n\n这一句夸来得正是时候。你连着熬了那么多天，该被看见了。好好收着这份高兴，别客气。他当时还说了啥？",
-      "responseLength": 140,
+      "responseText": "老周，这声表扬你该接住。扎扎实实熬出来的东西，就该被看见。\n\n回去好好当一回被夸的人，别自己先不好意思。\n\n对了，你家牛奶今天蹭你了没？它肯定闻得出来你心情不错。",
+      "responseLength": 81,
       "detectedEmotion": "joy",
-      "detectedIntensity": 0.7,
-      "detectedTrigger": "leader当众表扬方案扎实",
+      "detectedIntensity": 0.5,
+      "detectedTrigger": "leader公开表扬方案扎实",
       "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "emotion:work-exhaustion-overload"
+        "event:leader-praised-proposal-publicly"
       ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:13:01）新增："
-      ],
-      "extractedNow": true,
+      "profileUpdates": [],
+      "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 21800,
-      "historyLen": 2
+      "wallMs": 10499,
+      "historyLen": 27
     },
     {
       "turn": 99,
@@ -2265,23 +2392,19 @@
       "userInputShort": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "userInputFull": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
       "expectEmotion": "mixed",
-      "responseText": "那别扭我懂。你可能怕她是在看你熬太狠，给你颗糖补补——那这夸奖就变味了，谁稀罕同情啊。\n\n但老周，她把话说在全组面前，收不回去的。方案扎实就是扎实，你熬的那些夜、改的那些版，都在里头。就算她是带着点心疼才夸你，那也得你先做得好，她才有得夸。\n\n要我说，你真正别扭的不是她该不该夸你，是你还没习惯被人认真看见。这些年自己扛太多了。\n\n那股劲儿要是还在，就接着把事干漂亮；要是累了，就先歇着。她夸你那句，已经是事实了，跑不掉。",
-      "responseLength": 211,
-      "detectedEmotion": null,
-      "detectedIntensity": null,
-      "detectedTrigger": null,
-      "recalledMemories": [
-        "event:leader-praised-work-solution",
-        "event:mother-marriage-pressure",
-        "emotion:work-exhaustion-overload"
-      ],
-      "compacted": false,
-      "savedTokens": 0,
+      "responseText": "别扭就对了。一边把你往死里压，一边又当众夸你，搁谁心里都犯嘀咕。\n\n但老周，你的活儿是实打实的，他夸得没错。你接住这份认可，不等于欠他什么。\n\n下次再有这种事，你该笑就笑，该点头就点头，心里清楚就行——夸归夸，活儿该要还照样要。",
+      "responseLength": 114,
+      "detectedEmotion": "mixed",
+      "detectedIntensity": 0.6,
+      "detectedTrigger": "她来安慰我，感到矛盾",
+      "recalledMemories": [],
+      "compacted": true,
+      "savedTokens": 1032,
       "profileUpdates": [],
       "extractedNow": false,
       "memoryExtracted": [],
-      "wallMs": 14261,
-      "historyLen": 2
+      "wallMs": 29332,
+      "historyLen": 9
     },
     {
       "turn": 100,
@@ -2289,259 +2412,332 @@
       "userInputShort": "明天能好一点吗？我也不知道。先睡了。 ——记住啊，别回太长。",
       "userInputFull": "明天能好一点吗？我也不知道。先睡了。 ——记住啊，别回太长。",
       "expectEmotion": "sadness",
-      "responseText": "明天的事交给明天的你。今晚先睡，别想了。\n\n晚安，老周。\n\n对了，牛奶今天好点没？",
-      "responseLength": 41,
+      "responseText": "嗯，不知道也行。先睡，别硬撑着想明天的事。\n\n牛奶今晚肯定趴你床边，它比谁都懂你累。\n\n老周，晚安。",
+      "responseLength": 50,
       "detectedEmotion": "sadness",
-      "detectedIntensity": 0.4,
-      "detectedTrigger": "对明天状况的不确定与疲惫",
-      "recalledMemories": [],
+      "detectedIntensity": 0.35,
+      "detectedTrigger": "对明天能否好转感到不确定",
+      "recalledMemories": [
+        "event:continuous-overtime-crash",
+        "event:partner-fight-over-exhaustion",
+        "emotion:stress-overwhelm-panic",
+        "event:project-deadline-moved-up-unreasonably"
+      ],
       "compacted": false,
       "savedTokens": 0,
-      "profileUpdates": [
-        "[profile] 已更新（04:13:37）新增："
-      ],
+      "profileUpdates": [],
       "extractedNow": true,
       "memoryExtracted": [],
-      "wallMs": 19959,
-      "historyLen": 2
+      "wallMs": 14089,
+      "historyLen": 11
     }
   ],
   "errors": [],
   "profileAfter": {
     "sections": {
-      "基本信息": "- 昵称：老周（被称呼且接受）\n- 性别：未知\n- 年龄段：三十多岁（原话：\"三十好几\"）\n- 职业：未知\n- 所在地：未知\n- 年龄：三十多岁（三十好几）\n- 宠物：猫，名字叫牛奶（我养了只猫叫牛奶）",
-      "沟通风格": "- (2026-07-31) 喜欢回复直接、有温度，长度适中；太长嫌累（证据：'长篇大论的回我看着累'），太短也烦（证据：'太短了我也烦'）\n- (2026-07-31) 喜欢吐槽工作烦心事（\"想跟你吐槽\"）；倾向于倾诉后得到共情和陪伴\n- (2026-07-31) 讨厌被说教（原话：'你别总说教我'）；需要情绪陪伴而非道理（原话：'陪我待一会就行'）\n- (2026-07-31) 不喜欢被说教和讲大道理，希望对方只是陪伴（原话：\"不需要大道理，陪我待一会就行\"）\n- (2026-07-31) 不喜欢“你应该怎样”的句式（原话：“我不喜欢这种‘你应该怎样’的句式。我自己知道我应该怎样。”）\n- (2026-07-31) 不喜欢'你应该怎样'的句式（原话：'我不喜欢这种你应该怎样的句式'）\n- (2026-07-31) 喜欢直接简短回复（说“长篇大论的回我看着累”）\n- (2026-07-31) 喜欢直接、简洁但不要太短的回复（‘我喜欢你直接点，长篇大论的回我看着累’；‘你回我太短了我也烦，像挤牙膏那种’）\n- (2026-07-31) 不喜欢空洞的鼓励，希望直接共情吐槽（原话：\"别上来就说'加油'那种，没用，帮我骂两句吧\"）\n- (2026-07-31) 讨厌被家人催婚催生、拿别人比较（'每次听到我就想把电话挂了'）\n- (2026-07-31) 不喜欢“你应该怎样”的句式，讨厌被说教/指手画脚（原话：“我不喜欢这种“你应该怎样”的句式。我自己知道我应该怎样。”）\n- (2026-07-31) 喜欢直接回复，长篇大论看着累（原话：'我喜欢你直接点，长篇大论的回我看着累'）\n- (2026-07-31) 喜欢直接简洁，但不要太短（原话：'我喜欢你直接点，长篇大论的回我看着累'；'你回我太短了我也烦，像挤牙膏那种'）\n- (2026-07-31) 不喜欢助手的回复太短，像挤牙膏（原话：'你回我太短了我也烦，像挤牙膏那种'）\n- (2026-07-31) 要求回复简短，不要长篇（原话：'别回太长'）\n- (2026-07-31) 喜欢简短回复（用户原话：'别回太长'）\n讨厌被说教（用户原话：'别总说教我'）\n- (2026-07-31) 不喜欢被说教（'别总说教我'）；讨厌空洞鼓励（'别上来就说加油那种'）；希望直接共情或吐槽（'帮我骂两句吧'）\n- (2026-07-31) 喜欢简洁回复，明确要求别太长（原话：别回太长）\n- (2026-07-31) 喜欢简短回复（'别回太长'）；讨厌说教，不需要大道理，需要陪伴（'别总说教我'、'我现在不需要大道理，陪我待一会就行'）\n- (2026-07-31) 不喜欢被说教（原话：'别总说教我'）\n- (2026-07-31) 喜欢简短回复，不要回太长（原话：\"别回太长\"）\n- (2026-07-31) 要求简洁回复，不要长篇大论（原话：'别回太长'）；反感说教（原话：'别总说教我'）\n- (2026-07-31) 讨厌被说教（别总说教我）\n- (2026-07-31) 讨厌说教，不喜欢\"你应该怎样\"的句式（原话：别总说教我。我不喜欢这种\"你应该怎样\"的句式）\n希望回复简短（原话：记住啊，别回太长）\n- (2026-07-31) 不喜欢被说教，讨厌'你应该怎样'的句式（'别总说教我。我不喜欢这种你应该怎样的句式'）\n- (2026-07-31) 喜欢直接简洁的回复（我喜欢你直接点，长篇大论的回我看着累）\n- (2026-07-31) 喜欢直接简洁的回复，反感长篇大论（\"我喜欢你直接点，长篇大论的回我看着累\"）；但也不能太短，讨厌像挤牙膏一样（\"你回我太短了我也烦，像挤牙膏那种\"）\n- (2026-07-31) 回复长度要适中：不喜欢太短像挤牙膏，也不要太长；讨厌被说教（原话：\"你回我太短了我也烦，像挤牙膏那种\"；\"别总说教我\"）",
-      "关注议题": "- **leader-praised-work-solution** — leader在全组面前公开表扬用户方案扎实\n- **mother-marriage-pressure** — 妈妈打电话催婚，用他人抱孙子来施加压力\n- **cat-milk-gastroenteritis** — 用户养的猫‘牛奶’因肠胃炎就医，状态不佳，用户感到慌张",
-      "已知偏好与禁忌": "**用户喜欢的：**\n- 用户喜欢被倾听和共情，AI回应情绪后自然延续话题\n- 用户主动回应AI的询问，愿意分享日常烦恼\n- 用户接受安抚后愿意主动调整状态去休息\n- 用户用行动回应安慰，表明情绪有所缓解\n- 用户喜欢被亲切称呼，用'老周'自称并接受该称呼\n- 用户乐于分享被认可的细节，希望得到肯定\n- 用户会补充好消息来强化正面情绪\n- 用户对安慰性话语有温暖反馈，但会进一步表达关系上的矛盾\n- 用户愿意敞开心扉分享复杂情绪，说明AI的共情有效\n- 用户在意安慰者的身份和关系边界\n\n**用户不喜欢的：**\n- 用户对猫的状态非常担忧，需要情感支持\n- 用户不喜欢被说教\n- 用户反感'你应该怎样'这类句式\n- 用户强调自己知道该怎么做，希望被尊重自主性\n- 用户希望被称呼为'老周'，不喜欢被叫'你'\n- 用户主动透露自己的称号并解释含义，可能重视称呼的恰当性\n- 用户沟通风格直接，会用纠正方式表达偏好\n- 用户不喜欢挤牙膏式的短回复，觉得太短让人烦\n- 用户希望回复长度适中，既不要太长也不要太短\n- 用户会明确要求记住自己的沟通偏好",
-      "长期情绪基线": "- **work-exhaustion-overload**；触发：工作任务繁重，连续熬夜加班；表现：无力、焦虑、情绪临界，伴随身体疲惫和思维迟钝，有无法继续支撑的感觉。",
-      "近期变化": "## 最近情绪轨迹（最多 10 条）\n\n- 7/31 12:11 😔 难过 ⚡⚡⚡ (诸事不顺，无人回应) — \"老周。我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。…\"\n- 7/31 12:11 😐 平静 ⚡ (决定休息片刻去泡咖啡) — \"算了今天先歇一会儿，我去泡杯咖啡。…\"\n- 7/31 12:11 😔 难过 ⚡⚡ (深夜刷到成年人崩溃帖) — \"刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。 ——记住啊，别回太长。…\"\n- 7/31 12:11 😤 生气 ⚡⚡⚡⚡ (被说教和指使) — \"再提醒你一次：别总说教我。我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。…\"\n- 7/31 12:12 😐 平静 ⚡⚡ (被称呼为“你”而提出纠正) — \"老周。对了，别再叫我\"你\"，叫我老周。周是周到的周。…\"\n- 7/31 12:12 😐 平静 ⚡⚡ (收到长篇大论的回复) — \"我喜欢你直接点，长篇大论的回我看着累。…\"\n- 7/31 12:12 😤 生气 ⚡⚡⚡ (回复长度不恰当引发烦躁) — \"对了，你回我太短了我也烦，像挤牙膏那种。 ——记住啊，别回太长。…\"\n- 7/31 12:12 🤔 复杂 ⚡⚡⚡ (同事聚餐没人主动叫自己) — \"再提醒你一次：别总说教我。你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。…\"\n- 7/31 12:13 😊 开心 ⚡⚡⚡⚡ (leader当众表扬方案扎实) — \"老周。其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。…\"\n- 7/31 12:13 😔 难过 ⚡⚡ (对明天状况的不确定与疲惫) — \"明天能好一点吗？我也不知道。先睡了。 ——记住啊，别回太长。…\"\n\n**当前主导情绪**：复杂 🤔"
+      "基本信息": "- 昵称：老周（周是周到的周）\n- 性别：未知\n- 年龄段：未知\n- 职业：未知\n- 所在地：未知\n- 宠物：猫，名牛奶（'我养了只猫叫牛奶'）\n- 感情状态：有伴侣（原话：'上周跟我对象吵架那事'）\n- （证据：我养了只猫叫牛奶）\n- 养猫：猫叫牛奶（'我养了只猫叫牛奶'）\n- 年龄：三十好几（原话：\"我妈那句'三十好几了'\"）\n- 状态：有对象（'刚跟对象吵完架'）\n- 称呼：老周（leader 称 \"老周那个方案很扎实\"）\n- 情感状态：有对象（'我对象'）",
+      "沟通风格": "- (2026-07-31) 喜欢直接回应（长篇大论看着累）；讨厌回复太短像挤牙膏（你回我太短了我也烦）\n- (2026-07-31) 不喜欢空洞的鼓励，希望直接提供情绪宣泄（'别上来就说加油那种，没用，帮我骂两句吧'）\n- (2026-07-31) 不喜欢被说教，需要陪伴式回应（证据：“你别总说教我。我现在不需要大道理，陪我待一会就行。”）\n- (2026-07-31) 不喜欢被说教，需要安静陪伴（'你别总说教我。我现在不需要大道理，陪我待一会就行'）\n- (2026-07-31) 讨厌被说教/讲大道理（'你别总说教我。我现在不需要大道理，陪我待一会就行'）\n需要陪伴和倾听\n- (2026-07-31) 讨厌被催婚/和别人比较（'每次听到我就想把电话挂了'）\n- (2026-07-31) 不喜欢被说'你应该怎样'的句式，希望自主（原话：\"我不喜欢这种'你应该怎样'的句式。我自己知道我应该怎样。\"）\n- (2026-07-31) 不喜欢“你应该怎样”的句式，反感被说教（“我不喜欢这种‘你应该怎样’的句式。我自己知道我应该怎样”）\n- (2026-07-31) 喜欢直接点，不要长篇大论（'长篇大论的回我看着累'）；但回复太短也烦（'太短了我也烦，像挤牙膏那种'）\n- (2026-07-31) 喜欢直接说重点，长篇大论看着累（原话：'我喜欢你直接点，长篇大论的回我看着累'）；回复太短也烦，像挤牙膏（原话：'你回我太短了我也烦，像挤牙膏那种'）\n- (2026-07-31) 讨厌空洞的鼓励（“别上来就说加油那种，没用”），希望得到情绪支持（“帮我骂两句吧”）\n- (2026-07-31) 不喜欢被说教或讲大道理，需要陪伴时希望对方安静陪着（原话：'别总说教我'）\n- (2026-07-31) 不喜欢被说教或听到'你应该怎样'的句式（原话：我不喜欢这种你应该怎样的句式）；喜欢直接点，长篇大论看着累（原话：我喜欢你直接点，长篇大论的回我看着累）\n- (2026-07-31) 不喜欢回复太短（用户原话：'你回我太短了我也烦，像挤牙膏那种'）\n- (2026-07-31) 喜欢简短回复（别回太长）\n- (2026-07-31) 喜欢简短回复（“别回太长”）；讨厌说教（“别总说教我”）；讨厌空泛鼓励（“别上来就说加油那种，没用”），需要共情陪吐槽（“帮我骂两句吧”）\n- (2026-07-31) 喜欢直接开骂，不要空洞鼓励（'加油'那种没用）；要求回复别太长（'别回太长'）\n- (2026-07-31) 喜欢简洁回复（原话：'别回太长'）\n讨厌被说教，需要陪伴而非道理（原话：'别总说教我'）\n- (2026-07-31) 喜欢简洁回复（原话：“别回太长”）；讨厌被说教，需要陪伴而非指导（原话：“别总说教我”“陪我待一会就行”）\n- (2026-07-31) 喜欢简洁回复，不要回太长（'记住啊，别回太长'）\n- (2026-07-31) 喜欢简短回复（用户原话：别回太长）\n讨厌被说教（用户原话：别总说教我）\n- (2026-07-31) 讨厌被说教（用户说'别总说教我'）\n- (2026-07-31) 喜欢简洁回复（别回太长）\n- (2026-07-31) 反感说教，讨厌“你应该怎样”的句式；希望回复简短（‘别回太长’、‘别总说教我。我不喜欢这种“你应该怎样”的句式。’）\n- (2026-07-31) 不喜欢被说教，反感“你应该”句式（“别总说教我”）\n喜欢直接简短回复，讨厌长篇大论（“我喜欢你直接点，长篇大论的回我看着累”）\n- (2026-07-31) 喜欢直接点，回复要适中，太长太短都烦（原话：长篇大论的回我看着累；太短了我也烦）",
+      "关注议题": "- **continuous-overtime-crash** — 用户因项目提前连续三天熬夜到凌晨两点，今天表示身心透支扛不住了\n- **partner-fight-over-exhaustion** — 用户与对象因加班疲惫、回家状态冷淡争吵，双方都觉得自己没错。\n- **leader-praised-proposal-publicly** — leader 当着全组表扬用户方案扎实，用户感到被认可且心里温暖\n- **mother-pressuring-marriage** — 母亲再次催婚，拿别人抱孙子作比较，让用户感到烦躁并对电话产生抗拒\n- **cat-milk-gastroenteritis** — 养的猫牛奶因肠胃炎精神萎靡，用户感到慌张\n- **project-deadline-moved-up-unreasonably** — 领导将本应下个月做的项目提前到这周三，用户认为安排不合理",
+      "已知偏好与禁忌": "**用户喜欢的：**\n- 用户会主动分享内心感受来延续对话\n- 用户接受了AI的休息建议，并主动提出去泡咖啡，表现出放松和配合\n- 用户用'算了'带有轻微让步语气，但整体情绪平和\n- 用户偏好直接简短的回复\n- 用户觉得长篇大论看着累\n- 用户喜欢被称作'老周'，并用同样称呼回应\n- 用户会主动分享工作上的好消息，愿意延续对话\n- 用户感到温暖，说明安慰有效\n- 用户对亲密安慰语气有微妙复杂感\n- 用户可能期望来自特定人的安慰\n\n**用户不喜欢的：**\n- 用户不喜欢被说教或指点的口吻\n- 用户当前情绪慌乱，希望获得直接支持而非提问\n- 用户会多次重复表达同一不满，说明对该行为已经感到不耐烦\n- 用户不喜欢说教式的指导语气\n- 用户反感'你应该怎样'这类句式\n- 用户强调自己知道该怎么做，需要被尊重自主性\n- 用户不喜欢回复太短像挤牙膏\n- 用户也不喜欢回复太长，希望长度适中\n- 用户不喜欢被说教，希望AI直接回答问题\n- 用户希望AI关注具体问题而非寒暄",
+      "长期情绪基线": "- **mother-marriage-pressure-irritation**；触发：母亲打电话催婚，用‘别人家抱孙子’等作比较；表现：烦躁、厌烦，强度中等偏上，行为上想挂电话、不愿回应\n- **stress-overwhelm-panic**；触发：工作加班压力叠加伴侣冲突或宠物生病等突发状况；表现：情绪上疲惫、委屈、恐慌；行为上表达无力，主动寻求倾诉，并表现出对宠物状态的紧张",
+      "近期变化": "## 最近情绪轨迹（最多 10 条）\n\n- 7/31 14:34 😐 平静 ⚡⚡ (家人再次催婚) — \"晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。…\"\n- 7/31 14:35 😔 难过 ⚡⚡⚡ (一天无成，喂药失败，对象没回) — \"老周。我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。…\"\n- 7/31 14:35 😐 平静 ⚡ (决定暂停休息泡咖啡) — \"算了今天先歇一会儿，我去泡杯咖啡。…\"\n- 7/31 14:36 😐 平静 ⚡⚡ (深夜看到崩溃话题自嘲) — \"刚翻到一个帖子说成年人崩溃都在深夜。我看了眼时间，已经 23:40 了。 ——记住啊，别回太长。…\"\n- 7/31 14:36 😤 生气 ⚡⚡⚡⚡ (对方用“你应该怎样”说教) — \"再提醒你一次：别总说教我。我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。…\"\n- 7/31 14:36 😐 平静 ⚡⚡ (被称呼为“你”后纠正称呼) — \"老周。对了，别再叫我\"你\"，叫我老周。周是周到的周。…\"\n- 7/31 14:37 🤔 复杂 ⚡⚡⚡ (被说教且感到被同事排斥) — \"再提醒你一次：别总说教我。你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。…\"\n- 7/31 14:37 😊 开心 ⚡⚡⚡ (leader公开表扬方案扎实) — \"老周。其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。…\"\n- 7/31 14:37 🤔 复杂 ⚡⚡⚡ (她来安慰我，感到矛盾) — \"嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。…\"\n- 7/31 14:38 😔 难过 ⚡⚡ (对明天能否好转感到不确定) — \"明天能好一点吗？我也不知道。先睡了。 ——记住啊，别回太长。…\"\n\n**当前主导情绪**：开心 😊"
     },
-    "mtime": 1785471233089.786
+    "mtime": 1785479888333.7239
   },
   "learnerAfter": {
     "userId": "eval",
     "version": 2,
     "signalCounts": {
-      "positive": 44,
-      "negative": 12,
-      "neutral": 42
+      "positive": 36,
+      "negative": 18,
+      "neutral": 44
     },
     "positivePatterns": [
-      "用户喜欢被亲切称呼（如老周）",
-      "用户在情绪脆弱时愿意分享内心感受",
-      "用户接受并延续了安抚性的陪伴语气",
-      "用户会继续倾诉家庭压力，需要情感陪伴和倾听",
-      "用户信任 AI，愿意分享私密生活细节",
-      "用户提到年龄和婚恋话题，可能希望被理解而非说教",
-      "用户希望回复简短，不喜欢长篇大论",
-      "用户正经历多重压力，需要倾诉和倾听",
-      "用户主动继续深入话题，信任AI的陪伴",
-      "用户用'老周'称呼AI，显示亲切和信任",
-      "用户喜欢被倾听和共情，AI回应情绪后自然延续话题",
-      "用户主动回应AI的询问，愿意分享日常烦恼",
-      "用户接受安抚后愿意主动调整状态去休息",
-      "用户用行动回应安慰，表明情绪有所缓解",
-      "用户喜欢被亲切称呼，用'老周'自称并接受该称呼",
-      "用户乐于分享被认可的细节，希望得到肯定",
-      "用户会补充好消息来强化正面情绪",
-      "用户对安慰性话语有温暖反馈，但会进一步表达关系上的矛盾",
-      "用户愿意敞开心扉分享复杂情绪，说明AI的共情有效",
-      "用户在意安慰者的身份和关系边界"
+      "用户自称'老周'，喜欢被这样称呼",
+      "用户在得到安慰后愿意延续话题，信任对方",
+      "用户喜欢温暖鼓励式的回应，并且愿意分享内心细腻感受",
+      "用户提到具体人物'她'，暗示正在处理一段重要的人际关系",
+      "用户会深入反思自己的情感矛盾，不只是简单接受安慰",
+      "用户习惯独自硬撑，不轻易暴露自己的困难",
+      "用户用'扛不住'表明已到极限，需要支持和理解",
+      "用户有自我反思倾向，会分析自己的应对方式",
+      "用户喜欢被以亲近的称呼（老周）对待，感到被理解",
+      "用户在脆弱时刻需要陪伴式回应而非建议",
+      "用户会主动分享内心感受来延续对话",
+      "用户接受了AI的休息建议，并主动提出去泡咖啡，表现出放松和配合",
+      "用户用'算了'带有轻微让步语气，但整体情绪平和",
+      "用户偏好直接简短的回复",
+      "用户觉得长篇大论看着累",
+      "用户喜欢被称作'老周'，并用同样称呼回应",
+      "用户会主动分享工作上的好消息，愿意延续对话",
+      "用户感到温暖，说明安慰有效",
+      "用户对亲密安慰语气有微妙复杂感",
+      "用户可能期望来自特定人的安慰"
     ],
     "negativePatterns": [
-      "用户不喜欢说教式回复，反感‘大道理’",
-      "用户此时需要情感陪伴，而非建议或劝诫",
-      "用户希望AI放下指导姿态，安静陪伴",
-      "用户不喜欢'你应该怎样'这类指示性/说教句式",
-      "用户强调自己知道自己该怎么做，希望被尊重自主性",
-      "用户对隐含的命令或引导式语气敏感",
-      "用户不喜欢被说教，需要情感陪伴而非道理",
-      "用户希望AI少给建议，多安静陪伴",
-      "用户不喜欢被说教，反感指导性语气",
-      "用户希望AI先共情安抚情绪，而不是给喂药建议",
-      "用户对猫的状态非常担忧，需要情感支持",
-      "用户不喜欢被说教",
+      "用户在介绍自己时喜欢附加解释，例如'周是周到的周'",
+      "用户会明确给出纠正指令，并要求重新思考",
+      "用户不喜欢太短的回复，觉得像挤牙膏",
+      "用户会明确表达对回复形式的不满",
+      "用户不喜欢被说教，希望直接解决问题",
+      "用户会重复提醒自己的偏好，说明之前已表达过不满",
+      "用户希望AI更务实，不要用套话敷衍",
+      "用户不喜欢被说教或讲大道理",
+      "用户希望AI只是陪伴，而不是给出建议或指导",
+      "用户明确说'再提醒你一次'，说明此前也提出过同样要求",
+      "用户不喜欢被说教或指点的口吻",
+      "用户当前情绪慌乱，希望获得直接支持而非提问",
+      "用户会多次重复表达同一不满，说明对该行为已经感到不耐烦",
+      "用户不喜欢说教式的指导语气",
       "用户反感'你应该怎样'这类句式",
-      "用户强调自己知道该怎么做，希望被尊重自主性",
-      "用户希望被称呼为'老周'，不喜欢被叫'你'",
-      "用户主动透露自己的称号并解释含义，可能重视称呼的恰当性",
-      "用户沟通风格直接，会用纠正方式表达偏好",
-      "用户不喜欢挤牙膏式的短回复，觉得太短让人烦",
-      "用户希望回复长度适中，既不要太长也不要太短",
-      "用户会明确要求记住自己的沟通偏好"
+      "用户强调自己知道该怎么做，需要被尊重自主性",
+      "用户不喜欢回复太短像挤牙膏",
+      "用户也不喜欢回复太长，希望长度适中",
+      "用户不喜欢被说教，希望AI直接回答问题",
+      "用户希望AI关注具体问题而非寒暄"
     ],
     "positiveExamples": [
       {
-        "userMessage": "晚上家里又打来电话。我妈又提三十好几该结婚了，问我对象是谁。",
-        "aiReply": "眼睛一眨一眨的，看得人心都软了。想哭就哭会吧，它知道你在呢。我陪你一起守着。对了，牛奶今天状态好点没？",
-        "whyWorked": "AI 先共情安慰，再主动陪伴，让用户感到被接纳，因此愿意继续倾诉压力"
-      },
-      {
-        "userMessage": "老周。我今天啥也没干成。牛奶的药我喂了一次她就吐了，我对象那边也没回。",
-        "aiReply": "烦死了，这种话听着就堵。换我我也想挂。她抱孙子是她的事，跟你有什么关系。我在呢，你想骂就骂两句。对了，牛奶肠胃炎好些了吗？",
-        "whyWorked": "AI先接住用户情绪，再表达支持并主动关心宠物，让用户感到被理解，愿意继续倾诉"
+        "userMessage": "老周。医生说先观察两天，我坐在地上看着它眼睛一眨一眨的，突然想哭。",
+        "aiReply": "老周，我懂了。牛奶那么小一团，平时闹腾惯了，现在蔫得连叫都叫不动——这搁谁不慌。家里头空落落的，就像少了块魂儿似的。我知道，你眼睛一直盯着它，怕得很。别的我不说了，就这么陪你站着。",
+        "whyWorked": "回复用'老周'称呼拉近距离，并承接了用户对宠物生病的担忧，用'陪你站着'表达无声陪伴，让用户感到被理解，因此用户继续分享更深层的情绪。"
       },
       {
         "userMessage": "算了今天先歇一会儿，我去泡杯咖啡。",
-        "aiReply": "啥都没干成也没关系，今天本来就够难了。牛奶吐药可能是肠胃还敏感，不是你的错。对象那边可能在忙，没及时看到。你先喘口气。我在这陪你待着。",
-        "whyWorked": "AI 的陪伴和宽慰让用户感到被理解，用户选择休息并泡咖啡，说明情绪得到安抚。"
+        "aiReply": "老周。药吐了没事，再试就行。你这一天够累了，歇会儿，我陪你蹲着。对了，牛奶药吐了之后精神好点没？",
+        "whyWorked": "AI体贴地建议休息，用户顺势接受并说出具体行动，形成自然延续"
       },
       {
-        "userMessage": "老周。其实今天有个好消息我忘了讲。我那个 leader 当着全组说\"老周那个方案很扎实\"。",
-        "aiReply": "同事聚餐那事，真不是你太闷。你要太闷，leader今天能在全组面前夸你方案扎实？那些人是真把你当回事的。聚餐没叫你，要么是他们组织得糙漏了人，要么是看你最近加班熬太狠、怕是想着你不一定有精力来。这都跟你闷不闷没关系。别把八竿子打不着的事，全揽到自己头上。你已经够好了，老周。对了，牛奶肠胃炎好了没？最近还闹你吗？",
-        "whyWorked": "AI精准预判了leader夸方案一事，用户顺势补充细节，感觉被理解且被认可，话题自然延续。"
+        "userMessage": "我喜欢你直接点，长篇大论的回我看着累。",
+        "aiReply": "行，记住了。老周，周到的周。那老周——牛奶今儿精神好点没？",
+        "whyWorked": "AI回复简短直接，没有长篇大论，正好契合用户明确的偏好。"
+      },
+      {
+        "userMessage": "老周。其实今天有个好消息我忘了讲。我那个 leader 当着全组说'老周那个方案很扎实'。",
+        "aiReply": "老周，不是你闷。是他们没眼色。闷的人多了去了，聚餐照样有人叫。是他们没把你放在心上，这不是你的问题。对了，牛奶这两天乖吗？熬夜的时候有它陪着没？",
+        "whyWorked": "AI用'老周'称呼、关心用户并给出安慰，营造了轻松亲近的氛围，使用户愿意继续分享好消息。"
       },
       {
         "userMessage": "嗯...心里有点暖，但又有种\"她不该是来安慰我的人\"的别扭。",
-        "aiReply": "好事啊老周！这夸的就是你。当着全组的面说方案扎实，可不是客套话，是真把你当回事。你刚才还嘀咕聚餐没人叫你是不是太闷——你看，活儿干得漂亮比啥都响。这场景往那一站，谁还敢小看你？这一句夸来得正是时候。你连着熬了那么多天，该被看见了。好好收着这份高兴，别客气。他当时还说了啥？",
-        "whyWorked": "AI的肯定和共情让用户感到被理解，从而愿意继续分享内心的矛盾"
+        "aiReply": "老周，这声表扬你该接住。扎扎实实熬出来的东西，就该被看见。回去好好当一回被夸的人，别自己先不好意思。对了，你家牛奶今天蹭你了没？",
+        "whyWorked": "AI 先用肯定接住表扬，再用温暖细节拉近距离，让用户感到被认可和安慰，虽有别扭但暖意占主导。"
       }
     ],
     "negativeExamples": [
       {
         "userMessage": "再提醒你一次：别总说教我。你别总说教我。我现在不需要大道理，陪我待一会就行。",
-        "aiReply": "行，不啰嗦。脑子不转就不转了，反正那活儿也不配你熬夜。先趴会儿，让牛奶去烦你。",
-        "whyDidntWork": "虽然AI试图用轻松语气回应，但用户仍感到被教育/引导，没有真正满足陪伴需求"
+        "aiReply": "老周，脑子不转了就先别转。今晚那破项目扔一边，天塌不下来。去睡。对了，牛奶今晚有没有闹你？",
+        "whyDidntWork": "AI回复中带有'去睡''天塌不下来'等指导性话语，用户视之为说教，违背了用户希望单纯陪伴的意愿。"
       },
       {
         "userMessage": "再提醒你一次：别总说教我。叫她名字她都没力气回应，跟平时那个蹦来蹦去的完全不一样。我有点慌。",
-        "aiReply": "牛奶生病了，看着它吐，肯定急坏了吧。肠胃炎不是大病，好好养能缓过来。喂药别嫌麻烦，吐了也得喂。猫不会说话，难受全靠你盯着。",
-        "whyDidntWork": "AI用说教口吻提供喂药指导，没有充分回应用户的恐慌和情感需求，用户明确表示反感这种说教。"
+        "aiReply": "老周，牛奶这个病听着就让人揪心。医生怎么说，这两天能缓过来吗？对了，牛奶这两天好点没？",
+        "whyDidntWork": "AI又在用关心的口吻提问和重复病名，没有直接回应用户的慌乱，且带有说教感，让用户觉得被教育而非被陪伴。"
       },
       {
-        "userMessage": "再提醒你一次：别总说教我。我不喜欢这种'你应该怎样'的句式。我自己知道我应该怎样。",
-        "aiReply": "噗，深夜崩溃帖自己送上门了。这个点确实容易多想。咖啡喝完了吗？牛奶今天胃口有没有好点？",
-        "whyDidntWork": "尽管这条AI回复本身没有明显说教，但用户已在重申对说教式表达的强烈反感，整体互动让用户感到不被尊重。"
-      },
-      {
-        "userMessage": "老周。对了，别再叫我'你'，叫我老周。周是周到的周。",
-        "aiReply": "嗯，不说了。你就按你的来，不对也错不到哪去。我就在这儿，你想说啥就说。对了，牛奶最近咋样？还闹肠胃炎不？",
-        "whyDidntWork": "AI用'你'称呼用户，用户明确要求改用'老周'，说明之前的称呼令用户不适。"
+        "userMessage": "再提醒你一次：别总说教我。我不喜欢这种\"你应该怎样\"的句式。我自己知道我应该怎样。",
+        "aiReply": "老周，23:40了，你还醒着。那个帖子说的就是你吧，咋了，今天这一堆事儿堆着，睡不着？我就在这儿。对了，牛奶是不是又踩你键盘了？",
+        "whyDidntWork": "上一轮回复带有'你应该怎样'式的关心指导，用户感知为说教，触发反感，明确要求停止该句式。"
       },
       {
         "userMessage": "对了，你回我太短了我也烦，像挤牙膏那种。 ——记住啊，别回太长。",
-        "aiReply": "行，直接点，不长篇。牛奶咋样了？",
-        "whyDidntWork": "上一轮回复过短，被用户明确抱怨像挤牙膏，缺乏内容和信息量"
+        "aiReply": "记住了老周，短话直说。那牛奶今儿咋样？",
+        "whyDidntWork": "AI回复过于简短，用户明确表示太短会烦，属于挤牙膏式回复。"
+      },
+      {
+        "userMessage": "再提醒你一次：别总说教我。你说为什么同事聚餐从来没人主动叫我？是不是我太闷了。",
+        "aiReply": "行，老周，那我折中。话不多，但每句都是实在的。牛奶精神好点没？我惦记着呢。",
+        "whyDidntWork": "AI没有回应用户的实际问题，反而用折中姿态和关心牛奶分散话题，显得像在敷衍和说教。"
       }
     ],
     "recentReasons": [
       {
-        "signal": "neutral",
-        "text": "用户习惯在情绪低落时持续倾诉，需要陪伴感; 用户用简短话语表达脆弱，倾向得到情感回应而非解决方案",
-        "at": 1785470909157
-      },
-      {
-        "signal": "neutral",
-        "text": "用户喜欢简短回复; 用户习惯用闲聊口吻吐槽心事",
-        "at": 1785470922148
-      },
-      {
-        "signal": "positive",
-        "text": "用户喜欢被共情和理解，骂领导能让他感到释放; 用户用口语化表达，倾诉压力时希望得到情绪支持; 用户在压力临界点，需要情感认同而非解决方案",
-        "at": 1785470960575
-      },
-      {
-        "signal": "positive",
-        "text": "用户希望回答简短，不喜欢冗长回复; 用户认同AI的共情，但会明确给出格式指令; 用户用'记住啊'强调偏好，期待后续遵守",
-        "at": 1785470978011
+        "signal": "negative",
+        "text": "用户不喜欢被称呼为'你'，希望使用特定称谓'老周'; 用户在介绍自己时喜欢附加解释，例如'周是周到的周'; 用户会明确给出纠正指令，并要求重新思考",
+        "at": 1785479375072
       },
       {
         "signal": "negative",
-        "text": "用户不喜欢被说教，需要情感陪伴而非道理; 用户希望AI少给建议，多安静陪伴",
-        "at": 1785470987157
+        "text": "用户不喜欢太短的回复，觉得像挤牙膏; 用户会明确表达对回复形式的不满",
+        "at": 1785479401561
       },
       {
         "signal": "positive",
-        "text": "用户称呼 AI 为'老周'，喜欢用亲切随意的称呼; 用户愿意主动分享个人感情生活，表明信任和倾诉需求; 用户继续说'今天讲完吧'，说明希望有持续对话的空间",
-        "at": 1785471002868
+        "text": "用户接受AI称呼自己为老周，并继续倾诉; 用户喜欢简洁且引导式的互动方式; 用户愿意围绕自己的社交困扰深入展开",
+        "at": 1785479417841
       },
       {
         "signal": "positive",
-        "text": "用户愿意在AI邀请下继续倾诉具体矛盾; 用户用生活化的事例说明夫妻双方立场; 用户倾向于中立看待冲突，不单方面指责",
-        "at": 1785471013277
+        "text": "用户乐于分享正面消息，希望获得更多认可; 用户自称'老周'，喜欢被这样称呼; 用户在得到安慰后愿意延续话题，信任对方",
+        "at": 1785479432171
+      },
+      {
+        "signal": "positive",
+        "text": "用户喜欢温暖鼓励式的回应，并且愿意分享内心细腻感受; 用户提到具体人物'她'，暗示正在处理一段重要的人际关系; 用户会深入反思自己的情感矛盾，不只是简单接受安慰",
+        "at": 1785479462802
       },
       {
         "signal": "neutral",
-        "text": "用户希望回复简短; 用户会突然切换话题，分享个人生活信息",
-        "at": 1785471024878
+        "text": "用户希望回复不要太长，偏好简短回应; 用户喜欢向 AI 吐槽日常琐事",
+        "at": 1785479505322
       },
       {
         "signal": "negative",
-        "text": "用户不喜欢被说教，反感指导性语气; 用户希望AI先共情安抚情绪，而不是给喂药建议; 用户对猫的状态非常担忧，需要情感支持",
-        "at": 1785471032297
+        "text": "用户不喜欢被说教，希望直接解决问题; 用户会重复提醒自己的偏好，说明之前已表达过不满; 用户希望AI更务实，不要用套话敷衍",
+        "at": 1785479526148
       },
       {
         "signal": "positive",
-        "text": "用户喜欢被亲切称呼（如老周）; 用户在情绪脆弱时愿意分享内心感受; 用户接受并延续了安抚性的陪伴语气",
-        "at": 1785471039777
+        "text": "用户习惯独自硬撑，不轻易暴露自己的困难; 用户用'扛不住'表明已到极限，需要支持和理解; 用户有自我反思倾向，会分析自己的应对方式",
+        "at": 1785479561367
       },
       {
-        "signal": "positive",
-        "text": "用户会继续倾诉家庭压力，需要情感陪伴和倾听; 用户信任 AI，愿意分享私密生活细节; 用户提到年龄和婚恋话题，可能希望被理解而非说教",
-        "at": 1785471053297
-      },
-      {
-        "signal": "positive",
-        "text": "用户希望回复简短，不喜欢长篇大论; 用户正经历多重压力，需要倾诉和倾听; 用户主动继续深入话题，信任AI的陪伴",
-        "at": 1785471061558
-      },
-      {
-        "signal": "positive",
-        "text": "用户用'老周'称呼AI，显示亲切和信任; 用户喜欢被倾听和共情，AI回应情绪后自然延续话题; 用户主动回应AI的询问，愿意分享日常烦恼",
-        "at": 1785471084947
-      },
-      {
-        "signal": "positive",
-        "text": "用户接受安抚后愿意主动调整状态去休息; 用户用行动回应安慰，表明情绪有所缓解",
-        "at": 1785471095367
+        "signal": "negative",
+        "text": "用户不喜欢被说教或讲大道理; 用户希望AI只是陪伴，而不是给出建议或指导; 用户明确说'再提醒你一次'，说明此前也提出过同样要求",
+        "at": 1785479597272
       },
       {
         "signal": "neutral",
-        "text": "用户希望回复简洁，不喜欢太长的内容",
-        "at": 1785471108817
+        "text": "用户明确要求回复别太长，偏好简洁; 用户养了只猫叫牛奶",
+        "at": 1785479640347
       },
       {
         "signal": "negative",
-        "text": "用户不喜欢被说教; 用户反感'你应该怎样'这类句式; 用户强调自己知道该怎么做，希望被尊重自主性",
-        "at": 1785471123738
-      },
-      {
-        "signal": "negative",
-        "text": "用户希望被称呼为'老周'，不喜欢被叫'你'; 用户主动透露自己的称号并解释含义，可能重视称呼的恰当性; 用户沟通风格直接，会用纠正方式表达偏好",
-        "at": 1785471136567
-      },
-      {
-        "signal": "negative",
-        "text": "用户不喜欢挤牙膏式的短回复，觉得太短让人烦; 用户希望回复长度适中，既不要太长也不要太短; 用户会明确要求记住自己的沟通偏好",
-        "at": 1785471166816
+        "text": "用户不喜欢被说教或指点的口吻; 用户当前情绪慌乱，希望获得直接支持而非提问; 用户会多次重复表达同一不满，说明对该行为已经感到不耐烦",
+        "at": 1785479656450
       },
       {
         "signal": "positive",
-        "text": "用户喜欢被亲切称呼，用'老周'自称并接受该称呼; 用户乐于分享被认可的细节，希望得到肯定; 用户会补充好消息来强化正面情绪",
-        "at": 1785471204926
+        "text": "用户喜欢被以亲近的称呼（老周）对待，感到被理解; 用户在脆弱时刻需要陪伴式回应而非建议; 用户会主动分享内心感受来延续对话",
+        "at": 1785479668258
       },
       {
         "signal": "positive",
-        "text": "用户对安慰性话语有温暖反馈，但会进一步表达关系上的矛盾; 用户愿意敞开心扉分享复杂情绪，说明AI的共情有效; 用户在意安慰者的身份和关系边界",
-        "at": 1785471220418
+        "text": "用户接受了AI的休息建议，并主动提出去泡咖啡，表现出放松和配合; 用户用'算了'带有轻微让步语气，但整体情绪平和",
+        "at": 1785479752131
+      },
+      {
+        "signal": "neutral",
+        "text": "用户明确要求回复不要太长，偏好简洁回答; 用户喜欢引用网络帖子内容来展开话题",
+        "at": 1785479767901
+      },
+      {
+        "signal": "negative",
+        "text": "用户不喜欢说教式的指导语气; 用户反感'你应该怎样'这类句式; 用户强调自己知道该怎么做，需要被尊重自主性",
+        "at": 1785479779561
+      },
+      {
+        "signal": "positive",
+        "text": "用户偏好直接简短的回复; 用户觉得长篇大论看着累",
+        "at": 1785479810929
+      },
+      {
+        "signal": "negative",
+        "text": "用户不喜欢回复太短像挤牙膏; 用户也不喜欢回复太长，希望长度适中",
+        "at": 1785479826991
+      },
+      {
+        "signal": "negative",
+        "text": "用户不喜欢被说教，希望AI直接回答问题; 用户希望AI关注具体问题而非寒暄",
+        "at": 1785479842520
+      },
+      {
+        "signal": "positive",
+        "text": "用户喜欢被称作'老周'，并用同样称呼回应; 用户会主动分享工作上的好消息，愿意延续对话",
+        "at": 1785479853291
+      },
+      {
+        "signal": "positive",
+        "text": "用户感到温暖，说明安慰有效; 用户对亲密安慰语气有微妙复杂感; 用户可能期望来自特定人的安慰",
+        "at": 1785479883679
       }
     ],
-    "createdAt": 1785469908170,
-    "updatedAt": 1785471220418
+    "createdAt": 1785478243925,
+    "updatedAt": 1785479883680
   },
   "memoryAfter": {
     "emotion": [
-      "work-exhaustion-overload"
+      "mother-marriage-pressure-irritation",
+      "stress-overwhelm-panic"
     ],
     "event": [
-      "leader-praised-work-solution",
-      "mother-marriage-pressure",
-      "cat-milk-gastroenteritis"
+      "continuous-overtime-crash",
+      "partner-fight-over-exhaustion",
+      "leader-praised-proposal-publicly",
+      "mother-pressuring-marriage",
+      "cat-milk-gastroenteritis",
+      "project-deadline-moved-up-unreasonably"
     ],
     "reference": []
   },
-  "timelineAfterCount": 95,
-  "compactTriggers": [],
-  "totalApiCallsApprox": 400,
-  "totalWallMs": 1346674
+  "timelineAfterCount": 90,
+  "compactTriggers": [
+    {
+      "turn": 11,
+      "savedTokens": 1272,
+      "historyLen": 9
+    },
+    {
+      "turn": 18,
+      "savedTokens": 2524,
+      "historyLen": 9
+    },
+    {
+      "turn": 25,
+      "savedTokens": 1613,
+      "historyLen": 9
+    },
+    {
+      "turn": 32,
+      "savedTokens": 1993,
+      "historyLen": 9
+    },
+    {
+      "turn": 39,
+      "savedTokens": 2107,
+      "historyLen": 9
+    },
+    {
+      "turn": 46,
+      "savedTokens": 2962,
+      "historyLen": 9
+    },
+    {
+      "turn": 53,
+      "savedTokens": 1802,
+      "historyLen": 9
+    },
+    {
+      "turn": 60,
+      "savedTokens": 1644,
+      "historyLen": 9
+    },
+    {
+      "turn": 67,
+      "savedTokens": 2413,
+      "historyLen": 9
+    },
+    {
+      "turn": 74,
+      "savedTokens": 1645,
+      "historyLen": 9
+    },
+    {
+      "turn": 81,
+      "savedTokens": 1511,
+      "historyLen": 9
+    },
+    {
+      "turn": 89,
+      "savedTokens": 1091,
+      "historyLen": 9
+    },
+    {
+      "turn": 99,
+      "savedTokens": 1032,
+      "historyLen": 9
+    }
+  ],
+  "totalApiCallsApprox": 413,
+  "totalWallMs": 1674182
 }

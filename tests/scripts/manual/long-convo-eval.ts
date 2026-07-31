@@ -234,7 +234,7 @@ async function main() {
   await timeline.ensure();
 
   // 3. 主循环
-  const history: ChatMessage[] = [];
+  let history: ChatMessage[] = [];
   let previousAssistantReply = "";
   const startWall = Date.now();
 
@@ -324,16 +324,20 @@ async function main() {
 
     const turnMs = Date.now() - turnStart;
 
-    // 用 effectiveHistory 替换（compact 后版本），再 push user/assistant
-    history.length = 0;
-    history.push(...result.effectiveHistory);
-    history.push({ role: "user", content: t.user });
-    history.push({ role: "assistant", content: result.responseText });
+    // effectiveHistory 是 compact 后的旧历史（不含本轮 user/assistant）。
+    // 注意：本轮未触发 compact 时 maybeCompact 返回原 history 同一引用，
+    // 所以绝不能先 history.length=0 再 push(...effectiveHistory)。
+    // 必须用新数组替换。
+    history = [
+      ...result.effectiveHistory,
+      { role: "user", content: t.user },
+      { role: "assistant", content: result.responseText },
+    ];
     previousAssistantReply = result.responseText;
 
     // 限长：与 REPL 一致（≤ 40 条）
     if (history.length > 40) {
-      history.splice(0, history.length - 40);
+      history = history.slice(history.length - 40);
     }
 
     // 收集本轮日志
