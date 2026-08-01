@@ -82,6 +82,21 @@ tests/scripts/manual/*.log.json
 /TEST_REPORT.md
 /TECHNICAL.md
 
+# =====================================================================
+# examples/（旧版人设示例，不再入仓）
+# =====================================================================
+/examples/
+
+# =====================================================================
+# tests/ 下日志和评测报告（保留 *.test.ts，删 *.log + REPORT.md）
+# =====================================================================
+tests/*.log
+tests/scripts/manual/*.log
+tests/scripts/manual/*.log.json
+tests/scripts/manual/*REPORT.md
+tests/scripts/manual/*VERIFY.md
+# 保留 *.test.ts 和 *.sh
+
 # v0.15+: 反馈学习数据
 data/learned-prefs/
 
