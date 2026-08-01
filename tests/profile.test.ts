@@ -529,9 +529,9 @@ describe("v0.19: 行为提醒已移除（不再从 profile 自动派生风格指
   });
 
   it("称呼偏好时，渲染不含派生称呼指令（'称呼：'）", () => {
-    const p = buildProfile({ 沟通风格: "叫我老王就行" });
+    const p = buildProfile({ 沟通风格: "叫我小李就行" });
     const rendered = renderProfileForPrompt(p);
-    expect(rendered).toContain("老王");
+    expect(rendered).toContain("小李");
     expect(rendered).not.toMatch(/称呼：/);
   });
 
