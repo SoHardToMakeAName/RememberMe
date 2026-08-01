@@ -20,6 +20,35 @@ Provides both a **web interface** (default) and a **CLI interface**.
 
 ---
 
+## 🧠 What makes it different
+
+> Strictly speaking, EmoTalk is not an agent (it doesn't call tools, doesn't plan autonomously). It's a **context orchestrator** — it composes your profile, memories, emotional patterns, and conversation history into a system prompt that's better tuned to *this* moment, so that the same LLM performs noticeably better with you than it does in a generic chat window.
+
+### It actually remembers you
+
+- Your profile, memories, and emotional patterns live as **local markdown files** under `data/`, each one openable and editable in any text editor
+- Come back six months later and it still remembers the topic you left mid-sentence
+- Across sessions, across interfaces (CLI ↔ Web), across models (Claude / DeepSeek / GPT-4) — same memory
+
+### Preferences grow out of your feedback
+
+- What you've said you like or dislike is recorded as observations and injected into the next system prompt
+- No predefined "length / tone / depth / format" dimensions — entirely driven by your actual feedback
+
+### Emotional patterns are named and remembered
+
+- Recurring emotional reactions are stored as `emotion`-type memories (only kept when ≥2 pieces of evidence exist)
+- Not just "feeling off today" — but a named pattern that resurfaces next time the topic comes up
+
+### On privacy: two boundaries to be clear about
+
+- ✅ **Local data**: your profile, memories, reflections, and feedback-learned observations only live in `data/`, covered by `.gitignore`. EmoTalk does not upload them to any EmoTalk-controlled server.
+- ⚠️ **LLM calls**: to work, EmoTalk has to send conversation content to the LLM provider you configured (Anthropic / DeepSeek / OpenAI / etc.). EmoTalk itself does not store conversations outside your local disk, but **you have to trust your LLM provider** — this is a constraint shared by every LLM-based application.
+
+---
+
+---
+
 ## Core Features
 
 ### 🧠 Multi-layer memory
@@ -260,9 +289,9 @@ emotalk/
 
 ---
 
-## 🔒 Privacy: your data stays local
+## 🔒 Privacy
 
-EmoTalk uploads nothing. All runtime artifacts live in `data/`, which is in `.gitignore` — **never committed**:
+EmoTalk itself uploads nothing. All runtime artifacts live in `data/`, which is in `.gitignore` — **never committed**:
 
 ```
 .gitignored runtime data:
@@ -277,11 +306,17 @@ EmoTalk uploads nothing. All runtime artifacts live in `data/`, which is in `.gi
 └── settings.json                    ← API key (use .example placeholder in repo)
 ```
 
-**Safe to**:
+**Local data: safe to**
 - Paste PROFILE.md content in issues / PRs / screenshots (won't be collected)
 - Push this repo to public GitHub (no conversation data leaks)
 - List this project on your résumé (reviewers see only code + docs)
 
+**But one boundary to be clear about: LLM calls**
+- For EmoTalk to work, it has to send conversation content to the LLM provider you configured (Anthropic / DeepSeek / OpenAI / etc.)
+- EmoTalk itself doesn't store copies of those conversations outside your local disk, but **you have to trust your LLM provider** — this is a constraint shared by every LLM-based application
+- Picking a self-hosted / local model (e.g. Ollama) eliminates this external dependency entirely
+
+---
 ---
 
 ## 🛠 Tech stack
