@@ -165,23 +165,27 @@ async function runTurn(
     });
   }
 
-  // 后台 profile 更新
+  // 后台 profile 更新（fire-and-forget，不阻塞用户响应）
+  // v0.21 修复：之前 await 让用户感觉"输出结束还卡了几十秒"（LLM 摘要调用 2-5s）
   let profileUpdated = false;
   if (state.profile) {
-    try {
-      const recent = [
-        ...messages.slice(-6),
-        { role: "assistant" as const, content: fullText.slice(0, 500) },
-      ];
-      const result = await maybeUpdateProfile(DATA_DIR, state.provider, recent, {
-        userId: state.userId,
-        memoryDir: MEMORY_DIR,
-        timeline: state.timeline,
+    const recent = [
+      ...messages.slice(-6),
+      { role: "assistant" as const, content: fullText.slice(0, 500) },
+    ];
+    maybeUpdateProfile(DATA_DIR, state.provider, recent, {
+      userId: state.userId,
+      memoryDir: MEMORY_DIR,
+      timeline: state.timeline,
+    })
+      .then((result) => {
+        if (result.updated && process.env.EC_DEBUG) {
+          console.log(`[web/profile] 已更新`);
+        }
+      })
+      .catch(() => {
+        // maybeUpdateProfile 内部已 catch
       });
-      if (result.updated) profileUpdated = true;
-    } catch {
-      // ignore
-    }
   }
 
   // 反馈学习循环（fire-and-forget，不阻塞用户）
