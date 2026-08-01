@@ -29,6 +29,9 @@ tests/test-script.sh
 scripts/debug-tokens.ts
 scripts/test-spread.ts
 
+# R&D 评测产物：大体积 log.json（评测脚本 + REPORT.md 保留作为研究记录）
+tests/scripts/manual/*.log.json
+
 # 根目录调试脚本：send_*.py, send_*.ps1, screenshot*.py, find_*.py,
 # test_*.py, attach_*.py, clipboard_*.py, console_*.py
 # 不影响 tests/ 下有意义的 .ts 测试文件（被 tests/*.test.ts 显式追踪）

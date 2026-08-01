@@ -260,6 +260,45 @@ emotalk/
 
 ---
 
+## 🔒 Privacy: your data stays local
+
+EmoTalk uploads nothing. All runtime artifacts live in `data/`, which is in `.gitignore` — **never committed**:
+
+```
+.gitignored runtime data:
+├── data/profile/PROFILE.md          ← your profile (only .example template is committed)
+├── data/personality/*.json          ← your OCEAN persona
+├── data/sessions/*.json            ← conversation history
+├── data/memory/MEMORY.md + emotion/*.md + event/*.md + reference/*.md  ← memories
+├── data/timeline/*.jsonl            ← emotional timeline
+├── data/reflections/*.md            ← daily reflections
+├── data/learned-prefs/*.json        ← feedback-learned observations
+├── data/proactive-state.json        ← proactive-care state
+└── settings.json                    ← API key (use .example placeholder in repo)
+```
+
+**Safe to**:
+- Paste PROFILE.md content in issues / PRs / screenshots (won't be collected)
+- Push this repo to public GitHub (no conversation data leaks)
+- List this project on your résumé (reviewers see only code + docs)
+
+---
+
+## 🛠 Tech stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| Runtime | **Bun 1.1+** | Built-in TypeScript / tests / HTTP server, zero build step |
+| LLM | **Anthropic SDK** (OpenAI/DeepSeek/Moonshot compatible) | Custom baseURL keeps Anthropic protocol while allowing alternative endpoints |
+| HTTP | **Bun.serve** | Built-in SSE streaming, zero extra deps |
+| Frontend | Plain HTML / CSS / Vanilla JS | No React/Vue, 3 files, easy to read/modify |
+| Storage | **Pure Markdown + JSON** | User data readable, hand-editable, git-diffable |
+| Tests | **bun:test** | 318 tests, runs at runtime, ~100s |
+| Big Five persona | 5 dimensions 0-1 + free-text preferences | Academic standard + LLM translation + per-session storage |
+| Feedback learning | LLM free-text observations + positive/negative examples | No predefined enums, open dimensions |
+
+---
+
 ## License
 
 Apache License 2.0. See [LICENSE](./LICENSE).

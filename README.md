@@ -263,6 +263,45 @@ emotalk/
 
 ---
 
+## 🔒 隐私：你的数据完全留在本地
+
+EmoTalk 不会上传任何用户数据。所有运行时产物都在 `data/` 目录里，且 `data/` 在 `.gitignore` 里——**永远不会进 git 仓库**：
+
+```
+.gitignore 忽略的运行时数据：
+├── data/profile/PROFILE.md          ← 你的画像（profile.example.md 模板才入仓）
+├── data/personality/*.json          ← 你的 OCEAN 人设
+├── data/sessions/*.json            ← 对话历史
+├── data/memory/MEMORY.md + emotion/*.md + event/*.md + reference/*.md  ← 记忆
+├── data/timeline/*.jsonl            ← 情绪时间线
+├── data/reflections/*.md            ← 反思
+├── data/learned-prefs/*.json        ← 反馈学习观察
+├── data/proactive-state.json        ← 主动关心状态
+└── settings.json                    ← API key（用 .example 占位入仓）
+```
+
+**可以放心**：
+- 在 issue / PR / 截图里贴 PROFILE.md 内容（不会被自动收集）
+- 把仓库 push 到公开 GitHub（不会泄露任何对话数据）
+- 在简历里列这个项目（评审者只能看到代码和文档）
+
+---
+
+## 🛠 技术栈
+
+| 层 | 选型 | 理由 |
+|---|---|---|
+| 运行时 | **Bun 1.1+** | 内置 TypeScript / 测试 / HTTP 服务器，零构建步骤 |
+| LLM | **Anthropic SDK**（兼容 OpenAI/DeepSeek/Moonshot）| 通过 baseURL 切换，自定义端点保留 Anthropic 协议 |
+| HTTP | **Bun.serve** | 内置 SSE 流式支持，零额外依赖 |
+| 前端 | 纯 HTML / CSS / Vanilla JS | 不引入 React/Vue，3 个文件搞定，便于阅读修改 |
+| 存储 | **纯 Markdown + JSON** | 用户数据可读、可手改、可 git diff |
+| 测试 | **bun:test** | 318 个测试，运行时跑，约 100s |
+| 大五人格 | 5 维 0-1 数值 + 自由文本偏好 | 学术标准 + LLM 翻译 + 每会话独立存储 |
+| 反馈学习 | LLM 自然语言观察 + 正/负例示例 | 不预定义枚举，开放维度 |
+
+---
+
 ## License
 
 Apache License 2.0. 见 [LICENSE](./LICENSE)。
