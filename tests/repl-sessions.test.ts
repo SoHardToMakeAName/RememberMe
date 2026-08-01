@@ -155,7 +155,7 @@ describe("/persona init — save 后 load 回来", () => {
 });
 
 describe("/persona reset — 删文件后回到 defaultPersona", () => {
-  it("删掉 persona JSON 后 loadPersonaForSession 返回 null", () => {
+  it("删掉 persona JSON 后 loadPersonaForSession 返回 null", async () => {
     const sessionId = "test-session-reset";
     const p = defaultPersona(sessionId);
     savePersonaForSession(tmpDir, p);
@@ -163,7 +163,7 @@ describe("/persona reset — 删文件后回到 defaultPersona", () => {
 
     // 模拟 reset：删文件
     const { unlink } = require("node:fs/promises") as typeof import("node:fs/promises");
-    unlink(join(tmpDir, "personality", `${sessionId}.json`));
+    await unlink(join(tmpDir, "personality", `${sessionId}.json`));
 
     expect(loadPersonaForSession(tmpDir, sessionId)).toBeNull();
     // reloadPersona 会用 defaultPersona 兜底

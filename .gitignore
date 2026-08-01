@@ -10,6 +10,7 @@ data/memory/
 data/timeline/
 data/reflections/
 data/personality/
+data/ab-test-result-*.md
 
 # profile 目录里 PROFILE.md 是首次启动时自动写入的运行时文件
 # 提交一个 .example 即可

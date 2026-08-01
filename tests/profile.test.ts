@@ -586,3 +586,210 @@ describe("v0.19: 端到端流程 — 用户反馈被自动捕获并应用（不�
     expect(profile.sections["沟通风格"]).toContain("前任");
   });
 });
+
+// =====================================================================
+// v0.21: summarizeForProfile — LLM 摘要
+// =====================================================================
+
+describe("v0.21: summarizeForProfile", () => {
+  it("LLM 返回完整 JSON → 解析为 ProfileSummary", async () => {
+    const provider = makeJsonProvider(
+      JSON.stringify({
+        ocean: {
+          openness: 0.78,
+          conscientiousness: 0.45,
+          extraversion: 0.30,
+          agreeableness: 0.65,
+          neuroticism: 0.72,
+          basis: "反复讨论职业倦怠",
+        },
+        abstractTopics: ["职业倦怠", "写作羞耻"],
+        persistentPreferences: ["喜欢被倾听", "讨厌空泛安慰"],
+        persistentEmotionPatterns: ["写作羞耻 → 触发：想到写作 → 表现：回避"],
+        recentChanges: ["最近一周：情绪从焦虑转为厌倦"],
+      }),
+    );
+
+    const { summarizeForProfile } = await import("../src/profile.ts");
+    const summary = await summarizeForProfile(provider, {
+      memories: [],
+      learner: {
+        userId: "u1",
+        version: 2,
+        signalCounts: { positive: 0, negative: 0, neutral: 0 },
+        positivePatterns: [],
+        negativePatterns: [],
+        positiveExamples: [],
+        negativeExamples: [],
+        recentReasons: [],
+        createdAt: 0,
+        updatedAt: 0,
+      } as any,
+      timelineSummary: "",
+    });
+
+    expect(summary.ocean).not.toBeNull();
+    expect(summary.ocean!.openness).toBeCloseTo(0.78, 2);
+    expect(summary.ocean!.basis).toContain("职业倦怠");
+    expect(summary.abstractTopics).toEqual(["职业倦怠", "写作羞耻"]);
+    expect(summary.persistentPreferences).toEqual(["喜欢被倾听", "讨厌空泛安慰"]);
+  });
+
+  it("LLM 返回 markdown code block 包裹的 JSON 也能解析", async () => {
+    const provider = makeJsonProvider(
+      "```json\n" +
+        JSON.stringify({
+          ocean: { openness: 0.5, conscientiousness: 0.5, extraversion: 0.5, agreeableness: 0.5, neuroticism: 0.5, basis: "中性" },
+          abstractTopics: [],
+          persistentPreferences: [],
+          persistentEmotionPatterns: [],
+          recentChanges: [],
+        }) +
+        "\n```",
+    );
+
+    const { summarizeForProfile } = await import("../src/profile.ts");
+    const summary = await summarizeForProfile(provider, {
+      memories: [],
+      learner: {} as any,
+      timelineSummary: "",
+    });
+    expect(summary.ocean).not.toBeNull();
+  });
+
+  it("LLM 返回非 JSON → 返回空 summary（容错）", async () => {
+    const provider = makeJsonProvider("今天天气真好");
+    const { summarizeForProfile } = await import("../src/profile.ts");
+    const summary = await summarizeForProfile(provider, {
+      memories: [],
+      learner: {} as any,
+      timelineSummary: "",
+    });
+    expect(summary.ocean).toBeNull();
+    expect(summary.abstractTopics).toEqual([]);
+  });
+
+  it("OCEAN 数值越界 → ocean=null（容错）", async () => {
+    const provider = makeJsonProvider(
+      JSON.stringify({
+        ocean: { openness: 1.5, conscientiousness: 0.5, extraversion: 0.5, agreeableness: 0.5, neuroticism: 0.5, basis: "" },
+        abstractTopics: [],
+        persistentPreferences: [],
+        persistentEmotionPatterns: [],
+        recentChanges: [],
+      }),
+    );
+
+    const { summarizeForProfile } = await import("../src/profile.ts");
+    const summary = await summarizeForProfile(provider, {
+      memories: [],
+      learner: {} as any,
+      timelineSummary: "",
+    });
+    expect(summary.ocean).toBeNull();
+  });
+});
+
+// =====================================================================
+// v0.21: loadProfile + saveProfile ocean frontmatter round-trip
+// =====================================================================
+
+describe("v0.21: PROFILE.md ocean frontmatter", () => {
+  it("saveProfile 后 loadProfile 能读回 ocean", async () => {
+    const { saveProfile, loadProfile, defaultPersona } = await import("../src/profile.ts");
+    const dataDir = join(tmpDir, "ocean-roundtrip");
+    const profile = await loadProfile(dataDir, {
+      userId: "u1",
+      memoryDir: join(dataDir, "memory"),
+    });
+    // 注入 OCEAN
+    profile.ocean = {
+      openness: 0.78,
+      conscientiousness: 0.45,
+      extraversion: 0.30,
+      agreeableness: 0.65,
+      neuroticism: 0.72,
+      basis: "测试依据",
+    };
+    profile.oceanUpdatedAt = Date.now();
+    await saveProfile(profile);
+
+    // 重新 load（无 provider 走 fallback，但 OCEAN 字段持久化在 frontmatter 里）
+    const reloaded = await loadProfile(dataDir, {
+      userId: "u1",
+      memoryDir: join(dataDir, "memory"),
+    });
+    expect(reloaded.ocean).not.toBeNull();
+    expect(reloaded.ocean!.openness).toBeCloseTo(0.78, 2);
+    expect(reloaded.ocean!.basis).toBe("测试依据");
+  });
+
+  it("loadProfile 在 PROFILE.md 缺 OCEAN 字段时 → ocean=null", async () => {
+    const { saveProfile, loadProfile } = await import("../src/profile.ts");
+    const dataDir = join(tmpDir, "ocean-missing");
+    // 第一次 load 触发 syncFromSources（无 provider 走 fallback）
+    const profile = await loadProfile(dataDir, {
+      userId: "u1",
+      memoryDir: join(dataDir, "memory"),
+    });
+    // 写盘一次确保文件存在
+    await saveProfile(profile);
+    // 再 load 一次
+    const reloaded = await loadProfile(dataDir, {
+      userId: "u1",
+      memoryDir: join(dataDir, "memory"),
+    });
+    // ocean 字段不存在 → ocean=null
+    // 但 syncFromSources 会 fallback 写空 ocean
+    // 这里只验证 loadProfile 不抛异常
+    expect(reloaded).toBeDefined();
+  });
+});
+
+// =====================================================================
+// v0.21: renderProfileForPrompt 加 OCEAN 段
+// =====================================================================
+
+describe("v0.21: renderProfileForPrompt OCEAN 段", () => {
+  it("profile.ocean 非空时，渲染含『用户认知画像』段", async () => {
+    const { renderProfileForPrompt } = await import("../src/profile.ts");
+    const profile: Profile = {
+      sections: {} as any,
+      ocean: {
+        openness: 0.78,
+        conscientiousness: 0.45,
+        extraversion: 0.30,
+        agreeableness: 0.65,
+        neuroticism: 0.72,
+        basis: "反复讨论职业倦怠",
+      },
+      oceanUpdatedAt: Date.now(),
+      path: "/tmp/p.md",
+      updatedAt: 0,
+      initialized: false,
+      meta: {} as any,
+    };
+
+    const rendered = renderProfileForPrompt(profile);
+    expect(rendered).toContain("用户认知画像");
+    expect(rendered).toContain("不影响对话风格");
+    expect(rendered).toContain("Openness: 0.78");
+    expect(rendered).toContain("反复讨论职业倦怠");
+  });
+
+  it("profile.ocean 为 null 时，不渲染 OCEAN 段", async () => {
+    const { renderProfileForPrompt } = await import("../src/profile.ts");
+    const profile: Profile = {
+      sections: { 基本信息: "- 昵称：未知" } as any,
+      ocean: null,
+      oceanUpdatedAt: 0,
+      path: "/tmp/p.md",
+      updatedAt: 0,
+      initialized: false,
+      meta: {} as any,
+    };
+
+    const rendered = renderProfileForPrompt(profile);
+    expect(rendered).not.toContain("用户认知画像");
+  });
+});

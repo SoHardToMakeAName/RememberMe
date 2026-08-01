@@ -149,6 +149,9 @@ function extractMarkdownMetadata(raw: string): {
       } else if (metaKey) {
         // Type assertion：metaKey is a keyof ContextFileMeta
         (meta as Record<string, string>)[metaKey] = value;
+      } else {
+        // 未识别的 key 也存到 meta 上（v0.21: 用于 ocean_* 等自定义字段）
+        (meta as Record<string, string>)[key.toLowerCase()] = value;
       }
       i++;
     } else if (line.trim() === "") {

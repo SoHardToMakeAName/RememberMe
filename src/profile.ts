@@ -1,22 +1,21 @@
 // src/profile.ts
 // 用户画像系统（Profile）。
 //
-// v0.20 重构：消除 profile 孤岛
+// v0.21 重构：抽象 + 动态分析用户人格
 //
-// profile 不再是独立抽取 + append-only 的文档。
-// 它是**多个数据源的视图**：
-//   - 段 1 基本信息：LLM 抽取（结构化覆盖式）
-//   - 段 2 沟通风格：LLM 抽取（带日期的覆盖式）
-//   - 段 3 关注议题：从 memory/event/*.md 聚合
-//   - 段 4 已知偏好与禁忌：从 learner.positivePatterns + negativePatterns 聚合
-//   - 段 5 长期情绪基线：从 memory/emotion/*.md 聚合（trigger + manifestation）
-//   - 段 6 近期变化：从 timeline 最近 7 天 + 最近 memory 写入
+// profile 不再是 memory 堆积的目录视图，而是**对 memory/learner/timeline 的抽象沉淀**。
 //
-// 写入策略：
-//   - LLM 抽取只更新段 1/2/6
-//   - 段 3/4/5 永远从数据源同步，不让 LLM 重复抽取
-//   - 段 1 改成结构化覆盖（识别 "字段：值"，替换占位）
-//   - 段 2 改成"最新覆盖"风格（带日期，方便看历史）
+// 两个 OCEAN 严格区分：
+// - **session BigFivePersona.ocean**（`data/personality/{sessionId}.json`，用户 init 时 LLM 翻译的）
+//   → 决定 LLM **该怎么说话**（行为层 / 对话风格）
+// - **profile ocean**（`data/profile/PROFILE.md` frontmatter，从历史/memory/learner 推算）
+//   → 帮 LLM **理解用户是什么样的人**（认知层 / 用户画像）
+//
+// 两者独立并存，profile ocean 不替代 persona。
+//
+// 段 1/2/6 由 LLM 抽取更新（基本信息、沟通风格、近期变化）
+// 段 3/4/5 由 LLM 摘要更新（关注议题、已知偏好、长期情绪基线）—— 不再是机械列表
+// 同时 push profile.ocean 到 frontmatter
 
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -34,6 +33,7 @@ import {
   type ProfileSection,
   type ContextFileMeta,
 } from "./context-file.ts";
+import { oceanHint } from "./bigfive.ts";
 
 // =====================================================================
 // 类型定义
@@ -43,9 +43,29 @@ export const PROFILE_SECTIONS = CONTEXT_PROFILE_SECTIONS;
 export { PROFILE_FILENAME, getProfilePath };
 export type { ProfileSection };
 
+/**
+ * 动态推算的"用户是什么样的人"。
+ *
+ * 注意：这是**认知层**，跟 session BigFivePersona.ocean（行为层）独立。
+ * profile.ocean 帮 LLM 理解用户；session persona 告诉 LLM 怎么说话。
+ */
+export type ProfileOcean = {
+  openness: number;
+  conscientiousness: number;
+  extraversion: number;
+  agreeableness: number;
+  neuroticism: number;
+  /** 推算依据摘要（哪段 history / memory 导致这个数值） */
+  basis: string;
+};
+
 export type Profile = {
   /** 6 段内容（key = 段落名，value = 段落正文） */
   sections: Record<ProfileSection, string>;
+  /** 动态推算的"用户是什么样的人" */
+  ocean: ProfileOcean | null;
+  /** 最后一次 OCEAN 推算时间（ms） */
+  oceanUpdatedAt: number;
   /** 文件路径 */
   path: string;
   /** 最后更新时间（ms） */
@@ -62,14 +82,15 @@ export type Profile = {
 
 const DEFAULT_META: ContextFileMeta = {
   name: "用户画像",
-  version: "0.6",
-  description: "用户长期画像，多数据源整合视图",
+  version: "0.7",
+  description: "用户长期画像，v0.21 抽象 + 动态推算",
   author: "emotalk",
   kind: "profile",
 };
 
 const DEFAULT_BODY = `> 自动从对话中累积维护。每次对话开始前注入到 system prompt。
-> 段顺序固定，不要改动；内容用 Markdown 列表/小标题组织。
+> 段 1/2 由 LLM 抽取，段 3/4/5/6 由 LLM 摘要（v0.21 改造）。
+> frontmatter 的 ocean_* 字段是动态推算的"用户认知画像"，与 session persona 独立。
 
 ## 1. 基本信息
 - 昵称：未知
@@ -82,28 +103,78 @@ const DEFAULT_BODY = `> 自动从对话中累积维护。每次对话开始前�
 - （暂无——等用户表现出偏好后再填）
 
 ## 3. 关注议题
-- （暂无——从 memory/event 自动聚合）
+- （暂无——从 memory/event 抽象汇总）
 
 ## 4. 已知偏好与禁忌
-- （暂无——从反馈学习自动聚合）
+- （暂无——从反馈学习抽象汇总）
 
 ## 5. 长期情绪基线
-- （暂无——从 memory/emotion 自动聚合）
+- （暂无——从 memory/emotion 抽象汇总）
 
 ## 6. 近期变化
-- （暂无——从 timeline 最近 7 天自动聚合）`;
+- （暂无——从 timeline 抽象汇总）`;
 
 // =====================================================================
 // 加载 / 保存
 // =====================================================================
 
 /**
- * 加载 profile，自动从其他数据源同步段 3/4/5/6。
+ * 从 frontmatter 解析 ProfileOcean 字段。
+ */
+function readOceanFromMeta(meta: ContextFileMeta): ProfileOcean | null {
+  const get = (key: string): string | undefined => {
+    const v = (meta as Record<string, unknown>)[key];
+    return typeof v === "string" ? v : undefined;
+  };
+  const o = meta as Record<string, unknown>;
+  const openness = Number(o.ocean_openness);
+  const conscientiousness = Number(o.ocean_conscientiousness);
+  const extraversion = Number(o.ocean_extraversion);
+  const agreeableness = Number(o.ocean_agreeableness);
+  const neuroticism = Number(o.ocean_neuroticism);
+  if (
+    [openness, conscientiousness, extraversion, agreeableness, neuroticism].some(
+      (n) => Number.isNaN(n),
+    )
+  ) {
+    return null;
+  }
+  return {
+    openness,
+    conscientiousness,
+    extraversion,
+    agreeableness,
+    neuroticism,
+    basis: get("ocean_basis") ?? "",
+  };
+}
+
+/**
+ * 把 ProfileOcean 写入 meta。
+ */
+function writeOceanToMeta(
+  meta: ContextFileMeta,
+  ocean: ProfileOcean,
+  oceanUpdatedAt: number,
+): void {
+  const m = meta as Record<string, unknown>;
+  m.ocean_openness = ocean.openness.toFixed(2);
+  m.ocean_conscientiousness = ocean.conscientiousness.toFixed(2);
+  m.ocean_extraversion = ocean.extraversion.toFixed(2);
+  m.ocean_agreeableness = ocean.agreeableness.toFixed(2);
+  m.ocean_neuroticism = ocean.neuroticism.toFixed(2);
+  m.ocean_basis = ocean.basis;
+  m.ocean_updated_at = new Date(oceanUpdatedAt).toISOString();
+}
+
+/**
+ * 加载 profile，自动从其他数据源同步段 3/4/5/6 + 推算 ocean。
  *
  * @param dataDir  data 根目录
  * @param options.userId  用户 ID（用于加载 learner state）
  * @param options.memoryDir  memory 目录
  * @param options.timeline  Timeline 实例
+ * @param options.provider  LLM provider（用于 v0.21 摘要推算；不传则用机械列表 fallback）
  */
 export async function loadProfile(
   dataDir: string,
@@ -111,6 +182,7 @@ export async function loadProfile(
     userId?: string;
     memoryDir?: string;
     timeline?: Timeline;
+    provider?: ModelProvider;
   },
 ): Promise<Profile> {
   const path = getProfilePath(dataDir);
@@ -123,6 +195,8 @@ export async function loadProfile(
     const ctx = parseContextFile(initialContent, path);
     const profile: Profile = {
       sections: ctx.structuredSections ?? emptySections(),
+      ocean: readOceanFromMeta(ctx.meta),
+      oceanUpdatedAt: 0,
       path,
       updatedAt: Date.now(),
       initialized: true,
@@ -138,13 +212,20 @@ export async function loadProfile(
   const stats = await import("node:fs/promises").then((fs) => fs.stat(path));
   const profile: Profile = {
     sections: ctx.structuredSections ?? emptySections(),
+    ocean: readOceanFromMeta(ctx.meta),
+    oceanUpdatedAt:
+      (ctx.meta as Record<string, unknown>).ocean_updated_at &&
+      typeof (ctx.meta as Record<string, unknown>).ocean_updated_at === "string"
+        ? new Date(
+            (ctx.meta as Record<string, unknown>).ocean_updated_at as string,
+          ).getTime()
+        : 0,
     path,
     updatedAt: stats.mtimeMs,
     initialized: false,
     meta: ctx.meta,
   };
   await syncFromSources(profile, dataDir, options);
-  // sync 后写盘（把数据源整合结果落盘，避免每次都重新聚合）
   await saveProfile(profile);
   return profile;
 }
@@ -153,9 +234,34 @@ export async function loadProfile(
  * 把 profile 写入磁盘。
  */
 export async function saveProfile(profile: Profile): Promise<void> {
+  // 把 ocean 写回 meta（ocean_* 字段会被 serializeContextFile 之外的逻辑处理）
+  if (profile.ocean) {
+    writeOceanToMeta(profile.meta, profile.ocean, profile.oceanUpdatedAt);
+  }
   const body = serializeProfileBody(profile.sections);
   const content = serializeContextFile(profile.meta, body);
-  await writeFile(profile.path, content, "utf-8");
+  // 在 serializeContextFile 之后再附加 ocean_* 字段（因为它只处理固定 5 个字段）
+  if (profile.ocean) {
+    const oceanLines: string[] = [];
+    const o = profile.ocean;
+    oceanLines.push(`- **ocean_openness**：${o.openness.toFixed(2)}`);
+    oceanLines.push(`- **ocean_conscientiousness**：${o.conscientiousness.toFixed(2)}`);
+    oceanLines.push(`- **ocean_extraversion**：${o.extraversion.toFixed(2)}`);
+    oceanLines.push(`- **ocean_agreeableness**：${o.agreeableness.toFixed(2)}`);
+    oceanLines.push(`- **ocean_neuroticism**：${o.neuroticism.toFixed(2)}`);
+    oceanLines.push(`- **ocean_basis**：${o.basis}`);
+    oceanLines.push(`- **ocean_updated_at**：${new Date(profile.oceanUpdatedAt).toISOString()}`);
+    // 在 body 之后插入（frontmatter 之后，body 之前）
+    const idx = content.indexOf("\n\n# 用户画像（Profile）");
+    if (idx > 0) {
+      const final = content.slice(0, idx) + "\n" + oceanLines.join("\n") + content.slice(idx);
+      await writeFile(profile.path, final, "utf-8");
+    } else {
+      await writeFile(profile.path, content, "utf-8");
+    }
+  } else {
+    await writeFile(profile.path, content, "utf-8");
+  }
   profile.updatedAt = Date.now();
 }
 
@@ -166,7 +272,8 @@ function serializeProfileBody(
     "# 用户画像（Profile）",
     "",
     "> 自动从对话中累积维护。每次对话开始前注入到 system prompt。",
-    "> 段 3/4/5/6 由其他数据源自动同步，段 1/2 由 LLM 抽取更新。",
+    "> 段 1/2 由 LLM 抽取，段 3/4/5/6 由 LLM 摘要（v0.21 改造）。",
+    "> frontmatter 的 ocean_* 字段是动态推算的『用户认知画像』，与 session persona 独立。",
     "",
   ];
   PROFILE_SECTIONS.forEach((name, i) => {
@@ -184,18 +291,209 @@ function emptySections(): Record<ProfileSection, string> {
   return out;
 }
 
+function joinSafe(parent: string, child: string): string {
+  return parent.endsWith("/") || parent.endsWith("\\")
+    ? parent + child
+    : parent + "/" + child;
+}
+
 // =====================================================================
-// 同步：从其他数据源填充段 3/4/5/6
+// v0.21 摘要：调 LLM 把所有数据消化成结构化输出
 // =====================================================================
 
 /**
- * 从其他数据源填充段 3/4/5/6：
- * - 段 3 关注议题：从 memory/event/*.md 聚合
- * - 段 4 已知偏好与禁忌：从 learner.positivePatterns + negativePatterns
- * - 段 5 长期情绪基线：从 memory/emotion/*.md 聚合
- * - 段 6 近期变化：从 timeline 最近 7 天
- *
- * 失败容错：任何数据源失败都不抛异常。
+ * summarizeForProfile 输入。
+ */
+export type ProfileSources = {
+  memories: MemoryFile[];
+  learner: LearnerState;
+  timelineSummary: string;
+};
+
+/**
+ * summarizeForProfile 输出（LLM JSON）。
+ */
+export type ProfileSummary = {
+  ocean: ProfileOcean | null;
+  abstractTopics: string[];
+  persistentPreferences: string[];
+  persistentEmotionPatterns: string[];
+  recentChanges: string[];
+};
+
+const SUMMARY_SYSTEM_PROMPT = `你是用户认知分析师。下面是用户的所有历史记忆、反馈学习观察、近期情绪时间线。
+
+**任务**：抽象、归并、聚类出"用户是什么样的人"，**不是** LLM 该怎么说话。
+
+**v0.21 输出严格按以下 JSON**（不要 Markdown 代码块）：
+
+{
+  "ocean": {
+    "openness": 0.0-1.0,
+    "conscientiousness": 0.0-1.0,
+    "extraversion": 0.0-1.0,
+    "agreeableness": 0.0-1.0,
+    "neuroticism": 0.0-1.0,
+    "basis": "推算依据（哪段对话 / 哪些 memory 导致这个数值，1-2 句话）"
+  },
+  "abstractTopics": [
+    "主题级抽象议题 1（不是文件名，是归纳出的主题）",
+    "主题级抽象议题 2"
+  ],
+  "persistentPreferences": [
+    "持久偏好 1（从反馈学习观察归纳，不是单条原话）",
+    "持久偏好 2"
+  ],
+  "persistentEmotionPatterns": [
+    "情绪模式名 → 触发：xxx → 表现：xxx",
+    "情绪模式名 → 触发：xxx → 表现：xxx"
+  ],
+  "recentChanges": [
+    "最近变化趋势 1（不超过 7 天）",
+    "最近变化趋势 2"
+  ]
+}
+
+**严格要求**：
+
+1. **抽象，不堆积**：
+   - 10 条 emotion memory → 总结为 2-3 个情绪模式（不列文件名）
+   - 20 条 learner pattern → 总结为 3-5 条持久偏好（去重、合并、归纳）
+   - 5 条 event memory → 总结为 2-4 个议题主题
+
+2. **OCEAN 数值要基于实际行为信号**：
+   - 用户反复提到哲学/文学/跨领域话题 → openness 高
+   - 用户对话题回避、转移 → 可能在某些维度低
+   - 不猜测；信号不足就 0.5（中性）
+
+3. **basis 必须引用证据**：不要凭空给数字，说"基于 X、Y"
+
+4. **空数组合法**：没有信号时该段就是空数组（不要硬凑）
+
+5. **不要重复**同样的事情到不同段
+
+下面是用户的全部数据：
+
+=== Memory 文件清单 ===
+{memoryList}
+
+=== Memory 文件正文（仅情绪模式 + 生活事件）===
+{memoryBodies}
+
+=== 反馈学习观察 ===
+{learnerPatterns}
+
+=== 近期情绪时间线 ===
+{timelineSummary}`;
+
+/**
+ * 调 LLM 把所有数据源消化成结构化摘要。
+ * 失败容错：返回空摘要。
+ */
+export async function summarizeForProfile(
+  provider: ModelProvider,
+  sources: ProfileSources,
+): Promise<ProfileSummary> {
+  const empty: ProfileSummary = {
+    ocean: null,
+    abstractTopics: [],
+    persistentPreferences: [],
+    persistentEmotionPatterns: [],
+    recentChanges: [],
+  };
+
+  try {
+    const memList = sources.memories
+      .map((m) => `[${m.subtype}] ${m.name} — ${m.description || "(无描述)"}`)
+      .join("\n");
+    const memBodies = sources.memories
+      .filter((m) => m.subtype === "emotion" || m.subtype === "event")
+      .map(
+        (m) =>
+          `### [${m.subtype}] ${m.name}\ntrigger: ${(m.fields as Record<string, unknown>).trigger ?? ""}\nmanifestation: ${(m.fields as Record<string, unknown>).manifestation ?? ""}\nemotional_impact: ${(m.fields as Record<string, unknown>).emotional_impact ?? ""}\nbody: ${m.body.slice(0, 300)}`,
+      )
+      .join("\n\n");
+    const learnerPatterns = [
+      ...((sources.learner.positivePatterns ?? []).slice(-15).map((p) => `+ ${p}`)),
+      ...((sources.learner.negativePatterns ?? []).slice(-15).map((p) => `- ${p}`)),
+    ].join("\n");
+
+    const userPrompt = SUMMARY_SYSTEM_PROMPT
+      .replace("{memoryList}", memList || "（无）")
+      .replace("{memoryBodies}", memBodies || "（无）")
+      .replace("{learnerPatterns}", learnerPatterns || "（无）")
+      .replace("{timelineSummary}", sources.timelineSummary || "（无）");
+
+    const raw = await provider.complete({
+      model: provider.model,
+      params: {
+        system: "你是用户认知分析师，输出严格 JSON。",
+        messages: [{ role: "user", content: userPrompt }],
+        maxTokens: 1500,
+        temperature: 0.3,
+      },
+    });
+
+    const cleaned = raw
+      .trim()
+      .replace(/^```(?:json)?\n?/i, "")
+      .replace(/\n?```\s*$/, "")
+      .trim();
+
+    if (process.env.EC_DEBUG_PROFILE) {
+      console.log("[profile.summarize] cleaned:", cleaned.slice(0, 200));
+    }
+
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (!match) return empty;
+
+    const parsed = JSON.parse(match[0]);
+
+    // 校验 OCEAN
+    let ocean: ProfileOcean | null = null;
+    const o = parsed.ocean;
+    if (o && typeof o === "object") {
+      const vals = [o.openness, o.conscientiousness, o.extraversion, o.agreeableness, o.neuroticism];
+      if (vals.every((v) => typeof v === "number" && v >= 0 && v <= 1)) {
+        ocean = {
+          openness: vals[0],
+          conscientiousness: vals[1],
+          extraversion: vals[2],
+          agreeableness: vals[3],
+          neuroticism: vals[4],
+          basis: typeof o.basis === "string" ? o.basis.slice(0, 300) : "",
+        };
+      }
+    }
+
+    return {
+      ocean,
+      abstractTopics: Array.isArray(parsed.abstractTopics)
+        ? parsed.abstractTopics.filter((x: unknown) => typeof x === "string").map((x: string) => x.slice(0, 200))
+        : [],
+      persistentPreferences: Array.isArray(parsed.persistentPreferences)
+        ? parsed.persistentPreferences.filter((x: unknown) => typeof x === "string").map((x: string) => x.slice(0, 200))
+        : [],
+      persistentEmotionPatterns: Array.isArray(parsed.persistentEmotionPatterns)
+        ? parsed.persistentEmotionPatterns.filter((x: unknown) => typeof x === "string").map((x: string) => x.slice(0, 200))
+        : [],
+      recentChanges: Array.isArray(parsed.recentChanges)
+        ? parsed.recentChanges.filter((x: unknown) => typeof x === "string").map((x: string) => x.slice(0, 200))
+        : [],
+    };
+  } catch {
+    return empty;
+  }
+}
+
+// =====================================================================
+// 同步：从其他数据源填充段 3/4/5/6 + 推算 profile.ocean
+// =====================================================================
+
+/**
+ * v0.21：从数据源同步。
+ * - 有 provider：调 summarizeForProfile 摘要（推荐路径）
+ * - 无 provider：fallback 到 v0.20 机械列表
  */
 export async function syncFromSources(
   profile: Profile,
@@ -204,86 +502,116 @@ export async function syncFromSources(
     userId?: string;
     memoryDir?: string;
     timeline?: Timeline;
+    provider?: ModelProvider;
   },
 ): Promise<void> {
   const memoryDir = options?.memoryDir ?? joinSafe(dataDir, "memory");
   const userId = options?.userId ?? "default";
   const learner = loadLearner(dataDir, userId);
+  const memories = await scanMemory(memoryDir);
+  const timelineSummary = options?.timeline
+    ? await options.timeline.renderSummary(10)
+    : "";
 
-  // 段 3：从 memory/event/*.md 聚合
-  try {
-    const memories = await scanMemory(memoryDir);
-    const events = memories.filter((m) => m.subtype === "event");
-    if (events.length > 0) {
-      const lines = events
-        .sort((a, b) => b.mtimeMs - a.mtimeMs)
-        .map((e) => `- **${e.name}** — ${e.description || e.body.slice(0, 80)}`);
-      profile.sections["关注议题"] = lines.join("\n");
+  // v0.21 推荐路径：调 LLM 摘要
+  if (options?.provider) {
+    try {
+      const summary = await summarizeForProfile(options.provider, {
+        memories,
+        learner,
+        timelineSummary,
+      });
+
+      if (summary.ocean) {
+        profile.ocean = summary.ocean;
+        profile.oceanUpdatedAt = Date.now();
+      }
+      if (summary.abstractTopics.length > 0) {
+        profile.sections["关注议题"] = summary.abstractTopics
+          .map((t) => `- ${t}`)
+          .join("\n");
+      }
+      if (summary.persistentPreferences.length > 0) {
+        profile.sections["已知偏好与禁忌"] = [
+          "**用户持久偏好（从反馈学习总结）：**",
+          ...summary.persistentPreferences.map((p) => `- ${p}`),
+        ].join("\n");
+      }
+      if (summary.persistentEmotionPatterns.length > 0) {
+        profile.sections["长期情绪基线"] = summary.persistentEmotionPatterns
+          .map((p) => `- ${p}`)
+          .join("\n");
+      }
+      if (summary.recentChanges.length > 0) {
+        profile.sections["近期变化"] = [
+          "**最近变化趋势：**",
+          ...summary.recentChanges.map((c) => `- ${c}`),
+        ].join("\n");
+      }
+      return;
+    } catch {
+      // fall through to fallback
     }
-  } catch {
-    // 静默
+  }
+
+  // Fallback：v0.20 机械列表（用于无 provider 或 LLM 调用失败）
+  await syncFromSourcesFallback(profile, memories, learner, timelineSummary);
+}
+
+async function syncFromSourcesFallback(
+  profile: Profile,
+  memories: MemoryFile[],
+  learner: LearnerState,
+  timelineSummary: string,
+): Promise<void> {
+  // 段 3：从 memory/event/*.md 聚合
+  const events = memories.filter((m) => m.subtype === "event");
+  if (events.length > 0) {
+    const lines = events
+      .sort((a, b) => b.mtimeMs - a.mtimeMs)
+      .map((e) => `- **${e.name}** — ${e.description || e.body.slice(0, 80)}`);
+    profile.sections["关注议题"] = lines.join("\n");
   }
 
   // 段 4：从 learner.positivePatterns + negativePatterns 聚合
-  try {
-    const lines: string[] = [];
-    if (learner.positivePatterns.length > 0) {
-      lines.push("**用户喜欢的：**");
-      for (const p of learner.positivePatterns.slice(-10)) {
-        lines.push(`- ${p}`);
-      }
+  const prefLines: string[] = [];
+  if (learner.positivePatterns.length > 0) {
+    prefLines.push("**用户喜欢的：**");
+    for (const p of learner.positivePatterns.slice(-10)) {
+      prefLines.push(`- ${p}`);
     }
-    if (learner.negativePatterns.length > 0) {
-      lines.push("");
-      lines.push("**用户不喜欢的：**");
-      for (const p of learner.negativePatterns.slice(-10)) {
-        lines.push(`- ${p}`);
-      }
+  }
+  if (learner.negativePatterns.length > 0) {
+    prefLines.push("");
+    prefLines.push("**用户不喜欢的：**");
+    for (const p of learner.negativePatterns.slice(-10)) {
+      prefLines.push(`- ${p}`);
     }
-    if (lines.length > 0) {
-      profile.sections["已知偏好与禁忌"] = lines.join("\n");
-    }
-  } catch {
-    // 静默
+  }
+  if (prefLines.length > 0) {
+    profile.sections["已知偏好与禁忌"] = prefLines.join("\n");
   }
 
   // 段 5：从 memory/emotion/*.md 聚合 trigger + manifestation
-  try {
-    const memories = await scanMemory(memoryDir);
-    const emotions = memories.filter((m) => m.subtype === "emotion");
-    if (emotions.length > 0) {
-      const lines = emotions
-        .sort((a, b) => b.mtimeMs - a.mtimeMs)
-        .map((e) => {
-          const trigger = e.fields.trigger;
-          const manifest = e.fields.manifestation;
-          const parts = [`**${e.name}**`];
-          if (trigger) parts.push(`触发：${trigger}`);
-          if (manifest) parts.push(`表现：${manifest}`);
-          return `- ${parts.join("；")}`;
-        });
-      profile.sections["长期情绪基线"] = lines.join("\n");
-    }
-  } catch {
-    // 静默
+  const emotions = memories.filter((m) => m.subtype === "emotion");
+  if (emotions.length > 0) {
+    const lines = emotions
+      .sort((a, b) => b.mtimeMs - a.mtimeMs)
+      .map((e) => {
+        const trigger = e.fields.trigger;
+        const manifest = e.fields.manifestation;
+        const parts = [`**${e.name}**`];
+        if (trigger) parts.push(`触发：${trigger}`);
+        if (manifest) parts.push(`表现：${manifest}`);
+        return `- ${parts.join("；")}`;
+      });
+    profile.sections["长期情绪基线"] = lines.join("\n");
   }
 
-  // 段 6：从 timeline 最近 7 天
-  if (options?.timeline) {
-    try {
-      const summary = await options.timeline.renderSummary(10);
-      profile.sections["近期变化"] = summary;
-    } catch {
-      // 静默
-    }
+  // 段 6：从 timeline
+  if (timelineSummary) {
+    profile.sections["近期变化"] = timelineSummary;
   }
-}
-
-function joinSafe(parent: string, child: string): string {
-  // 跨平台 join
-  return parent.endsWith("/") || parent.endsWith("\\")
-    ? parent + child
-    : parent + "/" + child;
 }
 
 // =====================================================================
@@ -293,16 +621,14 @@ function joinSafe(parent: string, child: string): string {
 /**
  * 把 profile 渲染成紧凑 markdown 文本（用于 system prompt 注入）。
  *
- * 设计原则：
- * - 跳过空段落
- * - 加漂移警告
- * - 总体保持紧凑（不超过 ~1500 字）
+ * v0.21：附加"用户认知画像"段（profile.ocean）
+ * 明确说明这是"理解用户是什么样的人"，不影响"对话风格"。
  */
 export function renderProfileForPrompt(profile: Profile): string {
   const lines: string[] = [];
   lines.push("## 用户画像（Profile）");
   lines.push("");
-  lines.push("> 用户长期画像，多数据源整合视图（v0.20+）。**这是历史快照，不是当前状态。**");
+  lines.push("> 用户长期画像，多数据源整合视图（v0.21+）。**这是历史快照，不是当前状态。**");
   lines.push("> 用户当下的情绪/态度以本轮 side-query 识别结果为准，不要被画像里的旧印象绑架。");
   lines.push("");
 
@@ -322,19 +648,36 @@ export function renderProfileForPrompt(profile: Profile): string {
     lines.push("");
   }
 
+  // v0.21 新增：用户认知画像
+  if (profile.ocean) {
+    const o = profile.ocean;
+    lines.push("### 用户认知画像（动态推算的大五人格）");
+    lines.push("");
+    lines.push("> LLM 用以**理解用户是什么样的人**，**不影响对话风格**（风格由 session persona 控制）。");
+    lines.push(`> 推算依据：${o.basis || "（暂无）"}`);
+    lines.push("");
+    lines.push(`- Openness: ${o.openness.toFixed(2)}（${oceanHint("openness", o.openness)}）`);
+    lines.push(`- Conscientiousness: ${o.conscientiousness.toFixed(2)}（${oceanHint("conscientiousness", o.conscientiousness)}）`);
+    lines.push(`- Extraversion: ${o.extraversion.toFixed(2)}（${oceanHint("extraversion", o.extraversion)}）`);
+    lines.push(`- Agreeableness: ${o.agreeableness.toFixed(2)}（${oceanHint("agreeableness", o.agreeableness)}）`);
+    lines.push(`- Neuroticism: ${o.neuroticism.toFixed(2)}（${oceanHint("neuroticism", o.neuroticism)}）`);
+    lines.push("");
+  }
+
   return lines.join("\n");
 }
 
 // =====================================================================
-// 隐式识别 + 融合更新（v0.20：只更新段 1/2/6）
+// 隐式识别 + 融合更新（v0.21：只更新段 1/2/6）
 // =====================================================================
 
 /**
- * LLM 抽取的 prompt（v0.20：精简，只让 LLM 写段 1/2/6）。
+ * v0.21：PROFILE_EXTRACT_PROMPT 只让 LLM 写段 1/2/6。
+ * 段 3/4/5 由 summarizeForProfile 摘要。
  */
 const PROFILE_EXTRACT_PROMPT = `你是用户画像更新助手。下面是一段对话历史。
 
-**v0.20：只更新三段**（其他段由系统从其他数据源自动同步，不需要你写）：
+**v0.21：只更新三段**（其他段由系统摘要，不需你写）：
 
 {
   "基本信息": "结构化字段，用「字段：值」格式。多行用 \\n 分隔。例：'职业：前端工程师\\n所在地：上海'",
@@ -343,10 +686,10 @@ const PROFILE_EXTRACT_PROMPT = `你是用户画像更新助手。下面是一段
 }
 
 要求：
-1. **严格只输出这三段**，不要输出"关注议题"、"已知偏好"、"长期情绪基线"（那些由系统聚合）
-2. **基本信息必须用「字段：值」格式**（如 "职业：xxx"、"所在地：xxx"、"昵称：xxx"），不要写叙述句
+1. **严格只输出这三段**，不要输出"关注议题"、"已知偏好"、"长期情绪基线"
+2. **基本信息必须用「字段：值」格式**，不要写叙述句
 3. **只输出有把握的**——没有明确信号就输出空字符串
-4. **保留用户原话片段**（≤ 30 字）作为证据（放在条目的括号里）
+4. **保留用户原话片段**（≤ 30 字）作为证据
 5. 用第三人称叙述
 6. 严格 JSON 输出，不要 Markdown 代码块
 
@@ -419,12 +762,9 @@ export async function extractProfileUpdate(
 }
 
 // =====================================================================
-// 融合策略（v0.20 重写）
+// 融合策略（v0.21：段 3/4/5 由 syncFromSources 摘要，不在这里处理）
 // =====================================================================
 
-/**
- * 解析 "字段：值" 行，返回 Map<字段, 值>。
- */
 function parseFieldLines(text: string): Map<string, string> {
   const map = new Map<string, string>();
   for (const line of text.split("\n")) {
@@ -435,22 +775,11 @@ function parseFieldLines(text: string): Map<string, string> {
 }
 
 /**
- * 把字段 Map 序列化回 markdown 行。
- */
-function serializeFieldLines(map: Map<string, string>, prefix = "- "): string {
-  const lines: string[] = [];
-  for (const [k, v] of map) {
-    lines.push(`${prefix}${k}：${v}`);
-  }
-  return lines.join("\n");
-}
-
-/**
- * v0.20 融合策略：
- * - 段 1 基本信息：结构化字段更新（识别 "字段：值"，新值覆盖旧值；空值不动）
- * - 段 2 沟通风格：保留 append（带日期），但有 ≤30 行的滚动上限
- * - 段 6 近期变化：保留 append（带日期）
- * - 段 3/4/5：syncFromSources 在 loadProfile 时已经写过，不再处理
+ * v0.21 融合策略：
+ * - 段 1 基本信息：结构化字段更新
+ * - 段 2 沟通风格：append + 日期 + 滚动上限 30
+ * - 段 6 近期变化：append + 日期 + 滚动上限 30
+ * - 段 3/4/5：syncFromSources 摘要（这里不动）
  */
 export function mergeProfileUpdate(
   profile: Profile,
@@ -460,7 +789,7 @@ export function mergeProfileUpdate(
   let changed = false;
   const dateStr = now.toISOString().slice(0, 10);
 
-  // 段 1 基本信息：结构化字段更新
+  // 段 1 基本信息
   const basicIncoming = update["基本信息"];
   if (basicIncoming && basicIncoming.trim()) {
     const current = profile.sections["基本信息"] ?? "";
@@ -468,7 +797,6 @@ export function mergeProfileUpdate(
     const newFields = parseFieldLines(basicIncoming);
     let basicChanged = false;
     for (const [k, v] of newFields) {
-      // 新值非"未知"/"（暂无）"才覆盖
       if (!v || v === "未知" || v === "（暂无）") continue;
       if (currentFields.get(k) !== v) {
         currentFields.set(k, v);
@@ -476,14 +804,12 @@ export function mergeProfileUpdate(
       }
     }
     if (basicChanged) {
-      // 保留模板字段顺序
       const orderedLines: string[] = [];
       const templateKeys = ["昵称", "性别", "年龄段", "职业", "所在地"];
       for (const k of templateKeys) {
         const v = currentFields.get(k);
         orderedLines.push(`- ${k}：${v ?? "未知"}`);
       }
-      // 其他字段
       for (const [k, v] of currentFields) {
         if (templateKeys.includes(k)) continue;
         orderedLines.push(`- ${k}：${v}`);
@@ -493,51 +819,39 @@ export function mergeProfileUpdate(
     }
   }
 
-  // 段 2 沟通风格：append 风格 + 滚动上限（空段首次也带日期）
+  // 段 2 沟通风格
   const styleIncoming = update["沟通风格"];
   if (styleIncoming && styleIncoming.trim()) {
     const current = profile.sections["沟通风格"] ?? "";
     const incoming = styleIncoming.trim();
-    const isEmpty =
-      !current.trim() ||
-      current === "（暂无）" ||
-      current.startsWith("（暂无");
-
+    const isEmpty = !current.trim() || current === "（暂无）" || current.startsWith("（暂无");
     const isDup = current.replace(/\s+/g, "").includes(incoming.replace(/\s+/g, "").slice(0, 30));
     if (!isEmpty && isDup) {
-      // 重复，跳过
+      // dup
     } else {
       const lines = isEmpty ? [] : current.split("\n").filter((l) => l.trim());
       lines.push(`- (${dateStr}) ${incoming}`);
-      const trimmed = lines.slice(-30);
-      profile.sections["沟通风格"] = trimmed.join("\n");
+      profile.sections["沟通风格"] = lines.slice(-30).join("\n");
       changed = true;
     }
   }
 
-  // 段 6 近期变化：append 风格 + 滚动上限（空段首次也带日期）
+  // 段 6 近期变化
   const recentIncoming = update["近期变化"];
   if (recentIncoming && recentIncoming.trim()) {
     const current = profile.sections["近期变化"] ?? "";
     const incoming = recentIncoming.trim();
-    const isEmpty =
-      !current.trim() ||
-      current === "（暂无）" ||
-      current.startsWith("（暂无");
-
+    const isEmpty = !current.trim() || current === "（暂无）" || current.startsWith("（暂无");
     const isDup = current.replace(/\s+/g, "").includes(incoming.replace(/\s+/g, "").slice(0, 30));
     if (!isEmpty && isDup) {
-      // 重复
+      // dup
     } else {
       const lines = isEmpty ? [] : current.split("\n").filter((l) => l.trim());
       lines.push(`- (${dateStr}) ${incoming}`);
-      const trimmed = lines.slice(-30);
-      profile.sections["近期变化"] = trimmed.join("\n");
+      profile.sections["近期变化"] = lines.slice(-30).join("\n");
       changed = true;
     }
   }
-
-  // 段 3/4/5 由 syncFromSources 管理，不在 merge 中处理（保留类型兼容）
 
   return changed;
 }
@@ -546,13 +860,6 @@ export function mergeProfileUpdate(
 // 一站式入口
 // =====================================================================
 
-/**
- * 完整流程：抽取 → 融合段 1/2/6 → 从数据源同步 3/4/5/6 → 保存。
- *
- * @param dataDir data 根目录
- * @param options.memoryDir  memory 目录
- * @param options.timeline  Timeline 实例（用于段 6）
- */
 export async function maybeUpdateProfile(
   dataDir: string,
   provider: ModelProvider,
@@ -568,10 +875,9 @@ export async function maybeUpdateProfile(
   changes?: { section: ProfileSection; value: string }[];
 }> {
   try {
-    const profile = await loadProfile(dataDir, options);
+    const profile = await loadProfile(dataDir, { ...options, provider });
     const update = await extractProfileUpdate(provider, recentMessages);
 
-    // 段 1/2/6 由 LLM 抽取填充
     const sectionsBefore = new Map<ProfileSection, string>();
     for (const s of ["基本信息", "沟通风格", "近期变化"] as ProfileSection[]) {
       sectionsBefore.set(s, profile.sections[s] ?? "");
@@ -582,31 +888,27 @@ export async function maybeUpdateProfile(
       changed = mergeProfileUpdate(profile, update);
     }
 
-    // 段 3/4/5/6 永远从数据源同步（每次都重写，但不计入"changed"）
-    await syncFromSources(profile, dataDir, options);
+    // sync 已由 loadProfile 触发，再触发一次确保最新 LLM 摘要
+    await syncFromSources(profile, dataDir, { ...options, provider });
 
-    if (changed || true /* always save after sync */) {
-      await saveProfile(profile);
+    await saveProfile(profile);
 
-      // 收集"实际变化"
-      const changes: { section: ProfileSection; value: string }[] = [];
-      for (const s of ["基本信息", "沟通风格", "近期变化"] as ProfileSection[]) {
-        const after = profile.sections[s] ?? "";
-        const before = sectionsBefore.get(s) ?? "";
-        if (after !== before) {
-          const newLines = after
-            .split("\n")
-            .map((l) => l.trim())
-            .filter((l) => l && !before.includes(l));
-          if (newLines.length > 0) {
-            changes.push({ section: s, value: newLines.join(" | ") });
-          }
+    const changes: { section: ProfileSection; value: string }[] = [];
+    for (const s of ["基本信息", "沟通风格", "近期变化"] as ProfileSection[]) {
+      const after = profile.sections[s] ?? "";
+      const before = sectionsBefore.get(s) ?? "";
+      if (after !== before) {
+        const newLines = after
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => l && !before.includes(l));
+        if (newLines.length > 0) {
+          changes.push({ section: s, value: newLines.join(" | ") });
         }
       }
-
-      return { updated: changed, profile, changes };
     }
-    return { updated: false, profile };
+
+    return { updated: changed, profile, changes };
   } catch (e) {
     console.error(`[profile] 更新失败:`, (e as Error).message);
     const profile = await loadProfile(dataDir, options);
