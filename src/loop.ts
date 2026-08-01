@@ -276,67 +276,61 @@ export async function runTurn(
  }
 
  // 嵌入式主动问题（"对了..."）
- // 在主回复末尾**自然地**插入一个轻提问——不抢白、不单独发消息
- let embeddedProbe: string | undefined;
+ // v0.21 改造：fire-and-forget，不再 await LLM 调用
+ // 之前 await 让用户感觉"输出结束还卡了几十秒"（LLM 调用耗时 2-5s）
+ // 现在 proactive 在后台异步生成，结果丢弃（不追加到 finalText）
+ // TODO: 后续可通过 deps.onProactiveGenerated 回调把问题缓存到 state，
+ //       下轮对话开头补到 system prompt
  if (process.env.EC_DEBUG) {
  console.log(`[loop] dataDir=${!!deps.dataDir} emotion=${!!emotion} userTurns=${compactedHistory.filter((m) => m.role === "user").length + 1}`);
  }
  if (deps.dataDir && emotion) {
- try {
- const { maybeEmbedProactive, DEFAULT_EMBEDDED_PROACTIVE_CONFIG } = await import(
- "./embedded-proactive.ts"
- );
- const { loadProactiveState } = await import("./proactive.ts");
+ // fire-and-forget：包成 IIFE 不等结果
+ void (async () => {
+  try {
+   const { maybeEmbedProactive, DEFAULT_EMBEDDED_PROACTIVE_CONFIG } = await import(
+    "./embedded-proactive.ts"
+   );
+   const { loadProactiveState } = await import("./proactive.ts");
 
- const proactiveState = await loadProactiveState(deps.dataDir);
- const idleMs = Date.now() - (proactiveState.lastUserActivityAt || 0);
- const replyAlreadyHasProbe =
- fullText.includes("对了") ||
- fullText.includes("话说") ||
- fullText.includes("顺便问");
+   const proactiveState = await loadProactiveState(deps.dataDir!);
+   const replyAlreadyHasProbe =
+    fullText.includes("对了") ||
+    fullText.includes("话说") ||
+    fullText.includes("顺便问");
 
- const decision = await maybeEmbedProactive(
- deps.provider,
- DEFAULT_EMBEDDED_PROACTIVE_CONFIG,
- {
- lastUserActivityAt: proactiveState.lastUserActivityAt,
- currentUserTurns: compactedHistory.filter((m) => m.role === "user").length + 1,
- lastEmbeddedAt: 0, // TODO: 持久化"上次嵌入时间"
- profile,
- memorySummary: recalled.map((r) => r.description).join("; "),
- recentUserMessage: userInput,
- currentReply: fullText,
- replyAlreadyHasProbe,
- },
- { signal: deps.signal });
- void idleMs; // currently unused, kept for future refinement
+   const decision = await maybeEmbedProactive(
+    deps.provider,
+    DEFAULT_EMBEDDED_PROACTIVE_CONFIG,
+    {
+     lastUserActivityAt: proactiveState.lastUserActivityAt,
+     currentUserTurns: compactedHistory.filter((m) => m.role === "user").length + 1,
+     lastEmbeddedAt: 0,
+     profile,
+     memorySummary: recalled.map((r) => r.description).join("; "),
+     recentUserMessage: userInput,
+     currentReply: fullText,
+     replyAlreadyHasProbe,
+    },
+    { signal: deps.signal });
 
- if (decision.shouldEmbed && decision.question) {
- embeddedProbe = decision.question;
- if (process.env.EC_DEBUG) {
- console.log(`[embedded-proactive] 触发: ${decision.question}`);
- }
- // 不更新 lastUserActivityAt — 用户离开多久是「从 REPL 启动算的」
- // 而不是「从上一次回复算的」。这样 turn 2/3 也能判断用户"已经离开 X 小时"
- // （因为 first message 来自 5h 前）
- } else if (process.env.EC_DEBUG) {
- console.log(`[embedded-proactive] 跳过: ${decision.reason}`);
- }
- } catch (err) {
- // 嵌入式主动问题失败不影响主流程
- if (process.env.EC_DEBUG) {
- console.log(`[embedded-proactive] 异常: ${(err as Error).message}`);
- }
- }
+   if (decision.shouldEmbed && decision.question) {
+    if (process.env.EC_DEBUG) {
+     console.log(`[embedded-proactive] 触发（已丢弃）: ${decision.question}`);
+    }
+   } else if (process.env.EC_DEBUG) {
+    console.log(`[embedded-proactive] 跳过: ${decision.reason}`);
+   }
+  } catch (err) {
+   if (process.env.EC_DEBUG) {
+    console.log(`[embedded-proactive] 异常: ${(err as Error).message}`);
+   }
+  }
+ })();
  }
 
- // 把"对了"问题附在主回复末尾
- let finalText = fullText;
- if (embeddedProbe) {
- finalText = fullText + "\n\n" + embeddedProbe;
- // 输出嵌入的探针
- onChunk({ delta: "\n\n" + embeddedProbe, done: false });
- }
+ // finalText 直接用 fullText（v0.21 不再追加 proactive 问题）
+ const finalText = fullText;
 
  // 二阶段改写（v4.0）： 已删除。反馈学习循环替代。
 
