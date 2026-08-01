@@ -84,7 +84,7 @@ const DEFAULT_META: ContextFileMeta = {
   name: "用户画像",
   version: "0.7",
   description: "用户长期画像，v0.21 抽象 + 动态推算",
-  author: "emotalk",
+  author: "rememberme",
   kind: "profile",
 };
 

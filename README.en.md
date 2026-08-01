@@ -1,4 +1,4 @@
-# EmoTalk
+# RememberMe
 
 [English](README.en.md) | [中文](README.md)
 
@@ -22,7 +22,7 @@ Provides both a **web interface** (default) and a **CLI interface**.
 
 ## 🧠 What makes it different
 
-> Strictly speaking, EmoTalk is not an agent (it doesn't call tools, doesn't plan autonomously). It's a **context orchestrator** — it composes your profile, memories, emotional patterns, and conversation history into a system prompt that's better tuned to *this* moment, so that the same LLM performs noticeably better with you than it does in a generic chat window.
+> Strictly speaking, RememberMe is not an agent (it doesn't call tools, doesn't plan autonomously). It's a **context orchestrator** — it composes your profile, memories, emotional patterns, and conversation history into a system prompt that's better tuned to *this* moment, so that the same LLM performs noticeably better with you than it does in a generic chat window.
 
 ### It actually remembers you
 
@@ -42,8 +42,8 @@ Provides both a **web interface** (default) and a **CLI interface**.
 
 ### On privacy: two boundaries to be clear about
 
-- ✅ **Local data**: your profile, memories, reflections, and feedback-learned observations only live in `data/`, covered by `.gitignore`. EmoTalk does not upload them to any EmoTalk-controlled server.
-- ⚠️ **LLM calls**: to work, EmoTalk has to send conversation content to the LLM provider you configured (Anthropic / DeepSeek / OpenAI / etc.). EmoTalk itself does not store conversations outside your local disk, but **you have to trust your LLM provider** — this is a constraint shared by every LLM-based application.
+- ✅ **Local data**: your profile, memories, reflections, and feedback-learned observations only live in `data/`, covered by `.gitignore`. RememberMe does not upload them to any RememberMe-controlled server.
+- ⚠️ **LLM calls**: to work, RememberMe has to send conversation content to the LLM provider you configured (Anthropic / DeepSeek / OpenAI / etc.). RememberMe itself does not store conversations outside your local disk, but **you have to trust your LLM provider** — this is a constraint shared by every LLM-based application.
 
 ---
 
@@ -243,7 +243,7 @@ These observations **don't write back to the persona JSON** — they accumulate 
 ## Directory structure
 
 ```
-emotalk/
+rememberme/
 ├── README.md / README.en.md           ← user docs
 ├── TECHNICAL.md                        ← developer docs (architecture, API, modules)
 ├── USER_MANUAL.md                      ← CLI user manual
@@ -291,7 +291,7 @@ emotalk/
 
 ## 🔒 Privacy
 
-EmoTalk itself uploads nothing. All runtime artifacts live in `data/`, which is in `.gitignore` — **never committed**:
+RememberMe itself uploads nothing. All runtime artifacts live in `data/`, which is in `.gitignore` — **never committed**:
 
 ```
 .gitignored runtime data:
@@ -312,8 +312,8 @@ EmoTalk itself uploads nothing. All runtime artifacts live in `data/`, which is 
 - List this project on your résumé (reviewers see only code + docs)
 
 **But one boundary to be clear about: LLM calls**
-- For EmoTalk to work, it has to send conversation content to the LLM provider you configured (Anthropic / DeepSeek / OpenAI / etc.)
-- EmoTalk itself doesn't store copies of those conversations outside your local disk, but **you have to trust your LLM provider** — this is a constraint shared by every LLM-based application
+- For RememberMe to work, it has to send conversation content to the LLM provider you configured (Anthropic / DeepSeek / OpenAI / etc.)
+- RememberMe itself doesn't store copies of those conversations outside your local disk, but **you have to trust your LLM provider** — this is a constraint shared by every LLM-based application
 - Picking a self-hosted / local model (e.g. Ollama) eliminates this external dependency entirely
 
 ---

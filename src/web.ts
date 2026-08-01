@@ -1,4 +1,4 @@
-// src/web.ts — EmoTalk 网页版后端（Bun.serve）
+// src/web.ts — RememberMe 网页版后端（Bun.serve）
 // 移除硬编码人格，改为反馈学习驱动的动态人设
 // 启动: bun run start (默认) → 此文件
 // REPL:  bun run repl  → src/index.ts
@@ -592,7 +592,7 @@ async function main() {
     },
   });
 
-  console.log(`\n  EmoTalk 网页版`);
+  console.log(`\n  RememberMe 网页版`);
   console.log(`  → http://localhost:${server.port}\n`);
   const total = state.personaLearner.signalCounts.positive +
                 state.personaLearner.signalCounts.negative +

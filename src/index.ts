@@ -102,7 +102,7 @@ const PROFILE_DIR = join(DATA_DIR, "profile");
 // =====================================================================
 
 async function main() {
-  console.log(color.cyan("🌅 EmoTalk\n"));
+  console.log(color.cyan("🌅 RememberMe\n"));
 
   // 0. 从项目根目录的 ./settings.json 加载 env
   // （不存在则忽略；用户/容器已设置的 env 变量优先）
@@ -1196,7 +1196,7 @@ async function handleProactiveCommand(
         timeline: ctx.timeline,
         profile,
         personality: {
-          name: "EmoTalk",
+          name: "RememberMe",
           description: persona.preferences || "情感陪伴对话助手",
         },
       });

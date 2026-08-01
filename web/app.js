@@ -1,4 +1,4 @@
-// web/app.js — EmoTalk 网页版前端
+// web/app.js — RememberMe 网页版前端
 // v0.15.0: 移除人格 UI。系统根据用户反馈自动调整人设。
 
 const $ = (sel) => document.querySelector(sel);
@@ -365,7 +365,7 @@ $("#export").addEventListener("click", () => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "emotalk-" + Date.now() + ".json";
+  a.download = "rememberme-" + Date.now() + ".json";
   a.click();
   URL.revokeObjectURL(url);
 });

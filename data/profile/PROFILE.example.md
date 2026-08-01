@@ -2,7 +2,7 @@
 
 - **类型**：profile
 - **版本**：0.5
-- **作者**：emotalk
+- **作者**：rememberme
 - **描述**：PROFILE.md 是运行时自动生成的文件示例（实际使用时请勿提交）
 
 > PROFILE.md 是运行时自动生成的文件（首次启动时由 src/profile.ts 创建默认模板）。

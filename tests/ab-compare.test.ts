@@ -1,7 +1,7 @@
 // tests/ab-compare.test.ts
-// A/B test: 直接 API 调用（A 组）vs EmoTalk 完整路径（B 组）
+// A/B test: 直接 API 调用（A 组）vs RememberMe 完整路径（B 组）
 //
-// 目的：验证 EmoTalk 的多层 system prompt 是不是让回复变短了。
+// 目的：验证 RememberMe 的多层 system prompt 是不是让回复变短了。
 //
 // 用真实 API 跑（不走 mock）。如果没有 API key，跳过。
 //
@@ -56,7 +56,7 @@ const shouldSkip = () => {
   return null;
 };
 
-describe("A/B Test: 裸 API vs EmoTalk 完整路径", () => {
+describe("A/B Test: 裸 API vs RememberMe 完整路径", () => {
   let provider: ModelProvider;
   let tmpDir: string;
   let timeline: Timeline;
@@ -246,7 +246,7 @@ function buildReport(input: {
   sections.push(`- temperature: ${TEMPERATURE}`);
   sections.push(`- prompt 数: ${results.length}\n`);
   sections.push(`## 汇总\n`);
-  sections.push(`| 指标 | A（裸 API） | B（EmoTalk 完整） | Δ |`);
+  sections.push(`| 指标 | A（裸 API） | B（RememberMe 完整） | Δ |`);
   sections.push(`|---|---|---|---|`);
   sections.push(`| 总字符 | ${totalA} | ${totalB} | ${delta}% |`);
   sections.push(`| 平均字符 | ${avgA} | ${avgB} | ${(((avgB - avgA) / avgA) * 100).toFixed(1)}% |`);

@@ -1,4 +1,4 @@
-# EmoTalk
+# RememberMe
 
 [English](README.en.md) | [中文](README.md)
 
@@ -25,7 +25,7 @@
 
 ## 🧠 它的特点
 
-> 严格说 EmoTalk 是一个**上下文编排器** —— 把你的画像、记忆、情绪模式、对话历史整合成更适合当前这一刻的 system prompt，让同一个 LLM 在你这里表现得比在通用聊天窗口里更懂你。
+> 严格说 RememberMe 是一个**上下文编排器** —— 把你的画像、记忆、情绪模式、对话历史整合成更适合当前这一刻的 system prompt，让同一个 LLM 在你这里表现得比在通用聊天窗口里更懂你。
 
 ### 真的记得你
 
@@ -45,8 +45,8 @@
 
 ### 关于隐私：清楚两个边界
 
-- ✅ **本地数据**：你的画像、记忆、反思、反馈学习记录都只在 `data/` 目录下，`.gitignore` 已经覆盖，EmoTalk 不主动上传到任何 EmoTalk 控制的服务器
-- ⚠️ **LLM 调用**：要工作就必须把对话内容发到你配置的 LLM provider（Anthropic / DeepSeek / OpenAI 等）。EmoTalk 本身不存储这些对话之外的位置，但**你信任你的 LLM provider 这一点是前提** —— 这是所有基于 LLM 的应用都共有的限制
+- ✅ **本地数据**：你的画像、记忆、反思、反馈学习记录都只在 `data/` 目录下，`.gitignore` 已经覆盖，RememberMe 不主动上传到任何 RememberMe 控制的服务器
+- ⚠️ **LLM 调用**：要工作就必须把对话内容发到你配置的 LLM provider（Anthropic / DeepSeek / OpenAI 等）。RememberMe 本身不存储这些对话之外的位置，但**你信任你的 LLM provider 这一点是前提** —— 这是所有基于 LLM 的应用都共有的限制
 
 ---
 
@@ -244,7 +244,7 @@ export EC_PROACTIVE_COOLDOWN_MIN=60    # 主动关心最小间隔
 ## 目录结构
 
 ```
-emotalk/
+rememberme/
 ├── README.md / README.en.md           ← 用户文档
 ├── TECHNICAL.md                        ← 开发者文档（架构、API、模块）
 ├── USER_MANUAL.md                      ← CLI 用户手册
@@ -292,7 +292,7 @@ emotalk/
 
 ## 🔒 隐私
 
-EmoTalk 自身**不上传**任何用户数据。所有运行时产物都在 `data/` 目录里，且 `data/` 在 `.gitignore` 里——**永远不会进 git 仓库**：
+RememberMe 自身**不上传**任何用户数据。所有运行时产物都在 `data/` 目录里，且 `data/` 在 `.gitignore` 里——**永远不会进 git 仓库**：
 
 ```
 .gitignore 忽略的运行时数据：
@@ -313,8 +313,8 @@ EmoTalk 自身**不上传**任何用户数据。所有运行时产物都在 `dat
 - 在简历里列这个项目（评审者只能看到代码和文档）
 
 **但有一点要清楚：LLM 调用边界**
-- EmoTalk 要工作必须把对话内容发到你配置的 LLM provider（Anthropic / DeepSeek / OpenAI 等）
-- EmoTalk 本身不存储这些对话之外的副本，但**你信任你的 LLM provider 是前提**——这是所有基于 LLM 的应用都共有的限制
+- RememberMe 要工作必须把对话内容发到你配置的 LLM provider（Anthropic / DeepSeek / OpenAI 等）
+- RememberMe 本身不存储这些对话之外的副本，但**你信任你的 LLM provider 是前提**——这是所有基于 LLM 的应用都共有的限制
 - 选 self-hosted / 本地模型（如 Ollama）可以完全规避这个外部依赖
 
 ---

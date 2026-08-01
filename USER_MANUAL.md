@@ -1,4 +1,4 @@
-# EmoTalk — CLI 用户手册
+# RememberMe — CLI 用户手册
 
 > 一个**有人味的情感对话应用**。专为情感陪伴场景设计。
 > 当前版本：大五人设 OCEAN + 反馈学习 + 网页/CLI 双入口
@@ -7,7 +7,7 @@
 
 ## 🎯 这是什么
 
-EmoTalk 是一个 CLI + 网页 AI 陪伴应用。和通用聊天机器人不一样，它**真的会记住你**：
+RememberMe 是一个 CLI + 网页 AI 陪伴应用。和通用聊天机器人不一样，它**真的会记住你**：
 
 - 🌊 **大五人设（OCEAN）**— 每个 session 一份人设，由你用一句话描述（"苏格拉底"、"温柔姐姐"）→ LLM 转成 5 维数值 + 自由文本偏好
 - 🪄 **反馈学习器**— 对话中你给的反馈被自动识别（"别回太长"、"叫我小李"），累积成自然语言偏好，注入到下轮 system prompt
@@ -38,8 +38,8 @@ irm bun.sh/install.ps1 | iex
 ### 2. 安装项目
 
 ```bash
-git clone <repo> emotalk
-cd emotalk
+git clone <repo> rememberme
+cd rememberme
 bun install
 ```
 
@@ -90,7 +90,7 @@ bun run repl
 
 启动后你会看到：
 ```
-🌅 EmoTalk
+🌅 RememberMe
 
 ✓ 大五人设（OCEAN）：默认中性（全 0.5）
 ✓ 反馈学习：冷启动（空白起点）

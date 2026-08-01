@@ -1,7 +1,7 @@
 {
-  "name": "emotalk",
-  "version": "0.18.1",
-  "description": "有人味的情感陪伴对话应用",
+  "name": "rememberme",
+  "version": "0.21.0",
+  "description": "一个真的记得你的 AI 陪伴。上下文编排器，把画像/记忆/情绪/历史整合成更适合当下的 system prompt。",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
