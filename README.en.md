@@ -2,43 +2,45 @@
 
 [English](README.en.md) | [中文](README.md)
 
-> An emotional companion chat app with a human touch.
+> An AI companion that **actually remembers you**. Switch models, switch platforms, close and reopen — it still knows who you are, what you like, and what you've been through.
 
 ---
 
 ## What is this
 
-**A chat app you'd actually want to keep talking to.**
+**It remembers you**.
 
-It doesn't aim to "complete tasks" — it aims to "hold you." It remembers what you've said, your emotional patterns, what you're going through, and responds in the right tone at the right moment.
+Not the polite "we have your account on file" kind. It actually persists — as local data — **who you are, what you like, and what you've been through**. Come back six months later, ask "do you remember me?", and it picks up from the topic you left mid-sentence.
 
-- **Remembers you long-term** (no need to reintroduce yourself every time)
-- **Cares proactively** (it thinks of you even when you're offline)
-- **Speaks your way** (persona is yours to define; behavior preferences learn from feedback)
+This isn't the "start over every time" experience of generic chatbots. RememberMe's core promise: **all the context it builds about you persists across sessions, across interfaces, across models**.
+
+- **Remembers who you are** — your name, occupation, life stage, location, the topics on your mind
+- **Remembers what you like** — preferences grow from your real feedback, not developer-imposed defaults like "users prefer concise replies"
+- **Remembers what you've been through** — recurring emotional patterns are named and kept (`work-burnout`, `life-aversion` — not just a daily mood log)
+- **Remembers what you talked about** — six months later, the conversation context is still there
 
 Provides both a **web interface** (default) and a **CLI interface**.
 
 ---
 
-## 🧠 What makes it different
+## 🧠 How it remembers you
 
 > Strictly speaking, RememberMe is not an agent (it doesn't call tools, doesn't plan autonomously). It's a **context orchestrator** — it composes your profile, memories, emotional patterns, and conversation history into a system prompt that's better tuned to *this* moment, so that the same LLM performs noticeably better with you than it does in a generic chat window.
 
-### It actually remembers you
+### Your profile lives in local markdown files
 
-- Your profile, memories, and emotional patterns live as **local markdown files** under `data/`, each one openable and editable in any text editor
-- Come back six months later and it still remembers the topic you left mid-sentence
+- **Who you are** (basic info) — name, occupation, location, stored as fields in `data/profile/PROFILE.md`
+- **What you like** (preferences + communication style) — grown from your real feedback, not predefined "length / tone / depth / format" dimensions
+- **What you've been through** (events + emotional patterns) — recurring emotional reactions stored as `emotion`-type memories, only kept when ≥2 pieces of evidence exist
+
+Every entry is a **plain text file** — you can open it in any editor, read it, modify it.
+
+### Come back six months later, it still remembers
+
+- The topic you left mid-sentence
+- Your emotional patterns ("you always get anxious when talking about work", not "you're feeling off today")
+- Your preferences (you said "don't reply too long" — now it replies briefly)
 - Across sessions, across interfaces (CLI ↔ Web), across models (Claude / DeepSeek / GPT-4) — same memory
-
-### Preferences grow out of your feedback
-
-- What you've said you like or dislike is recorded as observations and injected into the next system prompt
-- No predefined "length / tone / depth / format" dimensions — entirely driven by your actual feedback
-
-### Emotional patterns are named and remembered
-
-- Recurring emotional reactions are stored as `emotion`-type memories (only kept when ≥2 pieces of evidence exist)
-- Not just "feeling off today" — but a named pattern that resurfaces next time the topic comes up
 
 ### On privacy: two boundaries to be clear about
 
