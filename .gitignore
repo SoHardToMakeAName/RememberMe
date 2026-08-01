@@ -74,6 +74,14 @@ tests/scripts/manual/*.log.json
 .idea/
 *.tsbuildinfo
 
+# =====================================================================
+# 内部评测报告（不入仓 — 含个人数据 / 评测细节）
+# 技术文档以 README.md / USER_MANUAL.md 为准
+# =====================================================================
+/STRESS_REPORT.md
+/TEST_REPORT.md
+/TECHNICAL.md
+
 # v0.15+: 反馈学习数据
 data/learned-prefs/
 
