@@ -63,9 +63,14 @@ async function bootstrap(): Promise<AppState> {
   const personaLearner = loadLearner(DATA_DIR, userId);
 
   let profile: Profile | null = null;
-  const profilePath = join(PROFILE_DIR, "PROFILE.md");
-  if (existsSync(profilePath)) {
+  // v0.21.1 修复：web 启动时无条件 loadProfile，让它自动创建 PROFILE.md
+  // 之前 existsSync 判断导致首次 clone 后 PROFILE.md 不存在 → state.profile = null
+  // → profile 段不注入 prompt → 用户感觉"什么都不记得"
+  try {
     profile = await loadProfile(DATA_DIR);
+  } catch (e) {
+    console.error(`[web] profile 加载失败:`, (e as Error).message);
+    profile = null;
   }
 
   const timeline = new Timeline(TIMELINE_DIR);
@@ -116,6 +121,14 @@ async function runTurn(
 
   // 重新加载 learner（v0.15.0: 反馈循环可能在上轮更新了它）
   state.personaLearner = loadLearner(DATA_DIR, state.userId);
+
+  // 重新加载 profile（profile 更新是 fire-and-forget，不 reload 会读到旧值）
+  // 修复：对话 A 聊了几轮 → PROFILE.md 已更新 → 切到对话 B 应读到新 profile
+  try {
+    state.profile = await loadProfile(DATA_DIR);
+  } catch (e) {
+    console.error(`[web] profile 加载失败:`, (e as Error).message);
+  }
 
   // system prompt（v0.18.0: OCEAN 大五人设 + 反馈学习）
   // 按 sessionId 加载人设（如不存在则用默认 OCEAN）
