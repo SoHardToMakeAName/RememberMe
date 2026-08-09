@@ -12,6 +12,7 @@
 
 import type { ChatMessage, ModelProvider } from "./provider.ts";
 import { estimateTokens } from "./utils.ts";
+import { t } from "./i18n.ts";
 
 // estimateTokens 的实现已移到 utils.ts（memory.ts 的索引预算也要用）。
 // 这里继续导出，保持 compact 模块既有的公开面不变。
@@ -113,46 +114,7 @@ export function shouldCompact(
  * 5. 当前主导情绪与主人在这次对话中的语气
  * 6. 其他需要传递给下一个 LLM 的上下文
  */
-const COMPACT_SYSTEM_PROMPT = `你是对话历史压缩助手。下面是一段已经被压缩的对话，你的任务是把这段对话提炼成结构化摘要，让另一个 LLM 接替你继续与用户对话。
-
-**最重要的原则：不要遗漏任何会影响"人味"的细节。**
-情感对话的摘要如果丢了用户的偏好纠正或情绪转折，下次对话会立刻变得"机器腔"。
-
-按以下 6 段输出 Markdown 摘要：
-
-## 1. 用户情绪轨迹
-- 用户本轮对话情绪如何变化（关键转折点、强度）
-- 当前情绪状态
-
-## 2. 用户关键信息
-- 用户透露的角色、关系、生活事件
-- **明确说出名字/昵称/称呼偏好时必须保留原话**
-
-## 3. 用户偏好与纠正（最关键）
-- 用户对本主人（或对当前对话方式）的偏好纠正
-- 包括：语气、节奏、用词、禁忌话题
-- 用户的原话片段要保留（≤ 30 字）
-
-## 4. 未完结话题与承诺
-- 用户提到但没展开的话题
-- 主人承诺跟进的事项
-- 用户答应的"下次再说"的事
-
-## 5. 当前对话语气基准
-- 主人在这次对话中使用的语气、节奏
-- 用户是否接受这个语气
-
-## 6. 其他上下文
-- 任何 1-5 段装不下的关键信息
-
-要求：
-- **总字数 ≤ 600 字**（硬性约束，超出会被截断）
-- 6 段加起来不能超过这个上限——能省的段就省
-- 优先保留：情绪转折点、用户偏好纠正、未完结话题
-- 可省略：用户基本身份（如果其他段已经提到）、常规对话细节
-- 保留原文中能体现情绪强度的字眼（"我好累"、"烦死了"、"还行吧"）
-- 不要添加原对话里没有的事实
-- 用第三人称叙述（"用户说..."、"主人回应..."）`;
+const COMPACT_SYSTEM_PROMPT = t("compact.system_prompt");
 
 function buildCompactInput(
   history: ChatMessage[],
@@ -162,9 +124,9 @@ function buildCompactInput(
     (m, i) => `${i + 1}. [${m.role}] ${m.content}`,
   );
   const profileBlock = profileSummary
-    ? `\n\n用户画像快照（供参考，让摘要与用户长期信息保持一致）：\n${profileSummary}\n`
+    ? `\n\n${t("compact.user_prefix")}\n${profileSummary}\n`
     : "";
-  return `请把以下对话压缩成摘要：${profileBlock}\n\n${lines.join("\n\n")}`;
+  return `${t("compact.user_prefix")}${profileBlock}\n\n${lines.join("\n\n")}`;
 }
 
 export type CompactResult = {

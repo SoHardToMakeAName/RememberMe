@@ -57,8 +57,8 @@ class IntegrationMockProvider implements ModelProvider {
     const { system, messages } = options.params;
     const lastUser = messages[messages.length - 1]?.content ?? "";
 
-    // 1) compact summary 调用（看 system prompt 的关键字）
-    if (system.includes("对话历史压缩")) {
+    // 1) compact summary 调用（看 system prompt 的关键字，i18n：两种语言都识别）
+    if (system.includes("对话历史压缩") || system.includes("conversation history compression")) {
       this.compactCalls++;
       const summary = `## 1. 用户情绪轨迹
 - 10 轮对话中用户情绪从难过逐步转为释然
@@ -265,7 +265,8 @@ describe("10 轮对话触发 compact（loop.ts 集成）", () => {
     expect(result.effectiveHistory.length).toBe(1 + DEFAULT_COMPACT_CONFIG.recentKept);
     expect(result.effectiveHistory[0].role).toBe("user");
     expect(result.effectiveHistory[0].content).toContain("[BACKGROUND");
-    expect(result.effectiveHistory[0].content).toContain("## 1. 用户情绪轨迹");
+    // i18n：summary 应有 6 个 ## 标题（中文或英文，看 EC_LANG）
+    expect(result.effectiveHistory[0].content).toMatch(/^## 1\..*$/m);
 
     // Bug #3 修复断言：summary role 应该是 user
     expect(result.effectiveHistory[0].role).not.toBe("assistant");
