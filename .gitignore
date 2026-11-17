@@ -22,21 +22,8 @@ data/profile/PROFILE.md
 # =====================================================================
 settings.json
 
-# =====================================================================
-# 临时 / ad-hoc 测试残留
-# =====================================================================
-tests/drive.py
-tests/round-10-output.log
-tests/test-script.sh
-scripts/debug-tokens.ts
-scripts/test-spread.ts
-
-# R&D 评测产物：大体积 log.json（评测脚本 + REPORT.md 保留作为研究记录）
-tests/scripts/manual/*.log.json
-
 # 根目录调试脚本：send_*.py, send_*.ps1, screenshot*.py, find_*.py,
 # test_*.py, attach_*.py, clipboard_*.py, console_*.py
-# 不影响 tests/ 下有意义的 .ts 测试文件（被 tests/*.test.ts 显式追踪）
 /send*.py
 /send*.ps1
 /screenshot*.py
@@ -89,16 +76,8 @@ tests/scripts/manual/*.log.json
 /examples/
 
 # =====================================================================
-# tests/ 下日志和评测报告（保留 *.test.ts，删 *.log + REPORT.md）
-# =====================================================================
-tests/*.log
-tests/scripts/manual/*.log
-tests/scripts/manual/*.log.json
-tests/scripts/manual/*REPORT.md
-tests/scripts/manual/*VERIFY.md
-# 保留 *.test.ts 和 *.sh
-
 # v0.15+: 反馈学习数据
+# =====================================================================
 data/learned-prefs/
 
 # v0.15+: 会话持久化数据
@@ -122,3 +101,39 @@ screenshot_claude_status.png
 /*测试*.md
 /*随便*.md
 /*试一下*.md
+
+# MCP 构建产物
+dist/
+
+# =====================================================================
+# MCP 相关（v0.22）：只上传「必要代码」，其余一律不入仓
+#
+# ✅ 入仓：
+#    src/mcp/            server 实现（4 个工具 + 路径解析 + provider + 构建脚本）
+#    server.json         MCP Registry 归属校验要用，必须公开
+#
+# ❌ 不入仓：
+#    experiments/        一次性实验脚手架 + 实验报告（还自带 node_modules）
+#    MCP_PLAN.md        内部方案与决策记录（含已被取代的旧版设计）
+#    MCP_TEST_REPORT.md 测试报告（含评测细节）
+#    DEMO.md            汇报讲稿 —— 直接引用了 data/ 里的真实私人记忆内容
+# =====================================================================
+/experiments/
+/MCP_PLAN.md
+/MCP_TEST_REPORT.md
+/DEMO.md
+
+# =====================================================================
+# 测试与脚本目录：整个不入仓
+#
+#   /tests/   回归测试与压测脚本 —— 本地跑，不公开
+#   /scripts/ 一键脚本与实验脚本 —— 本地跑，不公开
+#
+# ⚠️ 注意：构建产物脚本原本在 scripts/，因为 npm 的 prepack 钩子要用它，
+#    已移到 src/mcp/build.ts（见 package.json 的 build:mcp）。
+# =====================================================================
+/tests/
+/scripts/
+
+# npm pack 产物
+*.tgz

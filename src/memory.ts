@@ -275,7 +275,13 @@ export function resolveMemoryPath(
     if ((MEMORY_TYPES as readonly string[]).includes(maybeType)) {
       return {
         subtype: maybeType as MemoryType,
-        path: join(memoryDir, filename),
+        // 必须带 .md 后缀：scanMemory() 存的是带 .md 的绝对路径，
+        // 少了它 readMemoryFile() 里的 f.path === resolved.path 永远不成立
+        // （带子目录前缀的查找 100% 落空 —— 这条路径有回归测试覆盖）。
+        path: join(
+          memoryDir,
+          filename.endsWith(".md") ? filename : `${filename}.md`,
+        ),
       };
     }
   }

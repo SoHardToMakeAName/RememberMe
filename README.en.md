@@ -280,12 +280,15 @@ rememberme/
 │   ├── classify.ts                     ← emotion detection + memory recall (side-query)
 │   ├── embedded-proactive.ts           ← proactive care
 │   ├── evolution/                      ← self-evolution layer (curator / lifecycle)
+│   ├── mcp/                            ← MCP server (npm package: rememberme)
+│   │   ├── index.ts                    ← entry (stdio transport + stdout guard)
+│   │   ├── server.ts                   ← wires up the 4 tools
+│   │   ├── config.ts                   ← data dir / settings path resolution
+│   │   ├── provider.ts                 ← the server's own LLM provider
+│   │   ├── instructions.ts             ← instructions (when to call record_turn)
+│   │   ├── build.ts                    ← distribution build (used by prepack)
+│   │   └── tools/                      ← list_memories / read_memory / read_profile / record_turn
 │   └── loop.ts                         ← runTurn core
-├── examples/                           ← usage examples
-├── tests/                              ← tests
-│   ├── *.test.ts                       ← unit tests
-│   ├── e2e.test.ts                     ← E2E tests
-│   └── web-sessions.test.ts            ← Web API tests
 └── personality/                        ← persona markdown docs
 ```
 

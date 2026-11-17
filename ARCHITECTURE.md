@@ -672,7 +672,7 @@ saveLearner(dataDir, updated)
 
 - **轮数**：20 / 100 / 500 轮
 - **指标**：profile 学习率、记忆召回准确率、响应延迟、token 消耗
-- **脚本**：`tests/scripts/manual/stress-20round.sh` / `long-convo-eval.ts`
+- **脚本**：压测与评测脚本在本地 `tests/scripts/manual/` 下（不入仓）
 
 ### 6.4 真实反馈验证
 
@@ -765,31 +765,20 @@ bun test             # → 跑单元测试
 
 ## 附录 A：测试运行
 
+> 测试代码不在公开仓库里（`tests/` 与 `scripts/` 均已 gitignore），
+> 需要跑测试请 clone 后从作者的本地副本取，或自行编写。
+
 ```bash
-bun test                          # 跑全部（~143s）
+bun test                          # 跑全部（~80s）
 bun test tests/profile.test.ts    # 跑单个模块
 bun test --watch                  # watch 模式
 ```
 
 ## 附录 B：手动评测脚本
 
-```
-tests/scripts/
-├── README.md
-└── manual/
-    ├── embedded-proactive-compare.sh
-    ├── embedded-proactive-test.sh
-    ├── feel-test.sh
-    ├── quick-test.sh
-    ├── run-long-convo-eval.sh
-    ├── stress-20round.sh
-    ├── test-script.sh
-    ├── v3-10round-test.sh
-    ├── v3-deep-test.sh
-    ├── v3-fusion-test.sh
-    ├── v4-mode-test.sh
-    └── variance-test.sh
-```
+压测 / 评测脚本在本地 `tests/scripts/manual/` 下（不入仓），包括：
+`embedded-proactive-compare.sh`、`feel-test.sh`、`stress-20round.sh`、
+`v3-10round-test.sh`、`v3-deep-test.sh`、`variance-test.sh` 等。
 
 ## 附录 C：参考
 

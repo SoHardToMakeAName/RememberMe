@@ -1,26 +1,65 @@
 {
   "name": "rememberme",
-  "version": "0.21.0",
-  "description": "一个真的记得你的 AI 陪伴。上下文编排器，把画像/记忆/情绪/历史整合成更适合当下的 system prompt。",
+  "version": "0.22.0",
+  "description": "一个真的记得你的 AI 陪伴。上下文编排器，把画像/记忆/情绪/历史整合成更适合当下的 system prompt。也提供 MCP server 形态的记忆后端。",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/mcp/index.js",
+  "bin": {
+    "rememberme": "dist/mcp/index.js",
+    "rememberme-mcp": "dist/mcp/index.js"
+  },
+  "mcpName": "io.github.SoHardToMakeAName/RememberMe",
   "scripts": {
     "start": "bun run src/web.ts",
     "dev": "bun --watch run src/web.ts",
     "repl": "bun run src/index.ts",
     "web": "bun run src/web.ts",
+    "mcp": "bun run src/mcp/index.ts",
+    "build:mcp": "bun run src/mcp/build.ts",
+    "prepack": "bun run build:mcp",
     "test": "bun test"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.40.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "openai": "^4.80.0",
-    "yaml": "^2.5.0"
+    "yaml": "^2.5.0",
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "typescript": "^5.5.0"
   },
   "engines": {
-    "bun": ">=1.1.0"
-  }
+    "bun": ">=1.1.0",
+    "node": ">=22.18"
+  },
+  "files": [
+    "dist",
+    "src",
+    "server.json",
+    "settings.json.example",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "ARCHITECTURE.md"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "memory",
+    "ai-companion",
+    "long-term-memory",
+    "anthropic",
+    "claude"
+  ],
+  "homepage": "https://github.com/SoHardToMakeAName/RememberMe#readme",
+  "bugs": {
+    "url": "https://github.com/SoHardToMakeAName/RememberMe/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoHardToMakeAName/RememberMe.git"
+  },
+  "license": "Apache-2.0"
 }

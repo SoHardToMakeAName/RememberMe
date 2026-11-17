@@ -444,7 +444,7 @@ A: 拉取最新代码 → `bun install` → 启动。`data/` 目录会被自动�
 
 1. **查看 prompt 实际内容**：`EC_QUIET=1 bun run repl`，每轮回复底部会打印 `[情绪: ...]` `[召回记忆: ...]` 等调试信息
 2. **查看数据文件**：`data/` 目录都是明文 .md / .json / .jsonl
-3. **运行测试**：`bun test ./tests/` — 20 个测试文件应该全部通过
+3. **运行测试**：`bun test ./tests/` — 测试代码在本地副本里（公开仓库不含 `tests/`）
 4. **查看反思日志**：`data/reflections/*.md` 记录了反思 agent 的所有输出
 
 ---
@@ -462,7 +462,7 @@ A: 拉取最新代码 → `bun install` → 启动。`data/` 目录会被自动�
 
 如果发现 bug 或有想法：
 1. 直接编辑 `data/` 调试
-2. 看 `tests/*.test.ts` 找灵感
+2. 看 `src/` 找灵感（测试代码在本地 `tests/` 下，不在公开仓库里）
 3. 提 issue
 
 ---

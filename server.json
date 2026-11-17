@@ -1,0 +1,38 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.SoHardToMakeAName/RememberMe",
+  "title": "RememberMe",
+  "description": "长期记忆 MCP server：记住用户是谁、经历过什么、情绪模式如何，跨会话不丢。",
+  "version": "0.22.0",
+  "websiteUrl": "https://github.com/SoHardToMakeAName/RememberMe",
+  "repository": {
+    "url": "https://github.com/SoHardToMakeAName/RememberMe",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "rememberme",
+      "version": "0.22.0",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "REMEMBERME_DATA_DIR",
+          "description": "记忆数据目录（必须是绝对路径）。默认 ~/.rememberme/data",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "REMEMBERME_SETTINGS",
+          "description": "LLM 配置文件（settings.json）的路径。默认 ~/.rememberme/settings.json",
+          "isRequired": false,
+          "isSecret": false
+        }
+      ]
+    }
+  ]
+}

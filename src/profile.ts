@@ -774,6 +774,113 @@ function parseFieldLines(text: string): Map<string, string> {
   return map;
 }
 
+/** 段 1 的模板字段（顺序 = 展示顺序） */
+const BASIC_TEMPLATE_KEYS = ["昵称", "性别", "年龄段", "职业", "所在地"] as const;
+
+/**
+ * 段 1 的字段别名。
+ *
+ * LLM / 用户说的叫法五花八门（"我叫小李" → 名字、"我在上海" → 城市），
+ * 收敛到模板字段上，避免同一个人被记成两个字段。
+ */
+const BASIC_FIELD_ALIASES: Record<string, string> = {
+  昵称: "昵称",
+  名字: "昵称",
+  姓名: "昵称",
+  称呼: "昵称",
+  性别: "性别",
+  年龄段: "年龄段",
+  年龄: "年龄段",
+  职业: "职业",
+  工作: "职业",
+  职位: "职业",
+  所在地: "所在地",
+  城市: "所在地",
+  地区: "所在地",
+  住址: "所在地",
+  居住地: "所在地",
+};
+
+function canonicalBasicKey(key: string): string {
+  const k = key.trim();
+  return BASIC_FIELD_ALIASES[k] ?? BASIC_FIELD_ALIASES[k.toLowerCase()] ?? k;
+}
+
+/**
+ * 段 1 的合并策略：**保留式合并**（v0.21.1 修复）。
+ *
+ * 旧实现是 parseFieldLines(current) → 按模板 5 个字段 rebuild 整段。
+ * 而 parseFieldLines 要求每行都有 ":" / "："，
+ * 于是段 1 里那些 "- (日期) 用户……" 的自由文本观察行全被丢弃
+ * —— 实测一次 merge 丢 27 行历史（这条路径有回归测试覆盖）。
+ *
+ * 现在改成：
+ * - 已有的行**一行都不删**
+ * - 新内容能对上某个模板字段（含别名）→ **就地替换那一行**
+ * - 对不上 → **追加**（模板字段插到模板字段区的位置，其余追加到末尾）
+ * - 新内容不是「键：值」格式 → 当作自由文本追加
+ */
+function mergeBasicSection(
+  current: string,
+  incoming: string,
+): { text: string; changed: boolean } {
+  const lines = current ? current.split("\n").filter((l) => l.trim()) : [];
+  const incomingFields = parseFieldLines(incoming);
+
+  // 新内容不是「键：值」格式 —— 当自由文本追加
+  if (incomingFields.size === 0) {
+    const add = incoming.trim();
+    if (!add) return { text: current, changed: false };
+    return { text: [...lines, add].join("\n"), changed: true };
+  }
+
+  const keyOf = (line: string): string | null => {
+    const m = line.match(/^-?\s*(\S+?)\s*[:：]\s*(.+)$/);
+    return m ? canonicalBasicKey(m[1]) : null;
+  };
+  const valueOf = (line: string): string => {
+    const m = line.match(/^-?\s*(\S+?)\s*[:：]\s*(.+)$/);
+    return m ? m[2].trim() : "";
+  };
+
+  let changed = false;
+  for (const [rawKey, rawValue] of incomingFields) {
+    const value = rawValue.trim();
+    if (!value || value === "未知" || value === "（暂无）") continue;
+
+    const key = canonicalBasicKey(rawKey);
+    const idx = lines.findIndex((l) => keyOf(l) === key);
+
+    if (idx >= 0) {
+      // 已有同名字段 → 就地替换（不改动其它行）
+      if (valueOf(lines[idx]) !== value) {
+        lines[idx] = `- ${key}：${value}`;
+        changed = true;
+      }
+      continue;
+    }
+
+    // 新字段
+    const newLine = `- ${key}：${value}`;
+    if ((BASIC_TEMPLATE_KEYS as readonly string[]).includes(key)) {
+      // 模板字段插到模板字段区的末尾（保持模板顺序）；一个都没有就插最前面
+      let insertAt = 0;
+      for (let i = 0; i < lines.length; i++) {
+        const k = keyOf(lines[i]);
+        if (k && (BASIC_TEMPLATE_KEYS as readonly string[]).includes(k)) {
+          insertAt = i + 1;
+        }
+      }
+      lines.splice(insertAt, 0, newLine);
+    } else {
+      lines.push(newLine);
+    }
+    changed = true;
+  }
+
+  return { text: lines.join("\n"), changed };
+}
+
 /**
  * v0.21 融合策略：
  * - 段 1 基本信息：结构化字段更新
@@ -789,32 +896,16 @@ export function mergeProfileUpdate(
   let changed = false;
   const dateStr = now.toISOString().slice(0, 10);
 
-  // 段 1 基本信息
+  // 段 1 基本信息 —— 保留式合并，不丢任何已有行（v0.21.1 修复）
   const basicIncoming = update["基本信息"];
   if (basicIncoming && basicIncoming.trim()) {
     const current = profile.sections["基本信息"] ?? "";
-    const currentFields = parseFieldLines(current);
-    const newFields = parseFieldLines(basicIncoming);
-    let basicChanged = false;
-    for (const [k, v] of newFields) {
-      if (!v || v === "未知" || v === "（暂无）") continue;
-      if (currentFields.get(k) !== v) {
-        currentFields.set(k, v);
-        basicChanged = true;
-      }
-    }
+    const { text, changed: basicChanged } = mergeBasicSection(
+      current,
+      basicIncoming,
+    );
     if (basicChanged) {
-      const orderedLines: string[] = [];
-      const templateKeys = ["昵称", "性别", "年龄段", "职业", "所在地"];
-      for (const k of templateKeys) {
-        const v = currentFields.get(k);
-        orderedLines.push(`- ${k}：${v ?? "未知"}`);
-      }
-      for (const [k, v] of currentFields) {
-        if (templateKeys.includes(k)) continue;
-        orderedLines.push(`- ${k}：${v}`);
-      }
-      profile.sections["基本信息"] = orderedLines.join("\n");
+      profile.sections["基本信息"] = text;
       changed = true;
     }
   }

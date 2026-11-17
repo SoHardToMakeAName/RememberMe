@@ -190,6 +190,126 @@ export EC_PROACTIVE_QUIET_END=8        # 安静时段结束
 export EC_PROACTIVE_COOLDOWN_MIN=60    # 主动关心最小间隔
 ```
 
+### MCP Server（记忆后端形态）
+
+把 RememberMe 挂到任意 MCP 客户端（Claude Code / Claude Desktop / Cursor / VS Code …）上，
+让**别的 AI** 也拥有你的长期记忆。
+
+提供 4 个工具：
+
+| 工具 | 类型 | 作用 |
+|---|---|---|
+| `list_memories` | 读 | 列出全部记忆（名称 + 描述 + 日期） |
+| `read_memory` | 读 | 取单条记忆全文 |
+| `read_profile` | 读 | 读用户画像 6 段 |
+| `record_turn` | **写** | 宿主说「这轮值得记」，记忆系统决定「记成什么」 |
+
+**设计**：宿主模型只判断「值不值得记」，抽取和归纳由 RememberMe 服务端用原版 rubric 完成，
+所以记忆的**类型判断和归纳质量**和网页版/CLI 完全一致（复用 `extractMemoryCandidates()`）。
+
+<details>
+<summary><b>在本地 Claude Code 里使用（开发版）</b></summary>
+
+```bash
+# 1. 构建（改过 src/mcp/ 后要重新构建）
+bun install
+bun run build:mcp
+
+# 2. 注册到 Claude Code（-s local = 只对当前项目生效，写进 ~/.claude.json）
+claude mcp add rememberme -s local \
+  -e REMEMBERME_DATA_DIR=D:/code/MyLittleProject/emotional-companion/data \
+  -- node D:/code/MyLittleProject/emotional-companion/dist/mcp/index.js
+
+# 3. 验证
+claude mcp list        # 应该看到 rememberme ... ✔ Connected
+```
+
+然后**重启 Claude Code**（MCP 工具在会话启动时加载），工具会以
+`mcp__rememberme__list_memories` 等形式出现。
+
+想改成全局可用（所有项目都能用）就把 `-s local` 换成 `-s user`。
+
+> ⚠️ **作用域决定你在哪些目录能用**：
+> `claude mcp list` 只显示**当前目录所属项目**的 local 条目 + 全局的 user 条目。
+> 所以 `-s local` 的话，**必须 cd 到 `D:/code/MyLittleProject/emotional-companion` 里**跑
+> `claude mcp list` 才看得到；在别的目录跑会显示「No MCP servers configured」。
+> 同名的 local 条目会**遮蔽** user 条目 —— 排查时先确认自己看的是哪一个作用域。
+
+> **REMEMBERME_DATA_DIR 必须给绝对路径**。不设的话会落到 `~/.rememberme/data`，
+> 读不到本仓库 `data/` 里的既有记忆。数据目录的解析优先级是
+> `REMEMBERME_DATA_DIR` → `settings.json` 的 `dataDir` → `~/.rememberme/data`。
+>
+> 也可以改用源码模式（改代码即时生效，不用重新构建）：
+> ```bash
+> claude mcp add rememberme-dev -s local \
+>   -e REMEMBERME_DATA_DIR=D:/code/MyLittleProject/emotional-companion/data \
+>   -- bun run D:/code/MyLittleProject/emotional-companion/src/mcp/index.ts
+> ```
+
+</details>
+
+<details>
+<summary><b>用 npx 装（发布后）</b></summary>
+
+```bash
+claude mcp add rememberme -s user -- npx -y <npm 包名>
+```
+
+npm 包名与 bin 名一致，所以 `npx -y <包名>` 就能跑。
+发布后的包会带上 `mcpName` 字段，用于 [MCP Registry](https://registry.modelcontextprotocol.io) 的归属校验。
+
+> ⚠️ 包名尚未最终确定（候选：`rememberme` / `rememberme-mcp` / `@sohardtomakeaname/rememberme-mcp`，
+> 三个都确认未被占用），发布前会在 `package.json` 和 `server.json` 里同步定稿。
+
+**首次使用需要配一次 API key。** MCP server 找配置的顺序是：
+
+```
+1. REMEMBERME_SETTINGS 环境变量
+2. ~/.rememberme/settings.json
+3. <包目录>/../settings.json
+```
+
+npm 安装版落在 `node_modules/` 里，第 3 档找不到你仓库里的 `settings.json`，
+所以只剩 `~/.rememberme/settings.json`。建一个就行（格式见 `settings.json.example`）：
+
+```json
+{
+  "env": {
+    "ANTHROPIC_API_KEY": "sk-ant-你的key",
+    "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
+    "ANTHROPIC_MODEL": "claude-sonnet-4-5-20250929"
+  }
+}
+```
+
+或者直接指到已有的配置文件：
+
+```bash
+claude mcp add rememberme -s user \
+  -e REMEMBERME_SETTINGS=/path/to/settings.json \
+  -- npx -y <npm 包名>
+```
+
+没配 key 的话，三个读工具照常能用，`record_turn` 会明确告诉你去哪儿配：
+
+> 无法抽取记忆：没有可用的 LLM 配置。
+> 未配置 API key。请在 ~/.rememberme/settings.json 或项目 settings.json 里设置 ANTHROPIC_API_KEY…
+
+**数据目录**：npm 版默认落在 `~/.rememberme/data`（记忆存在 `~/.rememberme/data/memory/`，
+画像在 `~/.rememberme/data/profile/PROFILE.md`），这是 npm 全局安装形态下自洽的位置。
+想改就用 `REMEMBERME_DATA_DIR` 指定绝对路径。
+
+</details>
+
+**只读模式**（不想让 server 调 LLM、不想花额度）：
+
+```bash
+REMEMBERME_MCP_DISABLE_LLM=1   # 只留 3 个读工具，record_turn 会返回明确错误
+```
+
+> 架构决策与实验过程见 [`MCP_PLAN.md`](MCP_PLAN.md)（0.5 节），
+> 测试结果见 [`MCP_TEST_REPORT.md`](MCP_TEST_REPORT.md)。
+
 ---
 
 ## 人设怎么工作（OCEAN）
@@ -281,12 +401,15 @@ rememberme/
 │   ├── classify.ts                     ← 情绪识别 + 记忆召回（side-query）
 │   ├── embedded-proactive.ts           ← 主动关心
 │   ├── evolution/                      ← 自进化层（curator / lifecycle）
+│   ├── mcp/                            ← MCP server（npm 包 rememberme）
+│   │   ├── index.ts                    ← 入口（stdio 传输 + stdout 保护）
+│   │   ├── server.ts                   ← 装配 4 个工具
+│   │   ├── config.ts                   ← 数据目录 / settings 路径解析
+│   │   ├── provider.ts                 ← server 自己的 LLM provider
+│   │   ├── instructions.ts             ← instructions（教宿主何时调 record_turn）
+│   │   ├── build.ts                    ← 分发产物构建（prepack 用）
+│   │   └── tools/                      ← list_memories / read_memory / read_profile / record_turn
 │   └── loop.ts                         ← runTurn 核心
-├── examples/                           ← 使用示例
-├── tests/                              ← 测试
-│   ├── *.test.ts                       ← 单元测试
-│   ├── e2e.test.ts                     ← E2E 测试
-│   └── web-sessions.test.ts            ← Web API 测试
 └── personality/                        ← 性格 markdown 文档
 ```
 
