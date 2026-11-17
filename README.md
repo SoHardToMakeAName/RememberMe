@@ -2,6 +2,8 @@
 
 [English](README.en.md) | [中文](README.md)
 
+> **RememberMe MCP 已经上线** —— 详见 [MCP Server（记忆后端形态）](#mcp-server记忆后端形态) 一节。
+
 > 一个**真的记得你**的 AI 陪伴。换模型、换平台、关掉再开，它依然知道你是谁、你喜欢什么、你经历过什么。
 
 ---
@@ -19,7 +21,7 @@
 - **记得你经历过什么** —— 反复出现的情绪模式被命名和保留（"work-burnout"、"life-aversion" 这种），不只是流水账
 - **记得你们聊过什么** —— 半年后回来重开，对话上下文还在
 
-提供 **网页界面**（默认）和 **CLI 界面**。
+提供 **网页界面**（默认）、**CLI 界面**，以及 **MCP Server** —— 让 Claude Code、Claude Desktop、Cursor 这些别的 AI 直接用上你的长期记忆。
 *目前网页界面还不是很完善*
 
 *本项目由vibe coding生成*
@@ -66,9 +68,6 @@
 ### 🪞 每日反思
 后台进程读你的情绪时间线、近期记忆、画像，归纳成"今日洞察"——越用越懂你。
 
-### 💡 主动关心
-当你 idle 超过阈值时，会在主回复结尾自然嵌入一句"对了，..."（引用画像里的真实内容），不打扰。
-
 ### 🌊 大五人设（OCEAN）
 不再有预定义人格。新会话启动时，你说一句话（如"苏格拉底"、"温柔大姐姐"、"嘴毒心善的朋友"），LLM 翻译成 5 维数值（开放性 / 尽责性 / 外向性 / 宜人性 / 神经质）+ 一段自由文本偏好。**每个会话独立**，存到 `data/personality/{sessionId}.json`。
 
@@ -83,6 +82,11 @@
 
 ### 🌐 网页界面（默认）
 默认启动 Bun.serve() HTTP 服务器。打开 `http://localhost:3000` 即可。SSE 流式 + 实时状态栏。
+
+### 🔌 MCP Server（记忆后端形态）
+把同一套记忆系统打包成 MCP server，挂到任意 MCP 客户端上，让**别的 AI** 拥有你的长期记忆。
+4 个工具：3 个读（`list_memories` / `read_memory` / `read_profile`）+ 1 个写（`record_turn`）。
+细节见下方 [MCP Server](#mcp-server记忆后端形态) 一节。
 
 ---
 
@@ -162,7 +166,6 @@ bun run repl
 | `/learner` / `/learner reset` | 人设学习器状态 |
 | `/reflect [days]` | 手动触发反思（默认：看最近 7 天） |
 | `/reflections list` / `read <date>` | 浏览反思历史 |
-| `/proactive status\|trigger\|reset` | 主动关心状态 |
 | `/stats` | 会话统计（含 compact 建议） |
 | `/compact` | 手动 compact 历史 |
 | `/quiet` | 切换 `[emotion: ...]` 调试标签 |
@@ -176,19 +179,6 @@ bun run repl
 - 在 web 聊了一段 → 启动 CLI → CLI 自动加载最近一个有对话的 session
 - 在 CLI 聊了一段 → 关掉 web → 重启 web → web 也加载同一段
 - 切换会话用 `/session switch <id>`（CLI）或左侧 sidebar（web）
-
-### 主动关心
-
-网页版和 CLI 都会在用户 idle 超过阈值时（默认 4 小时），在主回复结尾自然嵌入一句"对了，..."。
-
-```bash
-export EC_PROACTIVE=1                  # 启用嵌入式主动关心（默认关）
-export EC_PROACTIVE_IDLE_HOURS=4       # idle 阈值
-export EC_PROACTIVE_MAX_PER_DAY=2      # 每天上限
-export EC_PROACTIVE_QUIET_START=23     # 安静时段开始（24h）
-export EC_PROACTIVE_QUIET_END=8        # 安静时段结束
-export EC_PROACTIVE_COOLDOWN_MIN=60    # 主动关心最小间隔
-```
 
 ### MCP Server（记忆后端形态）
 
@@ -216,9 +206,10 @@ bun install
 bun run build:mcp
 
 # 2. 注册到 Claude Code（-s local = 只对当前项目生效，写进 ~/.claude.json）
+#    把 <REPO> 换成你的仓库绝对路径
 claude mcp add rememberme -s local \
-  -e REMEMBERME_DATA_DIR=D:/code/MyLittleProject/emotional-companion/data \
-  -- node D:/code/MyLittleProject/emotional-companion/dist/mcp/index.js
+  -e REMEMBERME_DATA_DIR=<REPO>/data \
+  -- node <REPO>/dist/mcp/index.js
 
 # 3. 验证
 claude mcp list        # 应该看到 rememberme ... ✔ Connected
@@ -231,8 +222,8 @@ claude mcp list        # 应该看到 rememberme ... ✔ Connected
 
 > ⚠️ **作用域决定你在哪些目录能用**：
 > `claude mcp list` 只显示**当前目录所属项目**的 local 条目 + 全局的 user 条目。
-> 所以 `-s local` 的话，**必须 cd 到 `D:/code/MyLittleProject/emotional-companion` 里**跑
-> `claude mcp list` 才看得到；在别的目录跑会显示「No MCP servers configured」。
+> 所以 `-s local` 的话，**必须 cd 到仓库根目录里**跑 `claude mcp list` 才看得到；
+> 在别的目录跑会显示「No MCP servers configured」。
 > 同名的 local 条目会**遮蔽** user 条目 —— 排查时先确认自己看的是哪一个作用域。
 
 > **REMEMBERME_DATA_DIR 必须给绝对路径**。不设的话会落到 `~/.rememberme/data`，
@@ -242,8 +233,8 @@ claude mcp list        # 应该看到 rememberme ... ✔ Connected
 > 也可以改用源码模式（改代码即时生效，不用重新构建）：
 > ```bash
 > claude mcp add rememberme-dev -s local \
->   -e REMEMBERME_DATA_DIR=D:/code/MyLittleProject/emotional-companion/data \
->   -- bun run D:/code/MyLittleProject/emotional-companion/src/mcp/index.ts
+>   -e REMEMBERME_DATA_DIR=<REPO>/data \
+>   -- bun run <REPO>/src/mcp/index.ts
 > ```
 
 </details>
@@ -251,15 +242,15 @@ claude mcp list        # 应该看到 rememberme ... ✔ Connected
 <details>
 <summary><b>用 npx 装（发布后）</b></summary>
 
+npm 包名是 **`@jokab1074/rememberme`**：
+
 ```bash
-claude mcp add rememberme -s user -- npx -y <npm 包名>
+claude mcp add rememberme -s user -- npx -y @jokab1074/rememberme
 ```
 
-npm 包名与 bin 名一致，所以 `npx -y <包名>` 就能跑。
-发布后的包会带上 `mcpName` 字段，用于 [MCP Registry](https://registry.modelcontextprotocol.io) 的归属校验。
-
-> ⚠️ 包名尚未最终确定（候选：`rememberme` / `rememberme-mcp` / `@sohardtomakeaname/rememberme-mcp`，
-> 三个都确认未被占用），发布前会在 `package.json` 和 `server.json` 里同步定稿。
+发布后的包会带上 `mcpName` 字段（`io.github.SoHardToMakeAName/RememberMe`），
+用于 [MCP Registry](https://registry.modelcontextprotocol.io) 的归属校验；
+仓库根目录的 `server.json` 就是登记用的清单。
 
 **首次使用需要配一次 API key。** MCP server 找配置的顺序是：
 
@@ -287,7 +278,7 @@ npm 安装版落在 `node_modules/` 里，第 3 档找不到你仓库里的 `set
 ```bash
 claude mcp add rememberme -s user \
   -e REMEMBERME_SETTINGS=/path/to/settings.json \
-  -- npx -y <npm 包名>
+  -- npx -y @jokab1074/rememberme
 ```
 
 没配 key 的话，三个读工具照常能用，`record_turn` 会明确告诉你去哪儿配：
@@ -307,8 +298,8 @@ claude mcp add rememberme -s user \
 REMEMBERME_MCP_DISABLE_LLM=1   # 只留 3 个读工具，record_turn 会返回明确错误
 ```
 
-> 架构决策与实验过程见 [`MCP_PLAN.md`](MCP_PLAN.md)（0.5 节），
-> 测试结果见 [`MCP_TEST_REPORT.md`](MCP_TEST_REPORT.md)。
+> MCP server 的实现见 [`src/mcp/`](src/mcp/)，
+> 整体架构见 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
 
 ---
 
@@ -368,10 +359,11 @@ REMEMBERME_MCP_DISABLE_LLM=1   # 只留 3 个读工具，record_turn 会返回�
 ```
 rememberme/
 ├── README.md / README.en.md           ← 用户文档
-├── TECHNICAL.md                        ← 开发者文档（架构、API、模块）
-├── USER_MANUAL.md                      ← CLI 用户手册
-├── STRESS_REPORT.md                    ← 压力测试报告
-├── package.json                        ← scripts: start, dev, repl, web, test
+├── ARCHITECTURE.md                    ← 开发者文档（架构、数据流、模块）
+├── USER_MANUAL.md                     ← CLI 用户手册
+├── package.json                       ← scripts: start, dev, repl, web, mcp, build:mcp
+├── server.json                        ← MCP Registry 登记清单
+├── settings.json.example              ← API key 配置模板（真身 settings.json 不入仓）
 ├── data/                               ← 运行时数据（gitignored）
 │   ├── sessions/                       ← 会话历史
 │   ├── learned-prefs/                  ← 反馈学习数据
@@ -379,6 +371,7 @@ rememberme/
 │   ├── timeline/                       ← 情绪时间线
 │   ├── profile/                        ← 用户画像
 │   └── personality/                    ← OCEAN 人设（per-session）
+├── locales/                           ← i18n 词条（zh-CN / en）
 ├── web/                                ← 网页前端
 │   ├── index.html
 │   ├── style.css
@@ -399,7 +392,6 @@ rememberme/
 │   ├── bigfive.ts                      ← OCEAN 数据模型
 │   ├── persona-init.ts                 ← 人设初始化（描述 → OCEAN）
 │   ├── classify.ts                     ← 情绪识别 + 记忆召回（side-query）
-│   ├── embedded-proactive.ts           ← 主动关心
 │   ├── evolution/                      ← 自进化层（curator / lifecycle）
 │   ├── mcp/                            ← MCP server（npm 包 rememberme）
 │   │   ├── index.ts                    ← 入口（stdio 传输 + stdout 保护）
@@ -412,6 +404,11 @@ rememberme/
 │   └── loop.ts                         ← runTurn 核心
 └── personality/                        ← 性格 markdown 文档
 ```
+
+> **不在仓库里的**：`tests/`（回归测试）、`scripts/`（一键脚本与实验脚本）、
+> `experiments/`（一次性实验脚手架）、`dist/`（构建产物）。
+> 仓库只保留**运行所需和发布所需**的代码。
+
 
 ---
 
@@ -428,7 +425,6 @@ RememberMe 自身**不上传**任何用户数据。所有运行时产物都在 `
 ├── data/timeline/*.jsonl            ← 情绪时间线
 ├── data/reflections/*.md            ← 反思
 ├── data/learned-prefs/*.json        ← 反馈学习观察
-├── data/proactive-state.json        ← 主动关心状态
 └── settings.json                    ← API key（用 .example 占位入仓）
 ```
 
@@ -453,7 +449,7 @@ RememberMe 自身**不上传**任何用户数据。所有运行时产物都在 `
 | HTTP | **Bun.serve** | 内置 SSE 流式支持，零额外依赖 |
 | 前端 | 纯 HTML / CSS / Vanilla JS | 不引入 React/Vue，3 个文件搞定，便于阅读修改 |
 | 存储 | **纯 Markdown + JSON** | 用户数据可读、可手改、可 git diff |
-| 测试 | **bun:test** | 318 个测试，运行时跑，约 100s |
+| 测试 | **bun:test** | 346 个用例，运行时跑，约 80s（测试代码不在公开仓库里） |
 | 大五人格 | 5 维 0-1 数值 + 自由文本偏好 | 学术标准 + LLM 翻译 + 每会话独立存储 |
 | 反馈学习 | LLM 自然语言观察 + 正/负例示例 | 不预定义枚举，开放维度 |
 

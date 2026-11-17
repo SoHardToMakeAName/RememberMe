@@ -2,6 +2,8 @@
 
 [English](README.en.md) | [中文](README.md)
 
+> **RememberMe MCP is live** — see the [MCP server (as a memory backend)](#mcp-server-as-a-memory-backend) section.
+
 > An AI companion that **actually remembers you**. Switch models, switch platforms, close and reopen — it still knows who you are, what you like, and what you've been through.
 
 ---
@@ -19,13 +21,13 @@ This isn't the "start over every time" experience of generic chatbots. RememberM
 - **Remembers what you've been through** — recurring emotional patterns are named and kept (`work-burnout`, `life-aversion` — not just a daily mood log)
 - **Remembers what you talked about** — six months later, the conversation context is still there
 
-Provides both a **web interface** (default) and a **CLI interface**.
+Provides a **web interface** (default), a **CLI interface**, and an **MCP server** — so Claude Code, Claude Desktop, Cursor and other AIs can use your long-term memory directly.
 
 ---
 
 ## 🧠 How it remembers you
 
-> Strictly speaking, RememberMe is not an agent (it doesn't call tools, doesn't plan autonomously). It's a **context orchestrator** — it composes your profile, memories, emotional patterns, and conversation history into a system prompt that's better tuned to *this* moment, so that the same LLM performs noticeably better with you than it does in a generic chat window.
+> Strictly speaking, RememberMe is a **context orchestrator** — it composes your profile, memories, emotional patterns, and conversation history into a system prompt that's better tuned to *this* moment, so that the same LLM performs noticeably better with you than it does in a generic chat window. It doesn't plan or act on its own; when you want *other* AIs to share this memory, the same store is also exposed as an MCP server (see below).
 
 ### Your profile lives in local markdown files
 
@@ -49,8 +51,6 @@ Every entry is a **plain text file** — you can open it in any editor, read it,
 
 ---
 
----
-
 ## Core Features
 
 ### 🧠 Multi-layer memory
@@ -64,9 +64,6 @@ Automatically accumulates 6 dimensions of long-term info: basic info, communicat
 
 ### 🪞 Daily reflection
 The background process reads your emotional timeline, recent memories, and profile, then distills them into "today's insights" — over time, the AI knows you better and better.
-
-### 💡 Proactive care
-When you've been idle past the threshold, the main reply naturally embeds an "oh, by the way..." at the end (referencing real content from your profile), without intruding.
 
 ### 🌊 Big-Five persona (OCEAN)
 No more hardcoded personas. On a new session, you describe the persona you want in one sentence ("Socrates", "gentle older sister", "brutally honest buddy"), and the LLM translates it into 5 numeric dimensions (Openness / Conscientiousness / Extraversion / Agreeableness / Neuroticism) + a free-text preferences string. **Per-session**, persisted to `data/personality/{sessionId}.json`.
@@ -82,6 +79,9 @@ Profile, memories, and reflections are all `.md` files. **No YAML, no JSON confi
 
 ### 🌐 Web interface (default)
 Default launches a Bun.serve() HTTP server. Open `http://localhost:3000` to use. SSE streaming + live status bar.
+
+### 🔌 MCP server (as a memory backend)
+The same memory store is also packaged as an MCP server, so any MCP client — Claude Code, Claude Desktop, Cursor, VS Code — can read and write your long-term memory. Four tools: three reads (`list_memories` / `read_memory` / `read_profile`) and one write (`record_turn`). Details in the [MCP server](#mcp-server-as-a-memory-backend) section below.
 
 ---
 
@@ -161,7 +161,6 @@ bun run repl
 | `/learner` / `/learner reset` | Persona learner status |
 | `/reflect [days]` | Manually trigger reflection (default: 7-day lookback) |
 | `/reflections list` / `read <date>` | Browse reflection history |
-| `/proactive status\|trigger\|reset` | Proactive conversation state |
 | `/stats` | Session stats (with compact recommendation) |
 | `/compact` | Manually compact history |
 | `/quiet` | Toggle `[emotion: ...]` debug labels |
@@ -176,18 +175,112 @@ bun run repl
 - Chat on CLI → quit web → restart web → web loads the same session
 - Switch sessions with `/session switch <id>` (CLI) or the left sidebar (web)
 
-### Proactive care
+### MCP server (as a memory backend)
 
-Both web and CLI embed an "oh, by the way..." at the end of the main reply when the user has been idle past the threshold (default 4h).
+Mount RememberMe on any MCP client (Claude Code / Claude Desktop / Cursor / VS Code …) and **other AIs** get your long-term memory too.
+
+Four tools:
+
+| Tool | Type | What it does |
+|---|---|---|
+| `list_memories` | read | List all memories (name + description + date) |
+| `read_memory` | read | Fetch one memory in full |
+| `read_profile` | read | Read the 6 sections of the user profile |
+| `record_turn` | **write** | The host says "this turn is worth keeping"; the memory system decides what to write |
+
+**Design**: the host model only decides *whether* a turn is worth recording. Extraction and pattern induction run server-side using RememberMe's original rubric, so the **type judgment and pattern quality are identical** to the web/CLI paths (same `extractMemoryCandidates()`).
+
+<details>
+<summary><b>Use it from your local Claude Code (development build)</b></summary>
 
 ```bash
-export EC_PROACTIVE=1                  # enable embedded proactive (default off)
-export EC_PROACTIVE_IDLE_HOURS=4       # idle threshold
-export EC_PROACTIVE_MAX_PER_DAY=2      # daily cap
-export EC_PROACTIVE_QUIET_START=23     # quiet hours start (24h)
-export EC_PROACTIVE_QUIET_END=8        # quiet hours end
-export EC_PROACTIVE_COOLDOWN_MIN=60    # min interval between proactive messages
+# 1. Build (re-run after changing src/mcp/)
+bun install
+bun run build:mcp
+
+# 2. Register with Claude Code (-s local = this project only, stored in ~/.claude.json)
+#    Replace <REPO> with your absolute repo path
+claude mcp add rememberme -s local \
+  -e REMEMBERME_DATA_DIR=<REPO>/data \
+  -- node <REPO>/dist/mcp/index.js
+
+# 3. Verify
+claude mcp list        # should show rememberme ... ✔ Connected
 ```
+
+Then **restart Claude Code** (MCP tools are loaded at session start). The tools appear as `mcp__rememberme__list_memories` and friends.
+
+Swap `-s local` for `-s user` to make it available in every project.
+
+> ⚠️ **Scope decides where it works**: `claude mcp list` only shows the local entry of the project you're currently in, plus global user entries. With `-s local` you must `cd` into the repo root to see it; from anywhere else it prints "No MCP servers configured". A local entry with the same name **shadows** the user entry — check which scope you're looking at when debugging.
+>
+> **`REMEMBERME_DATA_DIR` must be an absolute path.** Without it the server falls back to `~/.rememberme/data` and won't see this repo's `data/`. Resolution order: `REMEMBERME_DATA_DIR` → `dataDir` in `settings.json` → `~/.rememberme/data`.
+>
+> You can also run straight from source (changes take effect immediately, no rebuild):
+> ```bash
+> claude mcp add rememberme-dev -s local \
+>   -e REMEMBERME_DATA_DIR=<REPO>/data \
+>   -- bun run <REPO>/src/mcp/index.ts
+> ```
+
+</details>
+
+<details>
+<summary><b>Install with npx (after publish)</b></summary>
+
+The npm package name is **`@jokab1074/rememberme`**:
+
+```bash
+claude mcp add rememberme -s user -- npx -y @jokab1074/rememberme
+```
+
+The published package carries an `mcpName` field (`io.github.SoHardToMakeAName/RememberMe`) used for [MCP Registry](https://registry.modelcontextprotocol.io) ownership verification; the manifest is the `server.json` at the repo root.
+
+**First run needs an API key.** The MCP server looks for configuration in this order:
+
+```
+1. REMEMBERME_SETTINGS environment variable
+2. ~/.rememberme/settings.json
+3. <package dir>/../settings.json
+```
+
+An npm install lives in `node_modules/`, so step 3 won't find your repo's `settings.json` — only `~/.rememberme/settings.json` is left. Create it (see `settings.json.example` for the format):
+
+```json
+{
+  "env": {
+    "ANTHROPIC_API_KEY": "sk-ant-your-key",
+    "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
+    "ANTHROPIC_MODEL": "claude-sonnet-4-5-20250929"
+  }
+}
+```
+
+Or point it at a config you already have:
+
+```bash
+claude mcp add rememberme -s user \
+  -e REMEMBERME_SETTINGS=/path/to/settings.json \
+  -- npx -y @jokab1074/rememberme
+```
+
+Without a key the three read tools still work, and `record_turn` tells you exactly where to configure it:
+
+> Unable to extract memory: no usable LLM config.
+> No API key configured. Set ANTHROPIC_API_KEY in ~/.rememberme/settings.json or the project settings.json…
+
+**Data directory**: the npm build defaults to `~/.rememberme/data` (memories in `~/.rememberme/data/memory/`, profile at `~/.rememberme/data/profile/PROFILE.md`) — the coherent location for a globally-installed npm package. Point `REMEMBERME_DATA_DIR` at an absolute path to change it.
+
+</details>
+
+**Read-only mode** (don't want the server calling an LLM / spending quota):
+
+```bash
+REMEMBERME_MCP_DISABLE_LLM=1   # leaves the 3 read tools; record_turn returns a clear error
+```
+
+> The MCP server implementation lives in [`src/mcp/`](src/mcp/);
+> see [`ARCHITECTURE.md`](ARCHITECTURE.md) for the overall design.
 
 ---
 
@@ -247,10 +340,11 @@ These observations **don't write back to the persona JSON** — they accumulate 
 ```
 rememberme/
 ├── README.md / README.en.md           ← user docs
-├── TECHNICAL.md                        ← developer docs (architecture, API, modules)
-├── USER_MANUAL.md                      ← CLI user manual
-├── STRESS_REPORT.md                    ← stress test report
-├── package.json                        ← scripts: start, dev, repl, web, test
+├── ARCHITECTURE.md                    ← developer docs (architecture, data flow, modules)
+├── USER_MANUAL.md                     ← CLI user manual
+├── package.json                       ← scripts: start, dev, repl, web, mcp, build:mcp
+├── server.json                        ← MCP Registry manifest
+├── settings.json.example              ← API key template (the real settings.json is never committed)
 ├── data/                               ← runtime data (gitignored)
 │   ├── sessions/                       ← session history
 │   ├── learned-prefs/                  ← feedback learning data
@@ -258,6 +352,7 @@ rememberme/
 │   ├── timeline/                       ← emotional timeline
 │   ├── profile/                        ← user profile
 │   └── personality/                    ← OCEAN personas (per-session)
+├── locales/                           ← i18n strings (zh-CN / en)
 ├── web/                                ← web frontend
 │   ├── index.html
 │   ├── style.css
@@ -278,7 +373,6 @@ rememberme/
 │   ├── bigfive.ts                      ← OCEAN data model
 │   ├── persona-init.ts                 ← persona init (description → OCEAN)
 │   ├── classify.ts                     ← emotion detection + memory recall (side-query)
-│   ├── embedded-proactive.ts           ← proactive care
 │   ├── evolution/                      ← self-evolution layer (curator / lifecycle)
 │   ├── mcp/                            ← MCP server (npm package: rememberme)
 │   │   ├── index.ts                    ← entry (stdio transport + stdout guard)
@@ -291,6 +385,11 @@ rememberme/
 │   └── loop.ts                         ← runTurn core
 └── personality/                        ← persona markdown docs
 ```
+
+> **Not in the repo**: `tests/` (regression tests), `scripts/` (one-off and experiment scripts),
+> `experiments/` (throwaway experiment scaffolding), `dist/` (build output).
+> The repo keeps only what's needed to run and to publish.
+
 
 ---
 
@@ -307,7 +406,6 @@ RememberMe itself uploads nothing. All runtime artifacts live in `data/`, which 
 ├── data/timeline/*.jsonl            ← emotional timeline
 ├── data/reflections/*.md            ← daily reflections
 ├── data/learned-prefs/*.json        ← feedback-learned observations
-├── data/proactive-state.json        ← proactive-care state
 └── settings.json                    ← API key (use .example placeholder in repo)
 ```
 
@@ -322,7 +420,6 @@ RememberMe itself uploads nothing. All runtime artifacts live in `data/`, which 
 - Picking a self-hosted / local model (e.g. Ollama) eliminates this external dependency entirely
 
 ---
----
 
 ## 🛠 Tech stack
 
@@ -333,7 +430,7 @@ RememberMe itself uploads nothing. All runtime artifacts live in `data/`, which 
 | HTTP | **Bun.serve** | Built-in SSE streaming, zero extra deps |
 | Frontend | Plain HTML / CSS / Vanilla JS | No React/Vue, 3 files, easy to read/modify |
 | Storage | **Pure Markdown + JSON** | User data readable, hand-editable, git-diffable |
-| Tests | **bun:test** | 318 tests, runs at runtime, ~100s |
+| Tests | **bun:test** | 346 cases, runs at runtime, ~80s (test code is not in the public repo) |
 | Big Five persona | 5 dimensions 0-1 + free-text preferences | Academic standard + LLM translation + per-session storage |
 | Feedback learning | LLM free-text observations + positive/negative examples | No predefined enums, open dimensions |
 
