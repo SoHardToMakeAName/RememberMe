@@ -2,6 +2,9 @@
 
 [English](README.en.md) | [中文](README.md)
 
+[![CI](https://github.com/SoHardToMakeAName/RememberMe/actions/workflows/ci.yml/badge.svg)](https://github.com/SoHardToMakeAName/RememberMe/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@jokab1074/rememberme.svg)](https://www.npmjs.com/package/@jokab1074/rememberme)
+
 > **RememberMe MCP is live** — see the [MCP server (as a memory backend)](#mcp-server-as-a-memory-backend) section.
 
 > An AI companion that **actually remembers you**. Switch models, switch platforms, close and reopen — it still knows who you are, what you like, and what you've been through.

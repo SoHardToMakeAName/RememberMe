@@ -2,6 +2,9 @@
 
 [English](README.en.md) | [中文](README.md)
 
+[![CI](https://github.com/SoHardToMakeAName/RememberMe/actions/workflows/ci.yml/badge.svg)](https://github.com/SoHardToMakeAName/RememberMe/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@jokab1074/rememberme.svg)](https://www.npmjs.com/package/@jokab1074/rememberme)
+
 > **RememberMe MCP 已经上线** —— 详见 [MCP Server（记忆后端形态）](#mcp-server记忆后端形态) 一节。
 
 > 一个**真的记得你**的 AI 陪伴。换模型、换平台、关掉再开，它依然知道你是谁、你喜欢什么、你经历过什么。
