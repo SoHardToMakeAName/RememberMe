@@ -373,6 +373,27 @@ EC_COMPACT_TRIGGER_AT=10 bun run start
 
 CLI 里 `/quiet` 命令也切换。
 
+### 网页版的网络暴露面
+
+网页版默认**只监听 127.0.0.1**（本机才能访问）。
+
+| 变量 | 默认值 | 含义 |
+|---|---|---|
+| `PORT` | 3000 | 监听端口 |
+| `HOST` | `127.0.0.1` | 监听地址。改成 `0.0.0.0` 才会对局域网开放 |
+| `EC_WEB_TOKEN` | （无） | 访问令牌。设了之后所有 `/api/*` 都要 `Authorization: Bearer <token>` |
+| `EC_WEB_ALLOW_UNAUTHENTICATED` | 0 | 设 1 才允许「对外监听且没有令牌」 |
+
+> ⚠️ **`HOST` 改成非回环地址（`0.0.0.0` / 局域网 IP）而不设 `EC_WEB_TOKEN` 时，服务器会拒绝启动。**
+> 因为 `/api/send` 会用你的 API key 调 LLM —— 局域网里任何人都能来烧你的额度。
+> 这不是"泄露 key"，是"额度被白嫖"。
+>
+> 对局域网开放的安全用法：
+> ```bash
+> HOST=0.0.0.0 EC_WEB_TOKEN=$(openssl rand -hex 16) bun run start
+> ```
+> 浏览器第一次访问会弹窗要令牌，输一次之后存在 `localStorage` 里。
+
 ### 用不同模型
 
 任何 OpenAI 兼容端点都能用。修改 `settings.json`：

@@ -49,6 +49,21 @@ Every entry is a **plain text file** — you can open it in any editor, read it,
 - ✅ **Local data**: your profile, memories, reflections, and feedback-learned observations only live in `data/`, covered by `.gitignore`. RememberMe does not upload them to any RememberMe-controlled server.
 - ⚠️ **LLM calls**: to work, RememberMe has to send conversation content to the LLM provider you configured (Anthropic / DeepSeek / OpenAI / etc.). RememberMe itself does not store conversations outside your local disk, but **you have to trust your LLM provider** — this is a constraint shared by every LLM-based application.
 
+### 🌐 The web UI binds to localhost only
+
+The web server binds **127.0.0.1** by default, so other devices on the same WiFi / LAN **cannot reach it**.
+(Earlier versions omitted `hostname`, and Bun defaults to `0.0.0.0` — reachable from the LAN, where `/api/send` spends your API key on whoever asks. Tightened in v0.22.0.)
+
+| What you want | How |
+|---|---|
+| Local use only (default) | nothing to set |
+| Use it from another device on your LAN | `HOST=0.0.0.0 EC_WEB_TOKEN=your-token bun run start` |
+| Genuinely open with no auth (not recommended) | `HOST=0.0.0.0 EC_WEB_ALLOW_UNAUTHENTICATED=1 bun run start` |
+
+- With `EC_WEB_TOKEN` set, every `/api/*` route requires `Authorization: Bearer <token>`; the browser asks for the token once and keeps it in `localStorage`
+- **Listening on a non-loopback address without a token → the server refuses to start** (better to fail than to silently hand your key away)
+- Every `/api/*` route also checks the `Origin` header, blocking browser-originated cross-site requests (CSRF)
+
 ---
 
 ## Core Features

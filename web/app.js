@@ -12,6 +12,43 @@ const modelDisplayEl = $("#model-display");
 const sessionListEl = $("#session-list");
 const sessionNewBtn = $("#session-new");
 
+// ---------------------------------------------------------------------
+// 访问令牌（只有服务端设了 EC_WEB_TOKEN 时才需要）
+//
+// 场景：HOST=0.0.0.0 对局域网开放时，服务端会要求
+//       Authorization: Bearer <token>。第一次遇到 401 会弹窗要一次，
+//       存进 localStorage，之后所有请求自动带上。
+//       默认的 127.0.0.1 模式完全用不到这段。
+// ---------------------------------------------------------------------
+const TOKEN_KEY = "rememberme_token";
+
+function getToken() {
+  try { return localStorage.getItem(TOKEN_KEY) || ""; } catch { return ""; }
+}
+function setToken(t) {
+  try {
+    if (t) localStorage.setItem(TOKEN_KEY, t);
+    else localStorage.removeItem(TOKEN_KEY);
+  } catch { /* 隐私模式下 localStorage 可能不可用 */ }
+}
+
+/** fetch 的包装：自动带上令牌，遇到 401 提示一次并重试。 */
+async function authFetch(url, opts = {}) {
+  const headers = new Headers(opts.headers || {});
+  const token = getToken();
+  if (token) headers.set("Authorization", "Bearer " + token);
+
+  const resp = await fetch(url, { ...opts, headers });
+  if (resp.status !== 401) return resp;
+
+  // 401 → 第一次要令牌
+  const input = window.prompt("本机需要访问令牌（服务端 EC_WEB_TOKEN）：", token);
+  if (!input || !input.trim()) return resp;
+  setToken(input.trim());
+  headers.set("Authorization", "Bearer " + input.trim());
+  return fetch(url, { ...opts, headers });
+}
+
 let busy = false;
 let currentSessionId = null;
 
@@ -96,7 +133,7 @@ function renderSessions(sessions, currentId) {
 
 async function loadSessions() {
   try {
-    const resp = await fetch("/api/sessions");
+    const resp = await authFetch("/api/sessions");
     if (!resp.ok) throw new Error("HTTP " + resp.status);
     const data = await resp.json();
     renderSessions(data.sessions, data.currentSessionId);
@@ -110,7 +147,7 @@ async function loadSessionById(id) {
   if (id === currentSessionId) return;
   try {
     setStatus("加载对话…");
-    const resp = await fetch("/api/session/load/" + encodeURIComponent(id), {
+    const resp = await authFetch("/api/session/load/" + encodeURIComponent(id), {
       method: "POST",
     });
     if (!resp.ok) throw new Error("HTTP " + resp.status);
@@ -129,7 +166,7 @@ async function loadSessionById(id) {
 sessionNewBtn.addEventListener("click", async () => {
   try {
     setStatus("新建对话…");
-    const resp = await fetch("/api/session/new", { method: "POST" });
+    const resp = await authFetch("/api/session/new", { method: "POST" });
     if (!resp.ok) throw new Error("HTTP " + resp.status);
     const data = await resp.json();
     currentSessionId = data.sessionId;
@@ -147,7 +184,7 @@ async function deleteSessionById(id, title) {
   const label = title ? `「${title}」` : "此对话";
   if (!confirm(`确定删除${label}？此操作不可撤销。`)) return;
   try {
-    const resp = await fetch("/api/session/" + encodeURIComponent(id), {
+    const resp = await authFetch("/api/session/" + encodeURIComponent(id), {
       method: "DELETE",
     });
     if (!resp.ok) throw new Error("HTTP " + resp.status);
@@ -168,7 +205,7 @@ async function deleteSessionById(id, title) {
 // === 从后端拉当前消息，重渲染 ===
 async function reloadMessages() {
   try {
-    const resp = await fetch("/api/messages");
+    const resp = await authFetch("/api/messages");
     if (!resp.ok) return;
     const data = await resp.json();
     renderMessages(data.messages || []);
@@ -192,7 +229,7 @@ async function promptPersonaInit(sessionId) {
 
   setStatus("正在生成大五人设...");
   try {
-    const resp = await fetch(`/api/session/${encodeURIComponent(sessionId)}/persona/init`, {
+    const resp = await authFetch(`/api/session/${encodeURIComponent(sessionId)}/persona/init`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ description: description || "" }),
@@ -227,7 +264,7 @@ function renderMessages(messages) {
 // === 启动时加载人格/模型/session/消息 ===
 async function initControls() {
   try {
-    const resp = await fetch("/api/state");
+    const resp = await authFetch("/api/state");
     if (resp.ok) {
       const state = await resp.json();
       if (state.model && modelDisplayEl) modelDisplayEl.textContent = state.model;
@@ -260,7 +297,7 @@ composerEl.addEventListener("submit", async (e) => {
 
   const startTime = Date.now();
   try {
-    const resp = await fetch("/api/send", {
+    const resp = await authFetch("/api/send", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: text }),
@@ -339,7 +376,7 @@ composerEl.addEventListener("submit", async (e) => {
 $("#clear").addEventListener("click", async () => {
   if (!confirm("归档当前对话并开始新对话？")) return;
   try {
-    const resp = await fetch("/api/session/new", { method: "POST" });
+    const resp = await authFetch("/api/session/new", { method: "POST" });
     if (!resp.ok) throw new Error("HTTP " + resp.status);
     const data = await resp.json();
     currentSessionId = data.sessionId;

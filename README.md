@@ -52,6 +52,21 @@
 - ✅ **本地数据**：你的画像、记忆、反思、反馈学习记录都只在 `data/` 目录下，`.gitignore` 已经覆盖，RememberMe 不主动上传到任何 RememberMe 控制的服务器
 - ⚠️ **LLM 调用**：要工作就必须把对话内容发到你配置的 LLM provider（Anthropic / DeepSeek / OpenAI 等）。RememberMe 本身不存储这些对话之外的位置，但**你信任你的 LLM provider 这一点是前提** —— 这是所有基于 LLM 的应用都共有的限制
 
+### 🌐 网页版默认只监听本机
+
+网页版默认绑定 **127.0.0.1**，同一个 WiFi / 局域网里的其他设备**访问不到**。
+（早期版本不写 `hostname`，Bun 默认绑 `0.0.0.0` —— 局域网可见，而 `/api/send` 会直接用你的 API key 调 LLM，等于把额度送人。v0.22.0 起默认已收紧。）
+
+| 需求 | 怎么做 |
+|---|---|
+| 只在本机用（默认） | 什么都不用设 |
+| 要在局域网的其他设备上用 | `HOST=0.0.0.0 EC_WEB_TOKEN=你的令牌 bun run start` |
+| 确实要裸奔（不建议） | `HOST=0.0.0.0 EC_WEB_ALLOW_UNAUTHENTICATED=1 bun run start` |
+
+- 设了 `EC_WEB_TOKEN` 后，所有 `/api/*` 都要求 `Authorization: Bearer <token>`；浏览器第一次访问会弹窗要一次令牌，之后存在 `localStorage`
+- **对外监听却没有令牌 → 服务器拒绝启动**（宁可起不来，也不默默把 key 送人）
+- 所有 `/api/*` 还会检查 `Origin`，挡掉浏览器发起的跨站请求（CSRF）
+
 ---
 
 ## 核心特性

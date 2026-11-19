@@ -23,10 +23,10 @@ import { z } from "zod";
 import {
   extractMemoryCandidates,
   saveMemoryCandidate,
-  type AnyMemoryCandidate,
 } from "../../memory-extract.ts";
 import { maybeUpdateProfile } from "../../profile.ts";
-import { scanMemory } from "../../memory.ts";
+// AnyMemoryCandidate 定义在 memory.ts（memory-extract.ts 只是 import 它，没有再导出）
+import { scanMemory, type AnyMemoryCandidate } from "../../memory.ts";
 import { paths } from "../config.ts";
 import { getProvider, providerStatus } from "../provider.ts";
 import { log } from "../logger.ts";

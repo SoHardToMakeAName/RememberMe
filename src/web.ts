@@ -33,6 +33,29 @@ const DEFAULT_USER_ID = "default";
 /** 默认人设文件（personality/ 目录下） */
 const DEFAULT_PERSONA_FILE = "default.md";
 
+// =====================================================================
+// 网络暴露面 —— 绑定地址 + 鉴权
+//
+// ⚠️ 为什么必须有这一层（v0.22.0 修复）：
+//
+//   Bun.serve 不写 hostname 时**默认绑 0.0.0.0**（所有网卡）。
+//   于是同一个 WiFi / 局域网里任何设备都能访问这个服务，
+//   而 POST /api/send 会直接用你的 API key 调 LLM ——
+//   key 不会"泄露"，但额度会被别人烧掉。
+//   而且 /api/messages、/api/sessions 会把你的对话历史读走，
+//   /api/clear 还能把你的会话删了。
+//
+//   现在的策略：
+//   1. 默认只监听 127.0.0.1（要放开：HOST=0.0.0.0）
+//   2. 一旦监听**非回环**地址，必须配 EC_WEB_TOKEN，否则**拒绝启动**
+//      （fail-closed：宁可起不来，也不要默默把 key 送人）
+//   3. 所有 /api/* 做同源检查，挡浏览器发起的 CSRF
+//
+// 纯函数放在 src/web-security.ts —— src/web.ts 一被 import 就会启动服务器，
+// 不能在单元测试里直接引。
+// =====================================================================
+import { isLoopbackHost, safeEqual } from "./web-security.ts";
+
 interface AppState {
   provider: ModelProvider;
   userId: string;
@@ -254,6 +277,33 @@ const FAVICON_PNG = new Uint8Array([
 
 async function main() {
   const port = parseInt(process.env.PORT ?? "3000", 10);
+  /** 监听地址：默认只绑本机（原来不写 = 0.0.0.0 = 局域网可见） */
+  const hostname = process.env.HOST?.trim() || "127.0.0.1";
+  /** 访问令牌：对外监听时必填 */
+  const authToken = process.env.EC_WEB_TOKEN?.trim() || "";
+
+  // ---- fail-closed：对外监听却没有令牌 → 拒绝启动 ----
+  if (!isLoopbackHost(hostname) && !authToken) {
+    if (process.env.EC_WEB_ALLOW_UNAUTHENTICED === "1") {
+      console.warn(
+        "\n  ⚠️ [安全警告] 正在对外监听且**没有**访问令牌。\n" +
+          "     任何能连到这台机器的人都能调用 /api/send —— 用的是你的 API key。\n" +
+          "     强烈建议设置 EC_WEB_TOKEN。\n",
+      );
+    } else {
+      console.error(
+        "\n  ✖ [安全] 拒绝启动。\n" +
+          `     HOST=${hostname} 是非回环地址（对外可见），但没有设置 EC_WEB_TOKEN。\n` +
+          "     这等于把你的 API key 暴露给同一个网络里的任何人。\n\n" +
+          "     三选一：\n" +
+          "       1) 只在本机用        → 不设 HOST（默认 127.0.0.1）\n" +
+          "       2) 对局域网开放 + 鉴权 → HOST=0.0.0.0 EC_WEB_TOKEN=你的令牌\n" +
+          "       3) 确实要裸奔        → EC_WEB_ALLOW_UNAUTHENTICATED=1（危险）\n",
+      );
+      process.exit(1);
+    }
+  }
+
   const state = await bootstrap();
 
   // 剥掉 LLM 偶尔漏出来的 markdown（**加粗** *斜体* `代码` # 标题）
@@ -272,12 +322,54 @@ async function main() {
 
   const server = Bun.serve({
     port,
+    // ⚠️ 必须显式指定。不写 hostname 时 Bun 默认绑 0.0.0.0（所有网卡），
+    //    局域网里任何设备都能访问 → /api/send 会烧掉你的 API key 额度。
+    hostname,
     // LLM 流式回复经常超过 10s，Bun 默认 idleTimeout=10s 会强断
     // 拉满到 255s（max）
     idleTimeout: 255,
     async fetch(req) {
       const url = new URL(req.url);
       const path = url.pathname;
+
+      // ---- /api/* 的两道防线：同源检查 + 令牌鉴权 ----
+      if (path.startsWith("/api/")) {
+        // ① 同源检查（挡浏览器 CSRF）
+        //    浏览器发起的跨站请求会带 Origin；curl / 脚本不带 Origin，放行。
+        const origin = req.headers.get("origin");
+        if (origin) {
+          let originHost = "";
+          try {
+            originHost = new URL(origin).host;
+          } catch {
+            originHost = "";
+          }
+          const hostHeader = req.headers.get("host") ?? "";
+          if (originHost && originHost !== hostHeader) {
+            return new Response(
+              JSON.stringify({ error: "Forbidden: cross-origin request" }),
+              { status: 403, headers: { "Content-Type": "application/json" } },
+            );
+          }
+        }
+
+        // ② 令牌鉴权（对外监听时必须）
+        if (authToken) {
+          const bearer = (req.headers.get("authorization") ?? "")
+            .replace(/^Bearer\s+/i, "")
+            .trim();
+          const provided = bearer || (url.searchParams.get("token") ?? "").trim();
+          if (!safeEqual(provided, authToken)) {
+            return new Response(JSON.stringify({ error: "Unauthorized" }), {
+              status: 401,
+              headers: {
+                "Content-Type": "application/json",
+                "WWW-Authenticate": 'Bearer realm="rememberme"',
+              },
+            });
+          }
+        }
+      }
 
       // 静态文件
       if (req.method === "GET") {
@@ -610,7 +702,15 @@ async function main() {
   });
 
   console.log(`\n  RememberMe 网页版`);
-  console.log(`  → http://localhost:${server.port}\n`);
+  const shownHost = isLoopbackHost(hostname) ? "localhost" : hostname;
+  console.log(`  → http://${shownHost}:${server.port}\n`);
+  if (authToken) {
+    console.log(`  🔒 已启用访问令牌（/api/* 需要 Authorization: Bearer <token>）`);
+  }
+  if (!isLoopbackHost(hostname)) {
+    console.log(`  ⚠️ 对外监听中：${hostname} —— 局域网/公网可达`);
+  }
+  console.log("");
   const total = state.personaLearner.signalCounts.positive +
                 state.personaLearner.signalCounts.negative +
                 state.personaLearner.signalCounts.neutral;
