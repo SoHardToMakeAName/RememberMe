@@ -542,11 +542,20 @@ export async function syncFromSources(
           .map((p) => `- ${p}`)
           .join("\n");
       }
+      // 段 6：只刷新「趋势」部分，**保留带日期的事件行**。
+      // 早期实现是整段覆盖，把 mergeProfileUpdate 追加的 "- (日期) ..." 行一起冲掉，
+      // 导致段 6 永远留不下累积记录（v0.22.1 修复）。
       if (summary.recentChanges.length > 0) {
-        profile.sections["近期变化"] = [
-          "**最近变化趋势：**",
-          ...summary.recentChanges.map((c) => `- ${c}`),
-        ].join("\n");
+        const { text, changed: recentChanged } = refreshRecentTrends(
+          profile.sections["近期变化"] ?? "",
+          [
+            "**最近变化趋势：**",
+            ...summary.recentChanges.map((c) => `- ${c}`),
+          ].join("\n"),
+        );
+        if (recentChanged) {
+          profile.sections["近期变化"] = text;
+        }
       }
       return;
     } catch {
@@ -608,9 +617,15 @@ async function syncFromSourcesFallback(
     profile.sections["长期情绪基线"] = lines.join("\n");
   }
 
-  // 段 6：从 timeline
+  // 段 6：从 timeline —— 同样只刷新趋势部分，保留带日期的事件行（v0.22.1 修复）
   if (timelineSummary) {
-    profile.sections["近期变化"] = timelineSummary;
+    const { text, changed: recentChanged } = refreshRecentTrends(
+      profile.sections["近期变化"] ?? "",
+      timelineSummary,
+    );
+    if (recentChanged) {
+      profile.sections["近期变化"] = text;
+    }
   }
 }
 
@@ -888,6 +903,76 @@ function mergeBasicSection(
  * - 段 6 近期变化：append + 日期 + 滚动上限 30
  * - 段 3/4/5：syncFromSources 摘要（这里不动）
  */
+/** 段 6 里「带日期的事件行」长什么样：`- (2026-11-17) xxx` */
+const DATED_LINE_RE = /^\s*-\s*\(\d{4}-\d{2}-\d{2}\)/;
+
+/**
+ * 段 6 的**保留式合并**（v0.22.1 修复）。
+ *
+ * 背景 —— 段 6 有两个写入者，语义互相打架：
+ *   - mergeProfileUpdate：追加 `- (日期) 内容` 行
+ *   - syncFromSources：用 LLM 摘要**整段覆盖**
+ * 结果是这里追加的行活不过下一次画像加载（被 sync 抹掉），
+ * 段 6 里从来留不下任何累积记录。
+ *
+ * 这与 v0.21.1 修的「段 1 一次 merge 丢 27 行历史」是同一类问题，
+ * 只是段 1 当初改成了保留式合并，段 6 一直没改。
+ *
+ * 现在：
+ * - 已有的行**一行都不删**
+ * - 新内容按 `- (日期) 内容` 追加到末尾
+ * - 内容（忽略空白）已存在 → 不重复追加
+ * - 上限 40 行，防止无限增长
+ */
+function mergeRecentSection(
+  current: string,
+  incoming: string,
+  dateStr: string,
+): { text: string; changed: boolean } {
+  const isEmpty =
+    !current.trim() ||
+    current === "（暂无）" ||
+    current.startsWith("（暂无");
+  const lines = isEmpty
+    ? []
+    : current.split("\n").filter((l) => l.trim());
+
+  const content = incoming.trim();
+  if (!content) return { text: current, changed: false };
+
+  // 去重：内容（忽略空白）已经出现在某一行里 → 不重复追加
+  const norm = (s: string) => s.replace(/\s+/g, "");
+  const key = norm(content).slice(0, 30);
+  if (key && lines.some((l) => norm(l).includes(key))) {
+    return { text: current, changed: false };
+  }
+
+  lines.push(`- (${dateStr}) ${content}`);
+  return { text: lines.slice(-40).join("\n"), changed: true };
+}
+
+/**
+ * 用新的摘要刷新段 6 的「趋势部分」，但**保留带日期的事件行**。
+ *
+ * 段 6 里其实混着两类内容：
+ *   - `**最近变化趋势：**` 下面的趋势 bullet  → LLM 摘要，可以刷新
+ *   - `- (YYYY-MM-DD) ...` 的事件行          → merge 逐次追加，**不能丢**
+ *
+ * 早期实现是整段覆盖，把两类一起冲掉（v0.22.1 修复）。
+ * 这里拆开处理：趋势部分整块替换，日期行原样留在后面。
+ */
+function refreshRecentTrends(
+  current: string,
+  newBody: string,
+): { text: string; changed: boolean } {
+  const dated = current
+    .split("\n")
+    .filter((l) => DATED_LINE_RE.test(l));
+  const body = newBody.split("\n").filter((l) => l.trim());
+  const next = [...body, ...dated].join("\n");
+  return { text: next, changed: next !== current };
+}
+
 export function mergeProfileUpdate(
   profile: Profile,
   update: ProfileUpdate,
@@ -927,19 +1012,17 @@ export function mergeProfileUpdate(
     }
   }
 
-  // 段 6 近期变化
+  // 段 6 近期变化 —— 保留式合并，不丢任何已有行（v0.22.1 修复）
   const recentIncoming = update["近期变化"];
   if (recentIncoming && recentIncoming.trim()) {
     const current = profile.sections["近期变化"] ?? "";
-    const incoming = recentIncoming.trim();
-    const isEmpty = !current.trim() || current === "（暂无）" || current.startsWith("（暂无");
-    const isDup = current.replace(/\s+/g, "").includes(incoming.replace(/\s+/g, "").slice(0, 30));
-    if (!isEmpty && isDup) {
-      // dup
-    } else {
-      const lines = isEmpty ? [] : current.split("\n").filter((l) => l.trim());
-      lines.push(`- (${dateStr}) ${incoming}`);
-      profile.sections["近期变化"] = lines.slice(-30).join("\n");
+    const { text, changed: recentChanged } = mergeRecentSection(
+      current,
+      recentIncoming,
+      dateStr,
+    );
+    if (recentChanged) {
+      profile.sections["近期变化"] = text;
       changed = true;
     }
   }
@@ -979,8 +1062,12 @@ export async function maybeUpdateProfile(
       changed = mergeProfileUpdate(profile, update);
     }
 
-    // sync 已由 loadProfile 触发，再触发一次确保最新 LLM 摘要
-    await syncFromSources(profile, dataDir, { ...options, provider });
+    // sync 已由上面的 loadProfile 触发过（它内部就会调 syncFromSources），
+    // 这里**不再重复调**：
+    //   - 重复调不会带来更新的摘要（merge 期间没有新记忆产生，段 3/4/5 的输入没变）
+    //   - 反而多花一次 LLM 调用
+    //   - 而且它会覆盖段 6 —— 早期实现里就是这一步把 mergeProfileUpdate
+    //     刚追加的 "- (日期) ..." 行当场抹掉的（v0.22.1 修复）
 
     await saveProfile(profile);
 
