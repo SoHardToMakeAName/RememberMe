@@ -36,13 +36,61 @@ const EXTRACT_BUFFER_THRESHOLD = 2;
 /** 缓冲上限（没写出时保留，防止无限增长） */
 const MAX_BUFFER = 10;
 
-type PendingTurn = {
+export type PendingTurn = {
   userMessage: string;
   assistantReply?: string;
   emotion?: string;
   intensity?: number;
   trigger?: string;
 };
+
+/**
+ * 把宿主已经判断过的情绪信息格式化成一行上下文。
+ *
+ * 这三个字段原本收了却**从头到尾没被用过** —— 抽取器完全不知道宿主已经判断过一次
+ * 情绪，只能自己从原文重新猜一遍。而抽取 rubric 要的字段恰好就是它们：
+ *   - emotion   → emotion 条目的「manifestation」（情绪类型 + 强度描述）
+ *   - trigger   → emotion 条目的「trigger」（触发条件）
+ *   - intensity → 强度描述
+ * 宿主判断一次、抽取器直接用，不用重复劳动（v0.22.1）。
+ *
+ * 单独放一条 [system] 消息，而不是拼进用户原话 ——
+ * 用户原话要保持原样，抽取 rubric 要求「保留用户原话片段」当证据，
+ * 拼进去容易被当成用户说的话。
+ */
+export function formatEmotionHints(p: PendingTurn): string | null {
+  const parts: string[] = [];
+  if (p.emotion?.trim()) parts.push(`情绪=${p.emotion.trim()}`);
+  if (typeof p.intensity === "number" && Number.isFinite(p.intensity)) {
+    parts.push(`强度=${p.intensity.toFixed(1)}`);
+  }
+  if (p.trigger?.trim()) parts.push(`触发=${p.trigger.trim()}`);
+  if (parts.length === 0) return null;
+  return `[宿主已判断本轮情绪] ${parts.join("，")}`;
+}
+
+/**
+ * 把缓冲里的轮次拼成抽取用的对话。
+ *
+ * 宿主判断过的情绪信息作为独立的 [system] 一行插在对应用户消息之前，
+ * 用户原话保持原样。
+ */
+export function buildExtractionConvo(
+  pending: PendingTurn[],
+): { role: string; content: string }[] {
+  const convo: { role: string; content: string }[] = [];
+  for (const p of pending) {
+    const hints = formatEmotionHints(p);
+    if (hints) {
+      convo.push({ role: "system", content: hints });
+    }
+    convo.push({ role: "user", content: p.userMessage });
+    if (p.assistantReply) {
+      convo.push({ role: "assistant", content: p.assistantReply });
+    }
+  }
+  return convo;
+}
 
 export function registerRecordTurnTool(server: McpServer): void {
   const pending: PendingTurn[] = [];
@@ -65,14 +113,17 @@ export function registerRecordTurnTool(server: McpServer): void {
         emotion: z
           .string()
           .optional()
-          .describe("你这轮判断出的用户情绪类别（可选）"),
+          .describe("你这轮判断出的用户情绪类别（可选）。记忆系统会直接用它来写情绪模式的表现字段，不用再从原文猜一遍"),
         intensity: z
           .number()
           .min(0)
           .max(1)
           .optional()
-          .describe("情绪强度 0-1（可选）"),
-        trigger: z.string().optional().describe("情绪触发原因（可选）"),
+          .describe("情绪强度 0-1（可选）。同上，会被直接采用"),
+        trigger: z
+          .string()
+          .optional()
+          .describe("情绪触发原因（可选）。会直接写进情绪模式的「触发条件」字段"),
         definite: z
           .boolean()
           .optional()
@@ -140,13 +191,7 @@ export function registerRecordTurnTool(server: McpServer): void {
         }
 
         const existing = await scanMemory(paths.memory);
-        const convo: { role: "user" | "assistant"; content: string }[] = [];
-        for (const p of pending) {
-          convo.push({ role: "user", content: p.userMessage });
-          if (p.assistantReply) {
-            convo.push({ role: "assistant", content: p.assistantReply });
-          }
-        }
+        const convo = buildExtractionConvo(pending);
 
         let candidates: AnyMemoryCandidate[] = [];
         try {

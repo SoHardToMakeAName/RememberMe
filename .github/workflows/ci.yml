@@ -113,7 +113,8 @@ jobs:
       - name: 校验 npm 包内容
         run: |
           npm pack --dry-run 2>&1 | tee pack.txt
-          grep -q 'rememberme-0.22.0.tgz' pack.txt || { echo "❌ 打包文件名不对"; exit 1; }
+          # 不要硬编码版本号 —— 每次发版都要改这里，改漏了 CI 就红
+          grep -qE 'jokab1074-rememberme-[0-9]+\.[0-9]+\.[0-9]+\.tgz' pack.txt || { echo "❌ 打包文件名不对"; exit 1; }
           grep -q 'dist/mcp/index.js' pack.txt || { echo "❌ 产物没进包"; exit 1; }
           # 不该出现在包里的东西
           if grep -qE 'package/(tests|scripts|experiments)/' pack.txt; then

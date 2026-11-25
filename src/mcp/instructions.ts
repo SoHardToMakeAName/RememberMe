@@ -31,7 +31,8 @@ export const INSTRUCTIONS = `你连接着 RememberMe —— 一个长期记忆�
 调用时如实传：
 - user_message：用户这轮说的话（原文）
 - assistant_reply：你这轮的回复（如果有）
-- emotion / intensity / trigger：如果你已经判断出用户这轮的情绪，一并带上
+- emotion / intensity / trigger：**只要你判断出了这轮的情绪，就带上** ——
+  它们会被直接写进记忆的「触发条件」和「表现」字段，不用记忆系统再从原文猜一遍
 - definite：① ② → true；③ → false
 
 **不要为了"显得有用"而记录。** 无关紧要的话（寒暄、闲聊、情绪细节）不需要调用。
