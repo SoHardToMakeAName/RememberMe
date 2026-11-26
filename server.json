@@ -3,7 +3,7 @@
   "name": "io.github.SoHardToMakeAName/RememberMe",
   "title": "RememberMe",
   "description": "长期记忆 MCP server：记住用户是谁、经历过什么、情绪模式如何，跨会话不丢。",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "websiteUrl": "https://github.com/SoHardToMakeAName/RememberMe",
   "repository": {
     "url": "https://github.com/SoHardToMakeAName/RememberMe",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@jokab1074/rememberme",
-      "version": "0.22.0",
+      "version": "0.22.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

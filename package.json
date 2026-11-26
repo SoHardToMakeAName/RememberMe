@@ -1,6 +1,6 @@
 {
   "name": "@jokab1074/rememberme",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "description": "一个真的记得你的 AI 陪伴。上下文编排器，把画像/记忆/情绪/历史整合成更适合当下的 system prompt。也提供 MCP server 形态的记忆后端。",
   "type": "module",
   "main": "dist/mcp/index.js",
